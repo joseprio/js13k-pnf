@@ -408,7 +408,7 @@ function introRender(now) {
   let ellapsed = (now - initialTime) / 3000;
 
   ctx.save();
-  for (let j = 800; j--;) {
+  for (let j = 800; j--; ) {
     let r = 200 / (4 - ((ellapsed + j / 13) % 4));
     ctx.globalAlpha = Math.min(r / 400, 1);
     ctx.beginPath();
@@ -839,13 +839,13 @@ class Enemy {
       const returnEntities =
         this.deathBullets > 0
           ? fireBullets(
-            this.deathBullets,
-            this.x,
-            this.y + Math.round(17 * this.speed),
-            this.fireAngle,
-            0.45,
-            time
-          )
+              this.deathBullets,
+              this.x,
+              this.y + Math.round(17 * this.speed),
+              this.fireAngle,
+              0.45,
+              time
+            )
           : [];
 
       return returnEntities.concat(
@@ -1221,24 +1221,27 @@ function gameRender(now) {
   // Paint background stars
   let s;
   ctx.fillStyle = "#777";
+
   for (
     let i = 100;
     i--;
     ctx.beginPath(),
-    ctx.arc(
-      Math.floor(
-        ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
-        (100 * (CANVAS_WIDTH - shipWidth))
-      ) +
-      Math.floor(STARS_WIDTH / 2) +
-      Math.floor(STARS_WIDTH / 2) * Math.sin(s * STARS_WIDTH),
-      (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
-      CANVAS_HEIGHT,
-      s * 2,
-      0,
-      7
-    ),
-    ctx.fill()
+      ctx.arc(
+        Math.floor(
+          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
+            (100 * (CANVAS_WIDTH - shipWidth))
+        ) +
+          ((102797 *
+            Math.floor(STARS_WIDTH / 2) *
+            (1 + Math.sin(s * STARS_WIDTH))) %
+            STARS_WIDTH),
+        (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
+          CANVAS_HEIGHT,
+        s * 2,
+        0,
+        7
+      ),
+      ctx.fill()
   )
     s = 149 / (i * 3 + 199);
 
