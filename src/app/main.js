@@ -145,6 +145,30 @@ function flipCanvas(canvas) {
   return flippedCanvas;
 }
 
+function generateNewTag() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 100;
+  canvas.height = 100;
+  const ctx = canvas.getContext("2d");
+  ctx.font = "bold 20px Helvetica";
+  ctx.translate(50, 50);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = "red";
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("NEW!", 0, 0);
+  trimCanvas(canvas);
+  const tagCanvas = document.createElement("canvas");
+  tagCanvas.width = canvas.width + 10;
+  tagCanvas.height = canvas.height + 10;
+  const tagCtx = tagCanvas.getContext("2d");
+  tagCtx.fillStyle = "red";
+  tagCtx.fillRect(0, 0, tagCanvas.width, tagCanvas.height);
+  tagCtx.drawImage(canvas, 5, 5);
+  return tagCanvas;
+}
+
 const CANVAS_WIDTH = 480;
 const CANVAS_HEIGHT = 700;
 const HALF_CANVAS_WIDTH = Math.floor(CANVAS_WIDTH / 2);
@@ -202,8 +226,7 @@ let initialTime = performance.now();
 
 const STATE_LOADING = 0,
   STATE_INTRO = 1,
-  STATE_GAME = 2,
-  STATE_HIGHSCORES = 3;
+  STATE_GAME = 2;
 
 let difficulty;
 let score;
@@ -211,6 +234,8 @@ let scoreText;
 let state = STATE_LOADING;
 
 const highscores = JSON.parse(localStorage["pnf_highscores"] || "false") || [];
+let highlightHighscore = -1;
+const newTag = generateNewTag();
 
 function addScore(points) {
   score += points;
@@ -224,7 +249,8 @@ function updateNextEnemy() {
 
 function updateHighscores() {
   if (score) {
-    highscores.push([score, Date.now()]);
+    const newScore = [score, Date.now()];
+    highscores.push(newScore);
     // Sort by score
     highscores.sort((a, b) => {
       const scoreDiff = b[0] - a[0];
@@ -236,6 +262,7 @@ function updateHighscores() {
     });
     // Only keep the top 5
     highscores.length = Math.min(highscores.length, 5);
+    highlightHighscore = highscores.indexOf(newScore);
     localStorage["pnf_highscores"] = JSON.stringify(highscores);
   }
 }
@@ -368,6 +395,7 @@ function newGame() {
   bombEffect = 0;
   shieldLevel = 1;
   bossTime = false;
+  highlightHighscore = -1;
 }
 
 function introRender(now) {
@@ -380,7 +408,7 @@ function introRender(now) {
   let ellapsed = (now - initialTime) / 3000;
 
   ctx.save();
-  for (let j = 800; j--; ) {
+  for (let j = 800; j--;) {
     let r = 200 / (4 - ((ellapsed + j / 13) % 4));
     ctx.globalAlpha = Math.min(r / 400, 1);
     ctx.beginPath();
@@ -409,6 +437,19 @@ function introRender(now) {
       ctx.textAlign = "start";
       ctx.textBaseline = "top";
       for (let c = 0; c < highscores.length; c++) {
+        if (c === highlightHighscore) {
+          ctx.save();
+          ctx.translate(90, 185 + 80 * c);
+          ctx.drawImage(
+            newTag,
+            -Math.floor(newTag.width / 2),
+            -Math.floor(newTag.height / 2)
+          );
+          ctx.restore();
+          ctx.fillStyle = "gold";
+        } else {
+          ctx.fillStyle = "#fff";
+        }
         const score = Intl.NumberFormat().format(highscores[c][0]);
         const time = new Date(highscores[c][1]).toLocaleString();
         ctx.font = "50px Helvetica";
@@ -777,7 +818,6 @@ class Enemy {
       isDead = true;
     } else {
       const ellapsed = time - this.lastTime;
-      // DEBUG just testing
       this.y += ellapsed * this.speed;
       this.updateHitBox();
 
@@ -799,13 +839,13 @@ class Enemy {
       const returnEntities =
         this.deathBullets > 0
           ? fireBullets(
-              this.deathBullets,
-              this.x,
-              this.y + Math.round(17 * this.speed),
-              this.fireAngle,
-              0.45,
-              time
-            )
+            this.deathBullets,
+            this.x,
+            this.y + Math.round(17 * this.speed),
+            this.fireAngle,
+            0.45,
+            time
+          )
           : [];
 
       return returnEntities.concat(
@@ -939,7 +979,6 @@ class Boss {
         if (this.y > 150) {
           this.y = 150;
           // Give it normal health
-          // Debug: leave it inmortal for testing
           this.health = 100 + 250 * this.level;
           this.state = BOSS_FIGHT;
           this.nextBullet = time;
@@ -1186,20 +1225,20 @@ function gameRender(now) {
     let i = 100;
     i--;
     ctx.beginPath(),
-      ctx.arc(
-        Math.floor(
-          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
-            (100 * (CANVAS_WIDTH - shipWidth))
-        ) +
-          Math.floor(STARS_WIDTH / 2) +
-          Math.floor(STARS_WIDTH / 2) * Math.sin(s * STARS_WIDTH),
-        (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
-          CANVAS_HEIGHT,
-        s * 2,
-        0,
-        7
-      ),
-      ctx.fill()
+    ctx.arc(
+      Math.floor(
+        ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
+        (100 * (CANVAS_WIDTH - shipWidth))
+      ) +
+      Math.floor(STARS_WIDTH / 2) +
+      Math.floor(STARS_WIDTH / 2) * Math.sin(s * STARS_WIDTH),
+      (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
+      CANVAS_HEIGHT,
+      s * 2,
+      0,
+      7
+    ),
+    ctx.fill()
   )
     s = 149 / (i * 3 + 199);
 
