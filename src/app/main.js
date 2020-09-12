@@ -212,6 +212,16 @@ let state = STATE_LOADING;
 
 const highscores = JSON.parse(localStorage["pnf_highscores"] || "false") || [];
 
+function addScore(points) {
+  score += points;
+  scoreText = new Intl.NumberFormat().format(score);
+}
+
+function updateNextEnemy() {
+  const minNextEnemy = Math.max(400, 1000 - difficulty * 25);
+  nextEnemy += enemyRandomizer.si(minNextEnemy, minNextEnemy + 400);
+}
+
 function updateHighscores() {
   if (score) {
     highscores.push([score, Date.now()]);
@@ -228,6 +238,20 @@ function updateHighscores() {
     highscores.length = Math.min(highscores.length, 5);
     localStorage["pnf_highscores"] = JSON.stringify(highscores);
   }
+}
+
+let bossShip;
+let bossHit;
+let destroyedBossSprites;
+
+function generateBoss() {
+  bossShip = flipCanvas(
+    generateShip(generateFaction("HYj7ADLjQr6icLtO"), "CdiB9N2ZoQWuAxur", 270)
+      .cf
+  );
+  trimCanvas(bossShip);
+  bossHit = hitEffect(bossShip);
+  destroyedBossSprites = createSprites(bossShip);
 }
 
 function generateEnemy(faction, seed, size, ...more) {
@@ -336,13 +360,14 @@ function newGame() {
   initialTime = performance.now();
   lastTime = performance.now();
   score = 0;
-  scoreText = new Intl.NumberFormat().format(score);
+  addScore(0);
   shipDestroyed = false;
   x = HALF_CANVAS_WIDTH;
   y = Math.floor(CANVAS_HEIGHT * 0.9);
   fastFire = 0;
   bombEffect = 0;
   shieldLevel = 1;
+  bossTime = false;
 }
 
 function introRender(now) {
@@ -374,10 +399,10 @@ function introRender(now) {
   ctx.textAlign = "center";
   if (state === STATE_INTRO) {
     if (highscores.length === 0) {
-      ctx.font = "bold 40px monospace";
+      ctx.font = "bold 40px Helvetica";
       ctx.fillText("PLANET NOT FOUND", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     } else {
-      ctx.font = "bold 30px monospace";
+      ctx.font = "bold 30px Helvetica";
       ctx.fillText("HIGH SCORES", HALF_CANVAS_WIDTH, 100);
 
       ctx.save();
@@ -386,19 +411,21 @@ function introRender(now) {
       for (let c = 0; c < highscores.length; c++) {
         const score = Intl.NumberFormat().format(highscores[c][0]);
         const time = new Date(highscores[c][1]).toLocaleString();
-        ctx.font = "60px monospace";
-        ctx.fillText(String(c + 1) + "{", 110, 150 + 80 * c);
-        ctx.font = "25px monospace";
-        ctx.fillText(score + " points", 180, 155 + 80 * c);
-        ctx.font = "15px monospace";
-        ctx.fillText(time, 180, 185 + 80 * c);
+        ctx.font = "50px Helvetica";
+        ctx.fillText(String(c + 1), 115, 160 + 80 * c);
+        ctx.font = "60px Helvetica";
+        ctx.fillText("{", 145, 150 + 80 * c);
+        ctx.font = "25px Helvetica";
+        ctx.fillText(score + " points", 170, 160 + 80 * c);
+        ctx.font = "15px Helvetica";
+        ctx.fillText(time, 170, 190 + 80 * c);
       }
 
       ctx.restore();
     }
-    ctx.font = "20px monospace";
+    ctx.font = "20px Helvetica";
     ctx.fillText(
-      "Press anywhere to play",
+      "<Press anywhere to play>",
       HALF_CANVAS_WIDTH,
       CANVAS_HEIGHT - 30
     );
@@ -412,10 +439,12 @@ function introRender(now) {
       introInhibitPress = false;
     }
   } else {
-    ctx.font = "italic 30px monospace";
+    ctx.font = "italic 30px Helvetica";
     ctx.fillText("Loading…", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     // Generate assets
-    if (enemyBlueprints.length < enemyDefinitions.length) {
+    if (!bossShip) {
+      generateBoss();
+    } else if (enemyBlueprints.length < enemyDefinitions.length) {
       enemyBlueprints.push(
         generateEnemy(...enemyDefinitions[enemyBlueprints.length])
       );
@@ -515,7 +544,7 @@ class Powerup {
     } else {
       size += 50 - this.frame;
     }
-    ctx.font = "700 " + Math.floor(size / 2) + "px Arial";
+    ctx.font = "700 " + Math.floor(size / 2) + "px Helvetica";
     const measure = ctx.measureText(powerupDefinitions[this.type][0]);
     const textHeight =
       measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
@@ -573,6 +602,7 @@ class Bullet {
 }
 
 const ENEMY_EXPLOSION_DURATION = 500;
+const BOSS_EXPLOSION_DURATION = 500;
 const PLAYER_EXPLOSION_DURATION = 1500;
 
 class Shard {
@@ -764,8 +794,7 @@ class Enemy {
 
     if (isDead) {
       // Add score
-      score += this.points;
-      scoreText = new Intl.NumberFormat().format(score);
+      addScore(this.points);
       // Return array with pieces
       const returnEntities =
         this.deathBullets > 0
@@ -870,6 +899,217 @@ class Enemy {
   }
 }
 
+const BOSS_WAITING = 0;
+const BOSS_COMING = 1;
+const BOSS_FIGHT = 2;
+const DIRECTION_RIGHT = 0;
+const DIRECTION_LEFT = 1;
+
+class Boss {
+  constructor(level, time) {
+    this.state = BOSS_WAITING;
+    this.nextState = time + 2000;
+    // We want to be basically immortal until we start the fight
+    this.health = Number.MAX_SAFE_INTEGER;
+    this.lastTime = time;
+    this.width = bossShip.width;
+    this.height = bossShip.height;
+    this.x = HALF_CANVAS_WIDTH;
+    this.y = -this.height / 2;
+    this.direction = DIRECTION_RIGHT;
+    this.hitTime = 0;
+    this.level = level;
+    this.updateHitBox();
+  }
+
+  run(hitables, ctx, time) {
+    const originalY = this.y;
+    let isDead = false;
+    // Destroy enemies if no health or bomb time
+    if (this.health <= 0) {
+      isDead = true;
+    } else {
+      const ellapsed = time - this.lastTime;
+      if (this.state === BOSS_WAITING) {
+        if (time > this.nextState) {
+          this.state = BOSS_COMING;
+        }
+      } else if (this.state === BOSS_COMING) {
+        this.y += ellapsed * 0.15;
+        if (this.y > 150) {
+          this.y = 150;
+          // Give it normal health
+          // Debug: leave it inmortal for testing
+          this.health = 100 + 250 * this.level;
+          this.state = BOSS_FIGHT;
+          this.nextBullet = time;
+          this.bulletCount = 0;
+        }
+      } else {
+        // Update X
+        if (this.direction === DIRECTION_RIGHT) {
+          this.x += ellapsed * 0.1;
+          if (this.x + Math.floor(this.width / 2) > CANVAS_WIDTH) {
+            this.x = CANVAS_WIDTH - Math.floor(this.width / 2);
+            this.direction = DIRECTION_LEFT;
+          }
+        } else {
+          this.x -= ellapsed * 0.1;
+          if (this.x - Math.floor(this.width / 2) < 0) {
+            this.x = Math.floor(this.width / 2);
+            this.direction = DIRECTION_RIGHT;
+          }
+        }
+      }
+
+      this.updateHitBox();
+
+      // Check collision to ship
+      if (collide(shipHitBox, this.hitBox)) {
+        shipDestroyed = true;
+      }
+    }
+
+    if (isDead) {
+      addScore(difficulty * 500);
+
+      // Restore game!
+      bossTime = false;
+      nextDifficulty = time + 10000;
+      nextEnemy = BOSS_EXPLOSION_DURATION + time;
+      updateNextEnemy();
+      nextPowerup = BOSS_EXPLOSION_DURATION + time;
+
+      return destroyedBossSprites.map((sprite) => {
+        calculateSpriteFinalState(sprite, this.width, this.height);
+        return new Shard(
+          sprite,
+          this.x - Math.floor(this.width / 2),
+          this.y - Math.floor(this.height / 2),
+          BOSS_EXPLOSION_DURATION,
+          time
+        );
+      });
+    }
+
+    this.lastTime = time;
+
+    const hitTimeEllapsed = time - this.hitTime;
+    let hitTint = 0;
+    if (hitTimeEllapsed < 400) {
+      hitTint = (400 - hitTimeEllapsed) / 400;
+    }
+    ctx.save();
+    ctx.drawImage(
+      bossShip,
+      this.x - Math.floor(this.width / 2),
+      this.y - Math.floor(this.height / 2),
+      this.width,
+      this.height
+    );
+    if (hitTint > 0) {
+      ctx.globalAlpha = hitTint;
+      ctx.drawImage(
+        bossHit,
+        this.x - Math.floor(this.width / 2),
+        this.y - Math.floor(this.height / 2),
+        this.width,
+        this.height
+      );
+    }
+    ctx.restore();
+
+    if (!shipDestroyed && this.state === BOSS_FIGHT) {
+      // Fire bullets if needed
+      if (this.nextBullet < time) {
+        const bullets = [];
+        if (this.bulletCount < 5 * this.level) {
+          let offsetX, offsetY;
+          switch (Math.floor(this.bulletCount / this.level)) {
+            case 0:
+              offsetX = 28;
+              offsetY = 119;
+              break;
+            case 1:
+              offsetX = 42;
+              offsetY = 123;
+              break;
+            case 2:
+              offsetX = 108;
+              offsetY = 94;
+              break;
+            case 3:
+              offsetX = 121;
+              offsetY = 80;
+              break;
+            default:
+              offsetX = 143;
+              offsetY = 50;
+              break;
+          }
+          // Side bullets
+          bullets.push(
+            new EnemyBullet(
+              this.x - offsetX,
+              this.y + offsetY,
+              this.x - offsetX,
+              this.y + offsetY + 100,
+              0.5,
+              time
+            )
+          );
+          bullets.push(
+            new EnemyBullet(
+              this.x + offsetX,
+              this.y + offsetY,
+              this.x + offsetX,
+              this.y + offsetY + 100,
+              0.5,
+              time
+            )
+          );
+        } else {
+          // Targeted bullets
+          bullets.push(new EnemyBullet(this.x, this.y + 125, x, y, 0.3, time));
+        }
+        this.bulletCount++;
+        if (this.bulletCount >= 10 * this.level) {
+          this.bulletCount = 0;
+          this.nextBullet = time + 800;
+        } else if (this.bulletCount > 5 * this.level) {
+          this.nextBullet = time + 200;
+        } else if (this.bulletCount === 5 * this.level) {
+          this.nextBullet = time + 800;
+        } else {
+          // this.bulletCount < 5 * this.level
+          if (this.bulletCount % this.level) {
+            this.nextBullet = time + 180;
+          } else {
+            this.nextBullet = time + 500;
+          }
+        }
+        return [this, ...bullets];
+      }
+    }
+
+    return true;
+  }
+
+  updateHitBox() {
+    this.hitBox = [
+      this.x - Math.floor(this.width / 2),
+      this.y - Math.floor(this.height / 2),
+      this.width,
+      this.height,
+    ];
+  }
+
+  hit(power, now) {
+    this.hitTime = now;
+    this.health -= power;
+  }
+}
+
 let entities;
 let hitables;
 let lastBullet;
@@ -881,6 +1121,7 @@ let nextEnemy;
 let nextDifficulty;
 let nextPowerup;
 let powerupIndex;
+let bossTime;
 
 const POWERUP_INTERVAL = 9000;
 
@@ -1051,7 +1292,7 @@ function gameRender(now) {
     ctx.save();
     ctx.globalAlpha = Math.min(1, (now - initialTime - gameOverTime) / 2000);
     ctx.textBaseline = "middle";
-    ctx.font = "40px monospace";
+    ctx.font = "40px Helvetica";
     ctx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
 
     ctx.restore();
@@ -1068,7 +1309,7 @@ function gameRender(now) {
 
   // Paint HUD
   ctx.textBaseline = "top";
-  ctx.font = "16px monospace";
+  ctx.font = "16px Helvetica";
   ctx.fillText(scoreText, HALF_CANVAS_WIDTH, 5);
 
   const isFastFire = fastFire > now - initialTime;
@@ -1087,13 +1328,18 @@ function gameRender(now) {
     );
     lastBullet = Math.max(now - initialTime);
   }
-  if (nextDifficulty < now - initialTime) {
+  if (nextDifficulty < now - initialTime && !bossTime) {
     increaseDifficulty();
-    nextDifficulty = now - initialTime + 10000;
+    if (difficulty % 5) {
+      nextDifficulty = now - initialTime + 10000;
+    } else {
+      bossTime = true;
+      entities.push(new Boss(Math.floor(difficulty / 5), now - initialTime));
+    }
   }
 
   // Should we spawn powerup
-  if (nextPowerup < now - initialTime) {
+  if (nextPowerup < now - initialTime && !bossTime) {
     entities.push(
       new Powerup(
         powerupRandomizer.si(30, CANVAS_WIDTH - 30),
@@ -1107,7 +1353,7 @@ function gameRender(now) {
   }
 
   // Should we spawn enemy
-  if (nextEnemy < now - initialTime) {
+  if (nextEnemy < now - initialTime && !bossTime) {
     const enemyDifficulty = enemyRandomizer.si(
       Math.min(Math.max(difficulty - 2, 0), enemyBlueprints.length - 3),
       Math.min(difficulty, enemyBlueprints.length - 1)
@@ -1137,8 +1383,7 @@ function gameRender(now) {
         now - initialTime
       )
     );
-    const minNextEnemy = Math.max(400, 1000 - difficulty * 25);
-    nextEnemy += enemyRandomizer.si(minNextEnemy, minNextEnemy + 400);
+    updateNextEnemy();
   }
 
   if (shipDestroyed && gameOverTime + 3500 < now - initialTime) {
@@ -1247,6 +1492,3 @@ self.onmouseup = self.ontouchend = (e) => {
 oncontextmenu = (e) => {
   e.preventDefault();
 };
-
-// For debug, start game right away
-//newGame();
