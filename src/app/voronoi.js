@@ -37,7 +37,10 @@ export function createSprites(targetCanvas) {
   const splitPoints = createSplitPoints(
     targetCanvas.width,
     targetCanvas.height,
-    12,
+    Math.max(
+      12,
+      Math.floor(Math.min(targetCanvas.width, targetCanvas.height) / 12)
+    ),
     0.5
   );
   const targetCtx = targetCanvas.getContext("2d");

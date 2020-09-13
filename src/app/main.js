@@ -1504,22 +1504,26 @@ onclick = (e) => {
 };
 
 /* Mousedown / touchstart */
-self.onmousedown = self.ontouchstart = (e) => {
+function pointerDown(e) {
   e.preventDefault();
   pointer_down = true;
   [down_x, down_y] = update_mouse(e);
   move_x = down_x;
   move_y = down_y;
-};
+}
+self.onmousedown = pointerDown;
+self.addEventListener("touchstart", pointerDown, { passive: false });
 
 /* Mousemove / touchmove */
-self.onmousemove = self.ontouchmove = (e) => {
+function pointerMove(e) {
   e.preventDefault();
   [move_x, move_y] = update_mouse(e);
-};
+}
+self.onmousemove = pointerMove;
+self.addEventListener("touchmove", pointerMove, { passive: false });
 
 /* Mouseup / touchend */
-self.onmouseup = self.ontouchend = (e) => {
+function pointerUp(e) {
   e.preventDefault();
   pointer_down = false;
   [up_x, up_y] = update_mouse(e);
@@ -1528,7 +1532,10 @@ self.onmouseup = self.ontouchend = (e) => {
   if (e.changedTouches) {
     onclick();
   }
-};
+}
+
+self.onmouseup = pointerUp;
+self.addEventListener("touchend", pointerUp, { passive: false });
 
 /* Right click */
 oncontextmenu = (e) => {
