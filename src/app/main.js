@@ -1,6 +1,6 @@
 import { generateShip, generateFaction, Randomizer } from "starshipwright";
 import { createSprites, calculateSpriteFinalState } from "./voronoi";
-import { trimCanvas } from "./utils";
+import { trimCanvas, createFavicon } from "./utils";
 
 function hitEffect(canvas) {
   const destCanvas = document.createElement("canvas");
@@ -89,7 +89,7 @@ function generateBullet() {
   ctx.lineTo(10, 70);
   ctx.stroke();
 
-  return canvas;
+  return [canvas, ctx.getImageData(0, 0, canvas.width, canvas.height).data];
 }
 
 function generateEnemyBulletFrame(colorStop) {
@@ -132,7 +132,7 @@ function generatePowerupCanvas() {
   ctx.beginPath();
   ctx.arc(30, 30, 30, 0, 7);
   ctx.fill();
-  return canvas;
+  return [canvas, ctx.getImageData(0, 0, canvas.width, canvas.height).data];
 }
 
 function flipCanvas(canvas) {
@@ -197,14 +197,16 @@ const ship = generateShip(faction, "ie7jMyCFouoUjkVs", 60).cf;
 trimCanvas(ship);
 
 const destroyedShipSprites = createSprites(ship);
-
 const shipWidth = ship.width;
 const shipHeight = ship.height;
+const shipMask = ship.getContext('2d').getImageData(0, 0, shipWidth, shipHeight).data;
+
 let shipHitBox = [
-  x - Math.floor(shipWidth / 2),
-  y - Math.floor(shipHeight / 2),
+  x,
+  y,
   shipWidth,
   shipHeight,
+  shipMask,
 ];
 let shipDestroyed;
 let gameOverTime;
@@ -213,14 +215,18 @@ const BOMB_DURATION = 1000;
 let bombEffect;
 let shieldLevel;
 
+// Create favicon
+createFavicon(ship);
+
 const shields = generateShields();
 
 const enemyBlueprints = [];
 
-const bullet = generateBullet();
+const [bullet, bulletMask] = generateBullet();
 const enemyBulletFrames = generateEnemyBullet();
+const enemyBulletMask = enemyBulletFrames[0].getContext('2d').getImageData(0, 0, enemyBulletFrames[0].width, enemyBulletFrames[0].height).data;
 
-const powerupCanvas = generatePowerupCanvas();
+const [powerupCanvas, powerupMask] = generatePowerupCanvas();
 
 let initialTime = performance.now();
 
@@ -268,6 +274,7 @@ function updateHighscores() {
 }
 
 let bossShip;
+let bossMask;
 let bossHit;
 let destroyedBossSprites;
 
@@ -279,22 +286,25 @@ function generateBoss() {
   trimCanvas(bossShip);
   bossHit = hitEffect(bossShip);
   destroyedBossSprites = createSprites(bossShip);
+  bossMask = bossShip.getContext('2d').getImageData(0, 0, bossShip.width, bossShip.height).data;
 }
 
 function generateEnemy(faction, seed, size, ...more) {
   const enemyShip = flipCanvas(
     generateShip(generateFaction(faction), seed, size).cf
   );
-  return [enemyShip, undefined, undefined, ...more];
+  return [enemyShip, undefined, undefined, undefined, ...more];
 }
 
 function generateEnemyAssets(enemyBlueprint) {
   const enemyShip = enemyBlueprint[0];
   trimCanvas(enemyShip);
+  const mask = enemyShip.getContext('2d').getImageData(0, 0, enemyShip.width, enemyShip.height).data;
   const hitEnemyShip = hitEffect(enemyShip);
   const destroyedEnemyShipSprites = createSprites(enemyShip);
-  enemyBlueprint[1] = hitEnemyShip;
-  enemyBlueprint[2] = destroyedEnemyShipSprites;
+  enemyBlueprint[1] = mask;
+  enemyBlueprint[2] = hitEnemyShip;
+  enemyBlueprint[3] = destroyedEnemyShipSprites;
 }
 
 const enemyDefinitions = [
@@ -408,7 +418,7 @@ function introRender(now) {
   let ellapsed = (now - initialTime) / 3000;
 
   ctx.save();
-  for (let j = 800; j--; ) {
+  for (let j = 800; j--;) {
     let r = 200 / (4 - ((ellapsed + j / 13) % 4));
     ctx.globalAlpha = Math.min(r / 400, 1);
     ctx.beginPath();
@@ -504,13 +514,34 @@ function introRender(now) {
   }
 }
 
-function collide(rect1, rect2) {
-  return (
-    rect1[0] < rect2[0] + rect2[2] &&
-    rect1[0] + rect1[2] > rect2[0] &&
-    rect1[1] < rect2[1] + rect2[3] &&
-    rect1[1] + rect1[3] > rect2[1]
-  );
+function collide(o1, o2) {
+  const xs = o1[0] - o1[2] / 2 < o2[0] - o2[2] / 2 ? [o1, o2] : [o2, o1];
+  const ys = o1[1] - o1[3] / 2 < o2[1] - o2[3] / 2 ? [o1, o2] : [o2, o1];
+
+  // Do bounding boxes collide
+  if (xs[0][0] + xs[0][2] / 2 > xs[1][0] - xs[1][2] / 2 && ys[0][1] + ys[0][3] / 2 > ys[1][1] - ys[1][3] / 2) {
+    // Create the collision bounding box
+    const cBoundingX = Math.floor(xs[1][0] - xs[1][2] / 2);
+    const cBoundingY = Math.floor(ys[1][1] - ys[1][3] / 2);
+    const cBoundingWidth = Math.floor(Math.min(xs[0][0] + xs[0][2] / 2, xs[1][0] + xs[1][2] / 2)) - cBoundingX;
+    const cBoundingHeight = Math.floor(Math.min(ys[0][1] + ys[0][3] / 2, ys[1][1] + ys[1][3] / 2)) - cBoundingY;
+
+    const o1StartX = cBoundingX - Math.floor(o1[0] - o1[2] / 2);
+    const o1StartY = cBoundingY - Math.floor(o1[1] - o1[3] / 2);
+    const o2StartX = cBoundingX - Math.floor(o2[0] - o2[2] / 2);
+    const o2StartY = cBoundingY - Math.floor(o2[1] - o2[3] / 2);
+    for (let c = 0; c < cBoundingHeight; c++) {
+      for (let d = 0; d < cBoundingWidth; d++) {
+        if (o1[4][((o1StartY + c) * o1[2] + o1StartX + d) * 4 + 3] > 0 &&
+          o2[4][((o2StartY + c) * o2[2] + o2StartX + d) * 4 + 3] > 0) {
+          //Found common filled pixel!!
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 const powerupDefinitions = [
@@ -554,10 +585,11 @@ class Powerup {
     this.frame = (this.frame + 1) % 50;
 
     const hitBox = [
-      this.x - Math.floor(powerupCanvas.width / 2),
-      this.y - Math.floor(powerupCanvas.height / 2),
+      this.x,
+      this.y,
       powerupCanvas.width,
       powerupCanvas.height,
+      powerupMask,
     ];
 
     // Check powerup against ship
@@ -614,10 +646,11 @@ class Bullet {
     this.y -= (BULLET_SPEED * (time - this.lastTime)) / 32;
 
     const hitBox = [
-      this.x - Math.floor(bullet.width / 2),
-      this.y - Math.floor(bullet.height / 2),
+      this.x,
+      this.y,
       bullet.width,
       bullet.height,
+      bulletMask,
     ];
     // Check collision with hitables
     for (let c = 0; c < hitables.length; c++) {
@@ -752,10 +785,11 @@ class EnemyBullet {
 
   updateHitBox() {
     this.hitBox = [
-      this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2),
+      this.x,
+      this.y,
       this.width,
       this.height,
+      enemyBulletMask
     ];
   }
 }
@@ -781,6 +815,7 @@ function fireBullets(amount, x, y, initialAngle, speed, time) {
 class Enemy {
   constructor(
     canvas,
+    mask,
     hitCanvas,
     destroyedSprites,
     startX,
@@ -794,6 +829,7 @@ class Enemy {
   ) {
     this.fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
     this.canvas = canvas;
+    this.mask = mask;
     this.hitCanvas = hitCanvas;
     this.width = canvas.width;
     this.height = canvas.height;
@@ -839,13 +875,13 @@ class Enemy {
       const returnEntities =
         this.deathBullets > 0
           ? fireBullets(
-              this.deathBullets,
-              this.x,
-              this.y + Math.round(17 * this.speed),
-              this.fireAngle,
-              0.45,
-              time
-            )
+            this.deathBullets,
+            this.x,
+            this.y + Math.round(17 * this.speed),
+            this.fireAngle,
+            0.45,
+            time
+          )
           : [];
 
       return returnEntities.concat(
@@ -926,10 +962,11 @@ class Enemy {
 
   updateHitBox() {
     this.hitBox = [
-      this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2),
+      this.x,
+      this.y,
       this.width,
       this.height,
+      this.mask,
     ];
   }
 
@@ -1136,10 +1173,11 @@ class Boss {
 
   updateHitBox() {
     this.hitBox = [
-      this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2),
+      this.x,
+      this.y,
       this.width,
       this.height,
+      bossMask,
     ];
   }
 
@@ -1205,17 +1243,18 @@ function gameRender(now) {
     }
     if (x !== originalX || y !== originalY) {
       shipHitBox = [
-        x - Math.floor(shipWidth / 2),
-        y - Math.floor(shipHeight / 2),
+        x,
+        y,
         shipWidth,
         shipHeight,
+        shipMask
       ];
     }
   }
 
   // Reset canvas
   const ctx = a.getContext("2d");
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   // Paint background stars
@@ -1226,22 +1265,22 @@ function gameRender(now) {
     let i = 100;
     i--;
     ctx.beginPath(),
-      ctx.arc(
-        Math.floor(
-          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
-            (100 * (CANVAS_WIDTH - shipWidth))
-        ) +
-          ((102797 *
-            Math.floor(STARS_WIDTH / 2) *
-            (1 + Math.sin(s * STARS_WIDTH))) %
-            STARS_WIDTH),
-        (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
-          CANVAS_HEIGHT,
-        s * 2,
-        0,
-        7
-      ),
-      ctx.fill()
+    ctx.arc(
+      Math.floor(
+        ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
+        (100 * (CANVAS_WIDTH - shipWidth))
+      ) +
+      ((102797 *
+        Math.floor(STARS_WIDTH / 2) *
+        (1 + Math.sin(s * STARS_WIDTH))) %
+        STARS_WIDTH),
+      (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
+      CANVAS_HEIGHT,
+      s * 2,
+      0,
+      7
+    ),
+    ctx.fill()
   )
     s = 149 / (i * 3 + 199);
 
@@ -1403,6 +1442,7 @@ function gameRender(now) {
 
     const [
       enemyShip,
+      enemyMask,
       hitEnemyShip,
       destroyedEnemyShipSprites,
       health,
@@ -1413,6 +1453,7 @@ function gameRender(now) {
     entities.push(
       new Enemy(
         enemyShip,
+        enemyMask,
         hitEnemyShip,
         destroyedEnemyShipSprites,
         enemyRandomizer.si(30, CANVAS_WIDTH - 30),

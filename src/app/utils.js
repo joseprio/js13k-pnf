@@ -72,3 +72,24 @@ export function trimCanvas(canvas) {
   ctx.putImageData(cut, 0, 0);
   return [leftColumn, topRow];
 }
+
+export function createFavicon(img) {
+  const favicon = document.createElement('canvas');
+  favicon.width = 32;
+  favicon.height = 32;
+  const favCtx = favicon.getContext('2d');
+  let destWidth, destHeight;
+  if (img.width > img.height) {
+    destWidth = 32;
+    destHeight = 32 * img.height / img.width;
+  } else {
+    destHeight = 32;
+    destWidth = 32 * img.width / img.height;
+  }
+  favCtx.drawImage(img, 0, 0, destWidth, destHeight);
+
+  const link = document.createElement('link');
+  link.setAttribute('rel', 'icon');
+  link.setAttribute('href', favicon.toDataURL());
+  document.head.appendChild(link);
+}
