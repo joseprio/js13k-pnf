@@ -1485,41 +1485,11 @@ onload = (e) => {
   a.width = CANVAS_WIDTH;
   a.height = CANVAS_HEIGHT;
   let c = a.getContext("2d");
-  onresize();
   function renderWrapper(now) {
     render(now);
     requestAnimationFrame(renderWrapper);
   }
   requestAnimationFrame(renderWrapper);
-};
-
-/* Canvas offsets (changed onresize) */
-let canvas_left = 0;
-let canvas_top = 0;
-
-/* Canvas "real" size (changed onresize) */
-let canvas_real_width = 0;
-let canvas_real_height = 0;
-
-/* Resize */
-self.onresize = self.onrotate = (b) => {
-  screen_ratio = innerWidth / innerHeight;
-
-  /* Full width */
-  if (canvas_ratio > screen_ratio) {
-    canvas_real_width = innerWidth;
-    canvas_real_height = innerWidth / canvas_ratio;
-    canvas_left = 0;
-    canvas_top = (innerHeight - canvas_real_height) / 2;
-  } else {
-    /* Full height */
-    canvas_real_width = innerHeight * canvas_ratio;
-    canvas_real_height = innerHeight;
-    canvas_left = (innerWidth - canvas_real_width) / 2;
-    canvas_top = 0;
-  }
-  a.style.width = canvas_real_width + "px";
-  a.style.height = canvas_real_height + "px";
 };
 
 /* Compute mouse / touch coordinates on the canvas */
@@ -1531,10 +1501,9 @@ let update_mouse = (e) => {
   } else {
     pointer = e;
   }
-
   return [
-    ~~(((pointer.pageX - canvas_left) * CANVAS_WIDTH) / canvas_real_width),
-    ~~(((pointer.pageY - canvas_top) * CANVAS_HEIGHT) / canvas_real_height),
+    ~~(((pointer.pageX - a.offsetLeft) * CANVAS_WIDTH) / a.offsetWidth),
+    ~~(((pointer.pageY - a.offsetTop) * CANVAS_HEIGHT) / a.offsetHeight),
   ];
 };
 
