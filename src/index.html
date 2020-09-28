@@ -10,19 +10,25 @@
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
   <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
     body {
+      width: 100vw;
+      height: 100vh;
       background: #226;
       overflow: hidden;
       display: flex;
-      padding: 0;
-      margin: 0;
       align-items: center;
       justify-content: center;
     }
 
     #a {
-      display: flex;
       object-fit: contain;
+      max-height: 100%;
+      max-width: 100%;
     }
   </style>
   <title>Planet Not Found</title>
