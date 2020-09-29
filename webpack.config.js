@@ -27,6 +27,12 @@ module.exports = {
       template: "src/index.html",
       minify: isProduction && {
         collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+        minifyCSS: true
       },
       inlineSource: isProduction && ".(js|css)$",
     }),
