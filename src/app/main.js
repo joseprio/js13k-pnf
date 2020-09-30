@@ -1216,16 +1216,12 @@ function gameRender(now) {
     const originalX = x,
       originalY = y;
     // Move ship
-    if (move_x > -1) {
-      x +=
-        Math.sign(move_x - x) *
-        Math.min(Math.abs(move_x - x), SHIP_SPEED * ellapsed);
-    }
-    if (move_x > -1) {
-      y +=
-        Math.sign(move_y - y) *
-        Math.min(Math.abs(move_y - y), SHIP_SPEED * ellapsed);
-    }
+    x +=
+      Math.sign(move_x - x) *
+      Math.min(Math.abs(move_x - x), SHIP_SPEED * ellapsed);
+    y +=
+      Math.sign(move_y - y) *
+      Math.min(Math.abs(move_y - y), SHIP_SPEED * ellapsed);
     let moved = false;
     if (x !== originalX) {
       if (x - Math.floor(shipWidth / 2) < 0) {
@@ -1495,6 +1491,20 @@ onload = (e) => {
 /* Compute mouse / touch coordinates on the canvas */
 
 let update_mouse = (e) => {
+  let offsetLeft, offsetTop, offsetWidth, offsetHeight;
+  if (a.offsetWidth / a.offsetHeight > CANVAS_WIDTH / CANVAS_HEIGHT) {
+    // Wider
+    offsetTop = 0;
+    offsetHeight = a.offsetHeight;
+    offsetWidth = offsetHeight * CANVAS_WIDTH / CANVAS_HEIGHT;
+    offsetLeft = Math.floor(a.offsetWidth - offsetWidth) / 2;
+  } else {
+    // Narrower
+    offsetLeft = 0;
+    offsetWidth = a.offsetWidth;
+    offsetHeight = offsetWidth * CANVAS_HEIGHT / CANVAS_WIDTH;
+    offsetTop = Math.floor(a.offsetHeight - offsetHeight) / 2;
+  }
   let pointer = {};
   if (e.changedTouches) {
     pointer = e.changedTouches[0];
@@ -1502,8 +1512,8 @@ let update_mouse = (e) => {
     pointer = e;
   }
   return [
-    ~~(((pointer.pageX - a.offsetLeft) * CANVAS_WIDTH) / a.offsetWidth),
-    ~~(((pointer.pageY - a.offsetTop) * CANVAS_HEIGHT) / a.offsetHeight),
+    Math.floor(((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth),
+    Math.floor(((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight),
   ];
 };
 
@@ -1513,8 +1523,8 @@ onclick = (e) => {
   [click_x, click_y] = update_mouse(e);
 };
 
-/* Mousedown / touchstart */
-ontouchstart = onpointerdown = (e) => {
+/* Down */
+self.ontouchstart = self.onpointerdown = (e) => {
   e.preventDefault();
   pointer_down = true;
   [down_x, down_y] = update_mouse(e);
@@ -1522,14 +1532,14 @@ ontouchstart = onpointerdown = (e) => {
   move_y = down_y;
 };
 
-/* Mousemove / touchmove */
-ontouchmove = onpointermove = (e) => {
+/* Move */
+self.ontouchmove = self.onpointermove = (e) => {
   e.preventDefault();
   [move_x, move_y] = update_mouse(e);
 };
 
-/* Mouseup / touchend */
-ontouchend = onpointerup = (e) => {
+/* Up */
+self.ontouchend = self.onpointerup = (e) => {
   e.preventDefault();
   pointer_down = false;
   [up_x, up_y] = update_mouse(e);
