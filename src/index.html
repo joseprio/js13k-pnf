@@ -9,11 +9,15 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <style>
     html,
-    body {
+    body,
+    #a {
       width: 100%;
       height: 100%;
       margin: 0;
       padding: 0;
+      touch-action: none;
+      user-select: none;
+      object-fit: contain;
     }
 
     body {
@@ -22,18 +26,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    #a {
-      object-fit: contain;
-      width: 100%;
-      height: 100%;
-    }
-
-    body,
-    #a {
-      touch-action: none;
-      user-select: none;
     }
   </style>
   <title>Planet Not Found</title>

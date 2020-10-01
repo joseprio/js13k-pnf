@@ -1216,36 +1216,35 @@ function gameRender(now) {
     const originalX = x,
       originalY = y;
     // Move ship
-    x +=
-      Math.sign(move_x - x) *
-      Math.min(Math.abs(move_x - x), SHIP_SPEED * ellapsed);
-    y +=
-      Math.sign(move_y - y) *
-      Math.min(Math.abs(move_y - y), SHIP_SPEED * ellapsed);
-    let moved = false;
-    if (x !== originalX) {
-      if (x - Math.floor(shipWidth / 2) < 0) {
-        x = Math.floor(shipWidth / 2);
-      } else if (x + Math.floor(shipWidth / 2) > CANVAS_WIDTH) {
-        x = CANVAS_WIDTH - Math.floor(shipWidth / 2);
-      }
+    let vx = move_x - x,
+      vy = move_y - y;
+    const magnitude = Math.sqrt(vx ** 2 + vy ** 2),
+      toTravel = SHIP_SPEED * ellapsed;
+
+    if (magnitude < toTravel) {
+      x = move_x;
+      y = move_y;
+    } else {
+      x += vx / magnitude * toTravel;
+      y += vy / magnitude * toTravel;
     }
-    if (y !== originalY) {
-      if (y - Math.floor(shipHeight / 2) < 0) {
-        y = Math.floor(shipHeight / 2);
-      } else if (y + Math.floor(shipHeight / 2) > CANVAS_HEIGHT) {
-        y = CANVAS_HEIGHT - Math.floor(shipHeight / 2);
-      }
+    if (x - Math.floor(shipWidth / 2) < 0) {
+      x = Math.floor(shipWidth / 2);
+    } else if (x + Math.floor(shipWidth / 2) > CANVAS_WIDTH) {
+      x = CANVAS_WIDTH - Math.floor(shipWidth / 2);
     }
-    if (x !== originalX || y !== originalY) {
-      shipHitBox = [
-        x,
-        y,
-        shipWidth,
-        shipHeight,
-        shipMask
-      ];
+    if (y - Math.floor(shipHeight / 2) < 0) {
+      y = Math.floor(shipHeight / 2);
+    } else if (y + Math.floor(shipHeight / 2) > CANVAS_HEIGHT) {
+      y = CANVAS_HEIGHT - Math.floor(shipHeight / 2);
     }
+    shipHitBox = [
+      x,
+      y,
+      shipWidth,
+      shipHeight,
+      shipMask
+    ];
   }
 
   // Reset canvas
