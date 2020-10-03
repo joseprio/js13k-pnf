@@ -188,7 +188,9 @@ let click_x = -1,
   move_x = -1,
   move_y = -1,
   x,
-  y;
+  y,
+  keysPressed = {},
+  any_key_pressed = false;
 
 let a = document.getElementById("a");
 const faction = generateFaction("piBbgDn4CZqlkqiF");
@@ -380,6 +382,8 @@ function render(now) {
       gameRender(now);
       break;
   }
+  // Any key press detection should have been consumed now
+  any_key_pressed = false;
 }
 
 function newGame() {
@@ -476,12 +480,12 @@ function introRender(now) {
     }
     ctx.font = "20px Helvetica";
     ctx.fillText(
-      "<Press anywhere to play>",
+      "<Press anywhere or any key to play>",
       HALF_CANVAS_WIDTH,
       CANVAS_HEIGHT - 30
     );
 
-    if (pointer_down) {
+    if (pointer_down || any_key_pressed) {
       if (!introInhibitPress) {
         // Start game
         newGame();
@@ -1209,24 +1213,49 @@ function gameRender(now) {
   if (ellapsed > 160) {
     // First frame or detecting a pause
     initialTime += ellapsed;
+    // We don't want the controls to get stuck
+    keysPressed = [];
     return;
   }
 
   if (!shipDestroyed) {
-    const originalX = x,
-      originalY = y;
-    // Move ship
-    let vx = move_x - x,
-      vy = move_y - y;
-    const magnitude = Math.sqrt(vx ** 2 + vy ** 2),
-      toTravel = SHIP_SPEED * ellapsed;
+    // Check pressed keys
+    const toTravel = SHIP_SPEED * ellapsed,
+      keyUp = keysPressed['ArrowUp'] || keysPressed['KeyW'],
+      keyDown = keysPressed['ArrowDown'] || keysPressed['KeyS'],
+      keyLeft = keysPressed['ArrowLeft'] || keysPressed['KeyA'],
+      keyRight = keysPressed['ArrowRight'] || keysPressed['KeyD'];
 
-    if (magnitude < toTravel) {
-      x = move_x;
-      y = move_y;
+    if (keyUp || keyDown || keyLeft || keyRight) {
+      const distance = (keyUp || keyDown) && (keyLeft || keyRight) ? Math.sqrt((toTravel ** 2) / 2) : toTravel;
+      if (keyUp) {
+        y -= distance;
+      }
+      if (keyDown) {
+        y += distance;
+      }
+      if (keyLeft) {
+        x -= distance;
+      }
+      if (keyRight) {
+        x += distance;
+      }
+      // We don't want to move to the pointer position unless it's updated
+      move_x = x;
+      move_y = y;
     } else {
-      x += vx / magnitude * toTravel;
-      y += vy / magnitude * toTravel;
+      // Move ship with pointer
+      let vx = move_x - x,
+        vy = move_y - y;
+      const magnitude = Math.sqrt(vx ** 2 + vy ** 2);
+
+      if (magnitude < toTravel) {
+        x = move_x;
+        y = move_y;
+      } else {
+        x += vx / magnitude * toTravel;
+        y += vy / magnitude * toTravel;
+      }
     }
     if (x - Math.floor(shipWidth / 2) < 0) {
       x = Math.floor(shipWidth / 2);
@@ -1547,4 +1576,15 @@ self.ontouchend = self.onpointerup = (e) => {
   if (e.changedTouches) {
     onclick();
   }
+};
+
+onkeydown = (e) => {
+  any_key_pressed = true;
+  keysPressed[e.code] = 1;
+  e.preventDefault();
+};
+
+onkeyup = (e) => {
+  keysPressed[e.code] = 0;
+  e.preventDefault();
 };
