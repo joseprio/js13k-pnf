@@ -2,10 +2,9 @@
   "name": "js13k-pnf",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --mode development",
     "build": "rollup -c",
     "postbuild": "node postbuild.js",
-    "rollupwatch": "rollup -c -w"
+    "start": "rollup -c -w"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",
@@ -14,18 +13,14 @@
     "css-loader": "^1.0.0",
     "ect-bin": "1.1.0",
     "html-minifier-terser": "5.1.1",
-    "html-webpack-inline-source-plugin": "0.0.10",
-    "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.4.1",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
     "rollup": "^2.28.2",
     "rollup-plugin-html2": "2.0.0",
+    "rollup-plugin-serve": "1.0.4",
     "rollup-plugin-terser": "^7.0.2",
     "style-loader": "^0.22.1",
-    "web-resource-inliner": "5.0.0",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "web-resource-inliner": "5.0.0"
   },
   "dependencies": {
     "starshipwright": "joseprio/starshipwright#master"

@@ -2,6 +2,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
 import html2 from 'rollup-plugin-html2';
+import serve from 'rollup-plugin-serve';
 
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
@@ -20,6 +21,12 @@ export default {
         }),
         resolve(), // tells Rollup how to find date-fns in node_modules
         commonjs(), // converts date-fns to ES modules
-        production && terser() // minify, but only in production
+        production && terser(), // minify, but only in production
+        !production && serve({
+            open: true,
+            contentBase: 'dist',
+            host: 'localhost',
+            port: 8080,
+        })
     ]
 };
