@@ -179,9 +179,7 @@ const STARS_WIDTH = 540;
 let pointer_down = false;
 let introInhibitPress = false;
 
-let click_x = -1,
-  click_y = -1,
-  down_x = -1,
+let down_x = -1,
   down_y = -1,
   up_x = -1,
   up_y = -1,
@@ -241,7 +239,7 @@ let score;
 let scoreText;
 let state = STATE_LOADING;
 
-const highscores = JSON.parse(localStorage["pnf_highscores"] || "false") || [];
+const highscores = JSON.parse(self.localStorage["pnf_highscores"] || "false") || [];
 let highlightHighscore = -1;
 const newTag = generateNewTag();
 
@@ -271,7 +269,7 @@ function updateHighscores() {
     // Only keep the top 5
     highscores.length = Math.min(highscores.length, 5);
     highlightHighscore = highscores.indexOf(newScore);
-    localStorage["pnf_highscores"] = JSON.stringify(highscores);
+    self.localStorage["pnf_highscores"] = JSON.stringify(highscores);
   }
 }
 
@@ -1505,7 +1503,7 @@ function gameRender(now) {
 const canvas_ratio = CANVAS_WIDTH / CANVAS_HEIGHT;
 let screen_ratio = innerWidth / innerHeight;
 
-onload = (e) => {
+self.onload = (e) => {
   a.width = CANVAS_WIDTH;
   a.height = CANVAS_HEIGHT;
   let c = a.getContext("2d");
@@ -1545,12 +1543,6 @@ let update_mouse = (e) => {
   ];
 };
 
-/* Click */
-onclick = (e) => {
-  e.preventDefault();
-  [click_x, click_y] = update_mouse(e);
-};
-
 /* Down */
 self.ontouchstart = self.onpointerdown = (e) => {
   e.preventDefault();
@@ -1571,20 +1563,15 @@ self.ontouchend = self.onpointerup = (e) => {
   e.preventDefault();
   pointer_down = false;
   [up_x, up_y] = update_mouse(e);
-
-  /* Add click on mobile */
-  if (e.changedTouches) {
-    onclick();
-  }
 };
 
-onkeydown = (e) => {
+self.onkeydown = (e) => {
   any_key_pressed = true;
   keysPressed[e.code] = 1;
   e.preventDefault();
 };
 
-onkeyup = (e) => {
+self.onkeyup = (e) => {
   keysPressed[e.code] = 0;
   e.preventDefault();
 };

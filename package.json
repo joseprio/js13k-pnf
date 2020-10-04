@@ -3,10 +3,12 @@
   "private": true,
   "scripts": {
     "build": "rollup -c",
+    "build:closure": "rollup -c --environment CLOSURE_COMPILER",
     "postbuild": "node postbuild.js",
     "start": "rollup -c -w"
   },
   "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "0.26.0",
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "archiver": "^2.1.1",
