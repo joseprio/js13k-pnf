@@ -8,7 +8,7 @@ Shoot'em up game! 12 different enemies and 3 powerups (Fast fire, Shield and Bom
 
 ## Instructions
 
-Move the mouse cursor or drag your finger to where you want to move the ship.
+Move the mouse cursor or drag your finger to where you want to move the ship, or use the arrow keys.
 
 ## I want to play
 

@@ -29,10 +29,6 @@ function createSplitPoints(width, height, targetSize, noise) {
   return result;
 }
 
-function euclideanDistance(diffX, diffY) {
-  return Math.sqrt(diffX * diffX + diffY * diffY);
-}
-
 export function createSprites(targetCanvas) {
   const splitPoints = createSplitPoints(
     targetCanvas.width,
@@ -47,16 +43,13 @@ export function createSprites(targetCanvas) {
   const width = targetCanvas.width,
     height = targetCanvas.height;
   const imageData = targetCtx.getImageData(0, 0, width, height);
-  const sprites = [];
-  splitPoints.forEach(() => {
-    sprites.push({
-      minX: -1,
-      minY: -1,
-      maxX: -1,
-      maxY: -1,
-      points: [],
-    });
-  });
+  const sprites = splitPoints.map(() => ({
+    minX: -1,
+    minY: -1,
+    maxX: -1,
+    maxY: -1,
+    points: [],
+  }));
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const pos = (y * width + x) * 4;
@@ -64,13 +57,13 @@ export function createSprites(targetCanvas) {
         // Transparent pixel, nothing to do
         continue;
       }
-      let minDistance = euclideanDistance(
+      let minDistance = Math.hypot(
         splitPoints[0][0] - x,
         splitPoints[0][1] - y
       );
       let minIndex = 0;
       for (let i = 1; i < splitPoints.length; i++) {
-        const distance = euclideanDistance(
+        const distance = Math.hypot(
           splitPoints[i][0] - x,
           splitPoints[i][1] - y
         );

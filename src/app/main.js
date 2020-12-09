@@ -199,15 +199,10 @@ trimCanvas(ship);
 const destroyedShipSprites = createSprites(ship);
 const shipWidth = ship.width;
 const shipHeight = ship.height;
-const shipMask = ship.getContext('2d').getImageData(0, 0, shipWidth, shipHeight).data;
+const shipMask = ship.getContext("2d").getImageData(0, 0, shipWidth, shipHeight)
+  .data;
 
-let shipHitBox = [
-  x,
-  y,
-  shipWidth,
-  shipHeight,
-  shipMask,
-];
+let shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
 let shipDestroyed;
 let gameOverTime;
 let fastFire;
@@ -224,7 +219,10 @@ const enemyBlueprints = [];
 
 const [bullet, bulletMask] = generateBullet();
 const enemyBulletFrames = generateEnemyBullet();
-const enemyBulletMask = enemyBulletFrames[0].getContext('2d').getImageData(0, 0, enemyBulletFrames[0].width, enemyBulletFrames[0].height).data;
+const enemyBulletMask = enemyBulletFrames[0]
+  .getContext("2d")
+  .getImageData(0, 0, enemyBulletFrames[0].width, enemyBulletFrames[0].height)
+  .data;
 
 const [powerupCanvas, powerupMask] = generatePowerupCanvas();
 
@@ -239,7 +237,8 @@ let score;
 let scoreText;
 let state = STATE_LOADING;
 
-const highscores = JSON.parse(self.localStorage["pnf_highscores"] || "false") || [];
+const highscores =
+  JSON.parse(self.localStorage["pnf_highscores"] || "false") || [];
 let highlightHighscore = -1;
 const newTag = generateNewTag();
 
@@ -286,7 +285,9 @@ function generateBoss() {
   trimCanvas(bossShip);
   bossHit = hitEffect(bossShip);
   destroyedBossSprites = createSprites(bossShip);
-  bossMask = bossShip.getContext('2d').getImageData(0, 0, bossShip.width, bossShip.height).data;
+  bossMask = bossShip
+    .getContext("2d")
+    .getImageData(0, 0, bossShip.width, bossShip.height).data;
 }
 
 function generateEnemy(faction, seed, size, ...more) {
@@ -299,7 +300,9 @@ function generateEnemy(faction, seed, size, ...more) {
 function generateEnemyAssets(enemyBlueprint) {
   const enemyShip = enemyBlueprint[0];
   trimCanvas(enemyShip);
-  const mask = enemyShip.getContext('2d').getImageData(0, 0, enemyShip.width, enemyShip.height).data;
+  const mask = enemyShip
+    .getContext("2d")
+    .getImageData(0, 0, enemyShip.width, enemyShip.height).data;
   const hitEnemyShip = hitEffect(enemyShip);
   const destroyedEnemyShipSprites = createSprites(enemyShip);
   enemyBlueprint[1] = mask;
@@ -420,14 +423,14 @@ function introRender(now) {
   let ellapsed = (now - initialTime) / 3000;
 
   ctx.save();
-  for (let j = 800; j--;) {
-    let r = 200 / (4 - ((ellapsed + j / 13) % 4));
-    ctx.globalAlpha = Math.min(r / 400, 1);
+  for (let j = 200; j--; ) {
+    let r = 50 / (6 - ((ellapsed + j / 13) % 6));
+    ctx.globalAlpha = Math.min(r / 100, 1);
     ctx.beginPath();
     ctx.arc(
       Math.cos(j) * r + HALF_CANVAS_WIDTH,
       Math.sin(j * j) * r + HALF_CANVAS_HEIGHT,
-      r / 800,
+      r / 200,
       0,
       7
     );
@@ -521,12 +524,19 @@ function collide(o1, o2) {
   const ys = o1[1] - o1[3] / 2 < o2[1] - o2[3] / 2 ? [o1, o2] : [o2, o1];
 
   // Do bounding boxes collide
-  if (xs[0][0] + xs[0][2] / 2 > xs[1][0] - xs[1][2] / 2 && ys[0][1] + ys[0][3] / 2 > ys[1][1] - ys[1][3] / 2) {
+  if (
+    xs[0][0] + xs[0][2] / 2 > xs[1][0] - xs[1][2] / 2 &&
+    ys[0][1] + ys[0][3] / 2 > ys[1][1] - ys[1][3] / 2
+  ) {
     // Create the collision bounding box
     const cBoundingX = Math.floor(xs[1][0] - xs[1][2] / 2);
     const cBoundingY = Math.floor(ys[1][1] - ys[1][3] / 2);
-    const cBoundingWidth = Math.floor(Math.min(xs[0][0] + xs[0][2] / 2, xs[1][0] + xs[1][2] / 2)) - cBoundingX;
-    const cBoundingHeight = Math.floor(Math.min(ys[0][1] + ys[0][3] / 2, ys[1][1] + ys[1][3] / 2)) - cBoundingY;
+    const cBoundingWidth =
+      Math.floor(Math.min(xs[0][0] + xs[0][2] / 2, xs[1][0] + xs[1][2] / 2)) -
+      cBoundingX;
+    const cBoundingHeight =
+      Math.floor(Math.min(ys[0][1] + ys[0][3] / 2, ys[1][1] + ys[1][3] / 2)) -
+      cBoundingY;
 
     const o1StartX = cBoundingX - Math.floor(o1[0] - o1[2] / 2);
     const o1StartY = cBoundingY - Math.floor(o1[1] - o1[3] / 2);
@@ -534,8 +544,10 @@ function collide(o1, o2) {
     const o2StartY = cBoundingY - Math.floor(o2[1] - o2[3] / 2);
     for (let c = 0; c < cBoundingHeight; c++) {
       for (let d = 0; d < cBoundingWidth; d++) {
-        if (o1[4][((o1StartY + c) * o1[2] + o1StartX + d) * 4 + 3] > 0 &&
-          o2[4][((o2StartY + c) * o2[2] + o2StartX + d) * 4 + 3] > 0) {
+        if (
+          o1[4][((o1StartY + c) * o1[2] + o1StartX + d) * 4 + 3] > 0 &&
+          o2[4][((o2StartY + c) * o2[2] + o2StartX + d) * 4 + 3] > 0
+        ) {
           //Found common filled pixel!!
           return true;
         }
@@ -647,13 +659,7 @@ class Bullet {
   run(hitables, ctx, time) {
     this.y -= (BULLET_SPEED * (time - this.lastTime)) / 32;
 
-    const hitBox = [
-      this.x,
-      this.y,
-      bullet.width,
-      bullet.height,
-      bulletMask,
-    ];
+    const hitBox = [this.x, this.y, bullet.width, bullet.height, bulletMask];
     // Check collision with hitables
     for (let c = 0; c < hitables.length; c++) {
       const hitable = hitables[c];
@@ -786,13 +792,7 @@ class EnemyBullet {
   }
 
   updateHitBox() {
-    this.hitBox = [
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      enemyBulletMask
-    ];
+    this.hitBox = [this.x, this.y, this.width, this.height, enemyBulletMask];
   }
 }
 
@@ -877,13 +877,13 @@ class Enemy {
       const returnEntities =
         this.deathBullets > 0
           ? fireBullets(
-            this.deathBullets,
-            this.x,
-            this.y + Math.round(17 * this.speed),
-            this.fireAngle,
-            0.45,
-            time
-          )
+              this.deathBullets,
+              this.x,
+              this.y + Math.round(17 * this.speed),
+              this.fireAngle,
+              0.45,
+              time
+            )
           : [];
 
       return returnEntities.concat(
@@ -963,13 +963,7 @@ class Enemy {
   }
 
   updateHitBox() {
-    this.hitBox = [
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      this.mask,
-    ];
+    this.hitBox = [this.x, this.y, this.width, this.height, this.mask];
   }
 
   hit(power, now) {
@@ -1174,13 +1168,7 @@ class Boss {
   }
 
   updateHitBox() {
-    this.hitBox = [
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      bossMask,
-    ];
+    this.hitBox = [this.x, this.y, this.width, this.height, bossMask];
   }
 
   hit(power, now) {
@@ -1219,13 +1207,16 @@ function gameRender(now) {
   if (!shipDestroyed) {
     // Check pressed keys
     const toTravel = SHIP_SPEED * ellapsed,
-      keyUp = keysPressed['ArrowUp'] || keysPressed['KeyW'],
-      keyDown = keysPressed['ArrowDown'] || keysPressed['KeyS'],
-      keyLeft = keysPressed['ArrowLeft'] || keysPressed['KeyA'],
-      keyRight = keysPressed['ArrowRight'] || keysPressed['KeyD'];
+      keyUp = keysPressed["ArrowUp"] || keysPressed["KeyW"],
+      keyDown = keysPressed["ArrowDown"] || keysPressed["KeyS"],
+      keyLeft = keysPressed["ArrowLeft"] || keysPressed["KeyA"],
+      keyRight = keysPressed["ArrowRight"] || keysPressed["KeyD"];
 
     if (keyUp || keyDown || keyLeft || keyRight) {
-      const distance = (keyUp || keyDown) && (keyLeft || keyRight) ? Math.sqrt((toTravel ** 2) / 2) : toTravel;
+      const distance =
+        (keyUp || keyDown) && (keyLeft || keyRight)
+          ? Math.sqrt(toTravel ** 2 / 2)
+          : toTravel;
       if (keyUp) {
         y -= distance;
       }
@@ -1245,14 +1236,14 @@ function gameRender(now) {
       // Move ship with pointer
       let vx = move_x - x,
         vy = move_y - y;
-      const magnitude = Math.sqrt(vx ** 2 + vy ** 2);
+      const distance = Math.sqrt(vx ** 2 + vy ** 2);
 
-      if (magnitude < toTravel) {
+      if (distance < toTravel) {
         x = move_x;
         y = move_y;
       } else {
-        x += vx / magnitude * toTravel;
-        y += vy / magnitude * toTravel;
+        x += (vx / distance) * toTravel;
+        y += (vy / distance) * toTravel;
       }
     }
     if (x - Math.floor(shipWidth / 2) < 0) {
@@ -1265,13 +1256,7 @@ function gameRender(now) {
     } else if (y + Math.floor(shipHeight / 2) > CANVAS_HEIGHT) {
       y = CANVAS_HEIGHT - Math.floor(shipHeight / 2);
     }
-    shipHitBox = [
-      x,
-      y,
-      shipWidth,
-      shipHeight,
-      shipMask
-    ];
+    shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
   }
 
   // Reset canvas
@@ -1287,22 +1272,19 @@ function gameRender(now) {
     let i = 100;
     i--;
     ctx.beginPath(),
-    ctx.arc(
-      Math.floor(
-        ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
-        (100 * (CANVAS_WIDTH - shipWidth))
-      ) +
-      ((102797 *
-        Math.floor(STARS_WIDTH / 2) *
-        (1 + Math.sin(s * STARS_WIDTH))) %
-        STARS_WIDTH),
-      (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
-      CANVAS_HEIGHT,
-      s * 2,
-      0,
-      7
-    ),
-    ctx.fill()
+      ctx.arc(
+        Math.floor(
+          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
+            (100 * (CANVAS_WIDTH - shipWidth))
+        ) +
+          ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
+        (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
+          CANVAS_HEIGHT,
+        s * 2,
+        0,
+        7
+      ),
+      ctx.fill()
   )
     s = 149 / (i * 3 + 199);
 
@@ -1522,13 +1504,13 @@ let update_mouse = (e) => {
     // Wider
     offsetTop = 0;
     offsetHeight = a.offsetHeight;
-    offsetWidth = offsetHeight * CANVAS_WIDTH / CANVAS_HEIGHT;
+    offsetWidth = (offsetHeight * CANVAS_WIDTH) / CANVAS_HEIGHT;
     offsetLeft = Math.floor(a.offsetWidth - offsetWidth) / 2;
   } else {
     // Narrower
     offsetLeft = 0;
     offsetWidth = a.offsetWidth;
-    offsetHeight = offsetWidth * CANVAS_HEIGHT / CANVAS_WIDTH;
+    offsetHeight = (offsetWidth * CANVAS_HEIGHT) / CANVAS_WIDTH;
     offsetTop = Math.floor(a.offsetHeight - offsetHeight) / 2;
   }
   let pointer = {};
