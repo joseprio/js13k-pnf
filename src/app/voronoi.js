@@ -113,9 +113,7 @@ export function createSprites(targetCanvas) {
       shardCanvas.width = shardWidth;
       shardCanvas.height = shardHeight;
       const shardCtx = shardCanvas.getContext("2d");
-      const imgData = shardCtx.getImageData(
-        0,
-        0,
+      const imgData = shardCtx.createImageData(
         shardCanvas.width,
         shardCanvas.height
       );

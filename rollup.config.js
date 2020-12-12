@@ -46,7 +46,7 @@ export default {
       serve({
         open: true,
         contentBase: "dist",
-        host: "192.168.1.220",
+        host: "localhost",
         port: 8080,
       }),
   ],
