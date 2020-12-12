@@ -33,9 +33,6 @@ export default {
           unsafe: true,
           pure_getters: true,
         },
-        mangle: {
-          properties: true,
-        },
       }),
     production &&
       useClosureCompiler &&

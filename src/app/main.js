@@ -188,7 +188,7 @@ let down_x = -1,
   x,
   y,
   keysPressed = {},
-  any_key_pressed = false;
+  anyKeyPressed = false;
 
 let a = document.getElementById("a");
 const faction = generateFaction("piBbgDn4CZqlkqiF");
@@ -384,7 +384,7 @@ function render(now) {
       break;
   }
   // Any key press detection should have been consumed now
-  any_key_pressed = false;
+  anyKeyPressed = false;
 }
 
 function newGame() {
@@ -486,7 +486,7 @@ function introRender(now) {
       CANVAS_HEIGHT - 30
     );
 
-    if (pointer_down || any_key_pressed) {
+    if (pointer_down || anyKeyPressed) {
       if (!introInhibitPress) {
         // Start game
         newGame();
@@ -1200,7 +1200,7 @@ function gameRender(now) {
     // First frame or detecting a pause
     initialTime += ellapsed;
     // We don't want the controls to get stuck
-    keysPressed = [];
+    keysPressed = {};
     return;
   }
 
@@ -1548,7 +1548,7 @@ self.ontouchend = self.onpointerup = (e) => {
 };
 
 self.onkeydown = (e) => {
-  any_key_pressed = true;
+  anyKeyPressed = true;
   keysPressed[e.code] = 1;
   e.preventDefault();
 };
