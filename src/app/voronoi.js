@@ -1,5 +1,3 @@
-import { trimCanvas } from "./utils";
-
 const MAX_ANGLE = 360;
 
 function createSplitPoints(width, height, targetSize, noise) {
@@ -43,11 +41,13 @@ export function createSprites(targetCanvas) {
   const width = targetCanvas.width,
     height = targetCanvas.height;
   const imageData = targetCtx.getImageData(0, 0, width, height);
-  const sprites = splitPoints.map(() => ({
-    minX: -1,
-    minY: -1,
-    maxX: -1,
-    maxY: -1,
+  // Assigning extreme values so we know they'll be overriden
+  const sprites = splitPoints.map((p) => ({
+    minX: 1e9,
+    minY: 1e9,
+    maxX: 0,
+    maxY: 0,
+    center: p,
     points: [],
   }));
   for (let y = 0; y < height; y++) {
@@ -57,12 +57,10 @@ export function createSprites(targetCanvas) {
         // Transparent pixel, nothing to do
         continue;
       }
-      let minDistance = Math.hypot(
-        splitPoints[0][0] - x,
-        splitPoints[0][1] - y
-      );
-      let minIndex = 0;
-      for (let i = 1; i < splitPoints.length; i++) {
+      // With the size of the images we are working, 1,000,000,000 behaves the same as infinity
+      let minDistance = 1e9;
+      let minIndex;
+      for (let i = 0; i < splitPoints.length; i++) {
         const distance = Math.hypot(
           splitPoints[i][0] - x,
           splitPoints[i][1] - y
@@ -74,25 +72,19 @@ export function createSprites(targetCanvas) {
       }
 
       const targetSprite = sprites[minIndex];
-      if (targetSprite.minX < 0) {
+      if (x < targetSprite.minX) {
         targetSprite.minX = x;
-        targetSprite.minY = y;
-        targetSprite.maxX = x;
-        targetSprite.maxY = y;
-      } else {
-        if (x < targetSprite.minX) {
-          targetSprite.minX = x;
-        }
-        if (x > targetSprite.maxX) {
-          targetSprite.maxX = x;
-        }
-        if (y < targetSprite.minY) {
-          targetSprite.minY = y;
-        }
-        if (y > targetSprite.maxY) {
-          targetSprite.maxY = y;
-        }
       }
+      if (x > targetSprite.maxX) {
+        targetSprite.maxX = x;
+      }
+      if (y < targetSprite.minY) {
+        targetSprite.minY = y;
+      }
+      if (y > targetSprite.maxY) {
+        targetSprite.maxY = y;
+      }
+
       targetSprite.points.push([
         x,
         y,
@@ -104,19 +96,15 @@ export function createSprites(targetCanvas) {
     }
   }
   const result = [];
-  for (let i = 0; i < sprites.length; i++) {
-    const sprite = sprites[i];
-    if (sprite.minX > -1) {
+  sprites.forEach((sprite) => {
+    if (sprite.minX < 1e9) {
       const shardWidth = sprite.maxX - sprite.minX + 1;
       const shardHeight = sprite.maxY - sprite.minY + 1;
       const shardCanvas = document.createElement("canvas");
       shardCanvas.width = shardWidth;
       shardCanvas.height = shardHeight;
       const shardCtx = shardCanvas.getContext("2d");
-      const imgData = shardCtx.createImageData(
-        shardCanvas.width,
-        shardCanvas.height
-      );
+      const imgData = shardCtx.createImageData(shardWidth, shardHeight);
       sprite.points.forEach((point) => {
         const pos =
           4 *
@@ -127,19 +115,17 @@ export function createSprites(targetCanvas) {
         imgData.data[pos + 3] = point[5];
       });
       shardCtx.putImageData(imgData, 0, 0);
-      const resultShard = {
-        center: splitPoints[i],
+      result.push({
+        center: sprite.center,
         canvas: shardCanvas,
         corner: [sprite.minX, sprite.minY],
-      };
-      result.push(resultShard);
+      });
     }
-  }
+  });
   return result;
 }
 
 export function calculateSpriteFinalState(sprite, width, height) {
-  const radius = Math.round((width + height) / 2);
   const radiusFactor = 1.5 + 1.5 * Math.random();
   const cx = sprite.center[0] - width / 2;
   const cy = sprite.center[1] - height / 2;

@@ -33,6 +33,7 @@ export default {
           unsafe: true,
           pure_getters: true,
         },
+        // This is dangerous, and just brings a 200 byte benefit
         mangle: {
           properties: {
             keep_quoted: true,

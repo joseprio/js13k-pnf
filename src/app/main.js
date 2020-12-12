@@ -8,7 +8,6 @@ function hitEffect(canvas) {
   destCanvas.width = width;
   destCanvas.height = height;
   const ctx = canvas.getContext("2d");
-  const destCtx = destCanvas.getContext("2d");
   const imageData = ctx.getImageData(0, 0, width, height);
   const { data } = imageData;
   const { length } = data;
@@ -20,7 +19,7 @@ function hitEffect(canvas) {
     data[i + 1] = 255 - (0.349 * r + 0.686 * g + 0.168 * b);
     data[i + 2] = 255 - (0.272 * r + 0.534 * g + 0.131 * b);
   }
-  destCtx.putImageData(imageData, 0, 0);
+  destCanvas.getContext("2d").putImageData(imageData, 0, 0);
   return destCanvas;
 }
 
@@ -237,8 +236,7 @@ let score;
 let scoreText;
 let state = STATE_LOADING;
 
-const highscores =
-  JSON.parse(self.localStorage["pnf_highscores"] || "false") || [];
+const highscores = JSON.parse(self.localStorage["pnf_highscores"] || 0) || [];
 let highlightHighscore = -1;
 const newTag = generateNewTag();
 
@@ -980,8 +978,8 @@ const DIRECTION_LEFT = 1;
 
 class Boss {
   constructor(level, time) {
-    this.state = BOSS_WAITING;
-    this.nextState = time + 2000;
+    this.phase = BOSS_WAITING;
+    this.nextPhase = time + 2000;
     // We want to be basically immortal until we start the fight
     this.health = Number.MAX_SAFE_INTEGER;
     this.lastTime = time;
@@ -1003,17 +1001,17 @@ class Boss {
       isDead = true;
     } else {
       const ellapsed = time - this.lastTime;
-      if (this.state === BOSS_WAITING) {
-        if (time > this.nextState) {
-          this.state = BOSS_COMING;
+      if (this.phase === BOSS_WAITING) {
+        if (time > this.nextPhase) {
+          this.phase = BOSS_COMING;
         }
-      } else if (this.state === BOSS_COMING) {
+      } else if (this.phase === BOSS_COMING) {
         this.y += ellapsed * 0.15;
         if (this.y > 150) {
           this.y = 150;
           // Give it normal health
           this.health = 100 + 250 * this.level;
-          this.state = BOSS_FIGHT;
+          this.phase = BOSS_FIGHT;
           this.nextBullet = time;
           this.bulletCount = 0;
         }
@@ -1091,7 +1089,7 @@ class Boss {
     }
     ctx.restore();
 
-    if (!shipDestroyed && this.state === BOSS_FIGHT) {
+    if (!shipDestroyed && this.phase === BOSS_FIGHT) {
       // Fire bullets if needed
       if (this.nextBullet < time) {
         const bullets = [];
