@@ -1,4 +1,8 @@
-import { generateShip, generateFaction, Randomizer } from "starshipwright";
+import {
+  generateShip,
+  generateFactionRandomizer,
+  Randomizer,
+} from "starshipwright";
 import { createSprites, calculateSpriteFinalState } from "./voronoi";
 import { trimCanvas, createFavicon } from "./utils";
 
@@ -178,11 +182,7 @@ const STARS_WIDTH = 540;
 let pointer_down = false;
 let introInhibitPress = false;
 
-let down_x = -1,
-  down_y = -1,
-  up_x = -1,
-  up_y = -1,
-  move_x = -1,
+let move_x = -1,
   move_y = -1,
   x,
   y,
@@ -190,7 +190,7 @@ let down_x = -1,
   anyKeyPressed = false;
 
 let a = document.getElementById("a");
-const faction = generateFaction("piBbgDn4CZqlkqiF");
+const faction = generateFactionRandomizer("piBbgDn4CZqlkqiF");
 const ship = generateShip(faction, "ie7jMyCFouoUjkVs", 60).cf;
 
 trimCanvas(ship);
@@ -277,8 +277,11 @@ let destroyedBossSprites;
 
 function generateBoss() {
   bossShip = flipCanvas(
-    generateShip(generateFaction("HYj7ADLjQr6icLtO"), "CdiB9N2ZoQWuAxur", 270)
-      .cf
+    generateShip(
+      generateFactionRandomizer("HYj7ADLjQr6icLtO"),
+      "CdiB9N2ZoQWuAxur",
+      270
+    ).cf
   );
   trimCanvas(bossShip);
   bossHit = hitEffect(bossShip);
@@ -290,7 +293,7 @@ function generateBoss() {
 
 function generateEnemy(faction, seed, size, ...more) {
   const enemyShip = flipCanvas(
-    generateShip(generateFaction(faction), seed, size).cf
+    generateShip(generateFactionRandomizer(faction), seed, size).cf
   );
   return [enemyShip, undefined, undefined, undefined, ...more];
 }
@@ -1480,23 +1483,10 @@ function gameRender(now) {
   }
 }
 
-const canvas_ratio = CANVAS_WIDTH / CANVAS_HEIGHT;
-let screen_ratio = innerWidth / innerHeight;
-
-self.onload = (e) => {
-  a.width = CANVAS_WIDTH;
-  a.height = CANVAS_HEIGHT;
-  let c = a.getContext("2d");
-  function renderWrapper(now) {
-    render(now);
-    requestAnimationFrame(renderWrapper);
-  }
-  requestAnimationFrame(renderWrapper);
-};
-
 /* Compute mouse / touch coordinates on the canvas */
 
-let update_mouse = (e) => {
+function handleMouseEvent(e) {
+  e.preventDefault();
   let offsetLeft, offsetTop, offsetWidth, offsetHeight;
   if (a.offsetWidth / a.offsetHeight > CANVAS_WIDTH / CANVAS_HEIGHT) {
     // Wider
@@ -1517,32 +1507,27 @@ let update_mouse = (e) => {
   } else {
     pointer = e;
   }
-  return [
-    Math.floor(((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth),
-    Math.floor(((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight),
-  ];
-};
+  move_x = Math.floor(
+    ((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth
+  );
+  move_y = Math.floor(
+    ((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight
+  );
+}
 
 /* Down */
 self.ontouchstart = self.onpointerdown = (e) => {
-  e.preventDefault();
   pointer_down = true;
-  [down_x, down_y] = update_mouse(e);
-  move_x = down_x;
-  move_y = down_y;
+  handleMouseEvent(e);
 };
 
 /* Move */
-self.ontouchmove = self.onpointermove = (e) => {
-  e.preventDefault();
-  [move_x, move_y] = update_mouse(e);
-};
+self.ontouchmove = self.onpointermove = handleMouseEvent;
 
 /* Up */
 self.ontouchend = self.onpointerup = (e) => {
   e.preventDefault();
   pointer_down = false;
-  [up_x, up_y] = update_mouse(e);
 };
 
 self.onkeydown = (e) => {
@@ -1555,3 +1540,13 @@ self.onkeyup = (e) => {
   keysPressed[e.code] = 0;
   e.preventDefault();
 };
+
+// Let's run the game
+a.width = CANVAS_WIDTH;
+a.height = CANVAS_HEIGHT;
+let c = a.getContext("2d");
+function renderWrapper(now) {
+  render(now);
+  requestAnimationFrame(renderWrapper);
+}
+requestAnimationFrame(renderWrapper);
