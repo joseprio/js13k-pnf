@@ -191,7 +191,7 @@ let move_x = -1,
 
 let a = document.getElementById("a");
 const faction = generateFactionRandomizer("piBbgDn4CZqlkqiF");
-const ship = generateShip(faction, "ie7jMyCFouoUjkVs", 60).cf;
+const ship = generateShip(faction, "ie7jMyCFouoUjkVs", 60);
 
 trimCanvas(ship);
 
@@ -281,7 +281,7 @@ function generateBoss() {
       generateFactionRandomizer("HYj7ADLjQr6icLtO"),
       "CdiB9N2ZoQWuAxur",
       270
-    ).cf
+    )
   );
   trimCanvas(bossShip);
   bossHit = hitEffect(bossShip);
@@ -293,7 +293,7 @@ function generateBoss() {
 
 function generateEnemy(faction, seed, size, ...more) {
   const enemyShip = flipCanvas(
-    generateShip(generateFactionRandomizer(faction), seed, size).cf
+    generateShip(generateFactionRandomizer(faction), seed, size)
   );
   return [enemyShip, undefined, undefined, undefined, ...more];
 }
