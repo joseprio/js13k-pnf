@@ -129,17 +129,17 @@ export function calculateSpriteFinalState(sprite, width, height) {
   const radiusFactor = 1.5 + 1.5 * Math.random();
   const cx = sprite.center[0] - width / 2;
   const cy = sprite.center[1] - height / 2;
-  const distance = Math.sqrt(cx * cx + cy * cy);
+  const distance = Math.hypot(cx, cy);
   const distanceSquare = distance * distance;
   const finalDistance = distance * radiusFactor;
 
   sprite.translateX =
     (finalDistance - distance) *
-    Math.sqrt((distanceSquare - cy * cy) / distanceSquare) *
+    ((distanceSquare - cy * cy) / distanceSquare) ** 0.5 *
     (cx > 0 ? 1 : -1);
   sprite.translateY =
     (finalDistance - distance) *
-    Math.sqrt((distanceSquare - cx * cx) / distanceSquare) *
+    ((distanceSquare - cx * cx) / distanceSquare) ** 0.5 *
     (cy > 0 ? 1 : -1);
   sprite.angle =
     ((Math.random() * MAX_ANGLE * 2 - MAX_ANGLE) /

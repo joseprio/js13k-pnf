@@ -1,1 +1,2958 @@
-!function(){"use strict";class t{constructor(t){this.t=0,this.h=0,this.i={},this.seed=t,this.seed.length<8&&(this.seed="padding_"+this.seed),this.seed.length%2==0&&(this.seed="1"+this.seed),this.o=[2972948403,3086140710,2071788248,3026137486,1411764137,2265725585,2923087685,1593177610],this.M=3234042090;for(let t=this.seed.length-1;t>=0;t--){const s=this.seed.charCodeAt(t);this.M=((this.M<<5)+this.M^s^this.M<<s%13+1^this.M>>s%17+1)>>>0,this.o[t%8]^=((this.M>>9)*(this.M%16384+3427)^s)>>>0}}u(){const t=this.seed.charCodeAt(this.t),s=this.o[this.h];return this.M=((this.M<<5)+this.M+s^t^this.M<<t%17+1^this.M>>t%13+1)>>>0,this.o[this.h]=(s>>3^s<<t%19+1^this.M%134217728*3427)>>>0,this.t=(this.t+1)%this.seed.length,this.h=(this.h+1)%8,this.M}l(t){const s=[1160605769,1424711319,876532818,1419174464];let h=1206170165;if(null==t&&(t="?/?/?/",h=3379896793),this.i.hasOwnProperty(t))return this.i[t];for(let i=t.length-1;i>=0;i--){const n=t.charCodeAt(i);let e=s[0]^n;e=(e^e<<11)>>>0,e=(e^e>>8)>>>0,s[0]=s[1],s[1]=s[2],s[2]=s[3],s[3]=(s[3]^s[3]>>19^e)>>>0,h=3427*(h^n<<24)^s[3]}for(let t=this.seed.length-1;t>=0;t--){const i=this.seed.charCodeAt(t);let n=s[0]^i;n=(n^n<<11)>>>0,n=(n^n>>8)>>>0,s[0]=s[1],s[1]=s[2],s[2]=s[3],s[3]=(s[3]^s[3]>>19^n)>>>0,h=3427*(h^i<<24)^s[3]}return this.i[t]=h>>>0,this.i[t]}m(t,s){return(4294967296*this.u()+this.u())/0x10000000000000000*(s-t)+t}p(t,s){return Math.floor(this.m(t,s+1))}v(t){return this.m(0,1)<t}g(t,s,h){return(4294967296*this.l(h)+this.l(h+"@"))/0x10000000000000000*(s-t)+t}k(t,s,h){return Math.floor(this.g(t,s+1,h))}H(t,s){return this.g(0,1,s)<t}O(t){return this.v(t)?-1:1}q(t,s){let h=0;for(;this.v(t)&&h<s;)h++;return h}B(t,s,h){let i=0;for(;(4294967296*this.l(h+i)+this.l(h+"@"+i))/0x10000000000000000<t&&i<s;)i++;return i}S(t){let s=0;for(let h=0;h<t.length;h++)s+=t[h];let h=this.m(0,s);for(let s=0;s<t.length;s++)if(h-=t[s],h<0)return s;return 0}D(t,s){let h=0;for(let s=0;s<t.length;s++)h+=t[s];let i=this.g(0,h,s);for(let s=0;s<t.length;s++)if(i-=t[s],i<0)return s;return 0}}function s(t,s,h){return Math.max(s,Math.min(h,t))}function h(t){return Math.floor(255*s(t,0,1)).toString(16).padStart(2,"0")}function i(t){return"#"+h(t[0])+h(t[1])+h(t[2])}function n(t,s){return i([t[0]*s,t[1]*s,t[2]*s])}function e(t){const s=t[1]*t[2],h=t[2]-s,i=(t[0]%1+1)%1*6,n=Math.floor(i),e=s*(1-Math.abs(i%2-1));switch(n){case 0:return[s+h,e+h,h];case 1:return[e+h,s+h,h];case 2:return[h,s+h,e+h];case 3:return[h,e+h,s+h];case 4:return[e+h,h,s+h];default:return[s+h,h,e+h]}}function o(s){return new t(s)}function c(h,o,c){return function(h,o,c){const a=function(t){const s=[];return s[0]=.8*t.m(.001,1)*2**t.m(0,8),s[1]=.9*t.m(.01,1)*2**t.m(0,8),s[2]=1*t.m(.001,1)*2**t.m(0,8),s[3]=3*t.m(0,1)*2**t.m(0,8),s[4]=.5*t.m(0,1)*2**t.m(0,8),s[5]=.05*t.m(0,1)*2**t.m(0,8),s[6]=.5*t.m(0,1)*2**t.m(0,8),s}(h),[r,f]=function(t){const h=[],i=[],n=1+(t.H(.7,"base color +1")?1:0)+t.B(.3,3,"base color count");for(let o=0;o<n;o++){const n="base color"+o;h.push(e([t.g(0,1,n+"hue")**2,s(t.g(-.2,1,n+"saturation"),0,t.g(0,1,n+"saturation bound")**4),s(t.g(.7,1.1,n+"value"),0,1)])),i.push(2**t.g(0,6,n+"chances"))}return[h,i]}(h),M=new t(h.seed+o);function u(){let t=r[M.S(f)];return M.v(h.g(0,.5,"base color shift chance")**2)&&(t=[t[0],t[1],t[2]],t[0]=s(t[0]+h.g(0,.6,"base color shift range red")**2*s(M.m(-1,1.2),0,1)*s(M.O(.7)+M.O(.7),-1,1),0,1),t[1]=s(t[1]+h.g(0,.6,"base color shift range green")**2*s(M.m(-1,1.2),0,1)*s(M.O(.7)+M.O(.7),-1,1),0,1),t[2]=s(t[2]+h.g(0,.6,"base color shift range blue")**2*s(M.m(-1,1.2),0,1)*s(M.O(.7)+M.O(.7),-1,1),0,1)),t}c=null==c?M.m(h.g(2.5,3.5,"size min"),h.g(5,7,"size max"))**3:c;const l=M.m(h.g(.5,1,"wratio min"),h.g(1,1.3,"wratio max")),m=M.m(h.g(.7,1,"hratio min"),h.g(1.1,1.7,"hratio max")),d=Math.floor(c*l)+0,b=Math.floor(d/2),p=Math.floor((d-0)/6),v=.5*(d-6*p),w=Math.floor(c*m)+0,g=Math.floor(w/2),x=Math.floor((w-0)/6),y=.5*(w-6*x),k=document.createElement("canvas");k.width=d,k.height=w;const H=k.getContext("2d");[function(){const t=(d-0)*(w-0)*.05,i=Math.ceil((d-0)*h.g(.1,1,"outline0 iw")*.2),n=[[[b-i,0],[b+i,w-0]]],e=2+Math.floor(M.m(.5,1)*h.g(2,8,"outline0 bc")*Math.sqrt(c));for(let i=1;i<e;i++){const i=n[M.p(0,n.length-1)],e=[i[0][0]+M.m(0,1)*(i[1][0]-i[0][0]),i[0][1]+M.m(0,1)*(i[1][1]-i[0][1])];e[1]<.5*(i[0][1]+i[1][1])&&M.v(h.g(.5,1.5,"outline0 frontbias"))&&(e[1]=i[1][1]-(e[1]-i[0][1]));const o=[s(M.m(0,1)*d,0,d-0),s(M.m(0,1)*w,0,w-0)],c=t/Math.abs((o[0]-e[0])*(o[1]-e[1]));if(c<1&&(o[0]=e[0]+(o[0]-e[0])*c,o[1]=e[1]+(o[1]-e[1])*c),e[0]>o[0]){const t=e[0];e[0]=o[0],o[0]=t}if(e[1]>o[1]){const t=e[1];e[1]=o[1],o[1]=t}n.push([[Math.floor(e[0]),Math.floor(e[1])],[Math.ceil(o[0]),Math.ceil(o[1])]])}H.fillStyle="#fff";for(let t=0;t<n.length;t++){const s=n[t];H.fillRect(s[0][0],s[0][1],s[1][0]-s[0][0],s[1][1]-s[0][1]),H.fillRect(d-s[1][0],s[0][1],s[1][0]-s[0][0],s[1][1]-s[0][1])}},function(){const t=Math.max(2,Math.sqrt((d-0)*(w-0)*.05/Math.PI)),s=Math.ceil((d-0)*h.g(.1,1,"outline1 iw")*.2),i=[],n=Math.floor((w-0)/(2*s));for(let t=0;t<n;t++)i.push({N:[b,w-(0+s*(2*t+1))],r:s});const e=n+Math.floor(M.m(.5,1)*h.g(10,50,"outline1 cc")*Math.sqrt(c));for(let s=n;s<e;s++){const s=i[Math.max(M.p(0,i.length-1),M.p(0,i.length-1))];let n=M.m(1,t);const e=M.m(Math.max(0,s.r-n),s.r);let o=M.m(0,2*Math.PI);o>Math.PI&&M.v(h.g(.5,1.5,"outline1 frontbias"))&&(o=M.m(0,Math.PI));let c=[s.N[0]+Math.cos(o)*e,s.N[1]+Math.sin(o)*e];n=Math.min(n,c[0]-0,d-0-c[0],c[1]-0,w-0-c[1]),i.push({N:c,r:n})}H.fillStyle="#fff";for(let t=0;t<i.length;t++){const s=i[t];H.beginPath(),H.arc(s.N[0],s.N[1],s.r,0,2*Math.PI),H.fill(),H.beginPath(),H.arc(d-s.N[0],s.N[1],s.r,0,2*Math.PI),H.fill()}},function(){const t=[d-0,w-0],s=[[b,M.m(0,.05)*t[1]+0],[b,M.m(.95,1)*t[1]+0]],i=6/c+h.g(.03,.1,"outline2 basefatness"),n=Math.max(3,Math.ceil(1/i*M.m(.05,.1)*Math.sqrt(c)));H.lineCap=["round","square"][h.k(0,1,"outline2 linecap")],H.strokeStyle="#fff";for(let e=1;e<n;e++){let n=s[e];null==n&&(n=[M.m(0,1)*t[0]+0,M.m(0,1)**h.g(.1,1,"outline2 frontbias")*t[1]+0],s.push(n));const o=1+M.q(h.g(0,1,"outline2 conadjust"),3);for(let t=0;t<o;t++){const t=s[M.p(0,s.length-2)];H.lineWidth=M.m(.7,1)*i*c,H.beginPath(),H.moveTo(t[0],t[1]),H.lineTo(n[0],n[1]),H.stroke(),H.beginPath(),H.moveTo(d-t[0],t[1]),H.lineTo(d-n[0],n[1]),H.stroke()}}}][h.D([1,1,1],"outline type")]();const O=H.getImageData(0,0,d,w);function q(t,s){return t<0||t>d||s<0||s>w?-1:O.data[4*(s*d+t)+3]}const B=[];for(let t=0;t<p;t++){B[t]=[];for(let s=0;s<x;s++)B[t][s]={I:t,K:s,x:Math.floor(v+6*(t+.5)),y:Math.floor(y+6*(s+.5)),A:0}}const S=[B[Math.floor(p/2)][Math.floor(x/2)]];let D=0;for(;D<S.length;){const t=S[D];if(t.I>0){const s=B[t.I-1][t.K];0==s.A&&(q(s.x,s.y)>0?(s.A=1,S.push(s)):s.A=-1)}if(t.I<p-1){const s=B[t.I+1][t.K];0==s.A&&(q(s.x,s.y)>0?(s.A=1,S.push(s)):s.A=-1)}if(t.K>0){const s=B[t.I][t.K-1];0==s.A&&(q(s.x,s.y)>0?(s.A=1,S.push(s)):s.A=-1)}if(t.K<x-1){const s=B[t.I][t.K+1];0==s.A&&(q(s.x,s.y)>0?(s.A=1,S.push(s)):s.A=-1)}D++}for(let t=0;t<S.length;t++){const s=S[t],h=B[p-1-s.I][s.K];1!=h.A&&(h.A=1,S.push(h))}const N=h.k(1,2,"base component passes"),I=Math.max(1,Math.floor(S.length*h.g(0,1/N,"extra component amount"))),K=N*S.length+I,A=document.createElement("canvas");A.width=d,A.height=w;const Q=A.getContext("2d");function j(t,s){const h=Math.floor((t-v)/6),i=Math.floor((s-y)/6);return h<0||h>=p||i<0||i>=x?0:B[h][i].A}function C(t){return 1-t[1]/w}function F(t,s){let h=Math.min(1,1-Math.abs(t[0]-b)/b);return s&&(h=Math.min(h,1-Math.abs(t[1]-g)/g)),h}function G(t){return F(t,!0)*(1-1/((d+w)/1e3+1))*h.g(0,1,"master bigness")**.5*(1-X/K)}function U(t,s){return[Math.min(t[0]-0,d-0-s[0]),Math.min(t[1]-0,w-0-s[1])]}function L(t,h,i){const n=Q.createLinearGradient(h[0],h[1],2*t[0]-h[0],2*t[1]-h[1]),e=`rgba(0,0,0,${s(i,0,1)})`;return n.addColorStop(0,e),n.addColorStop(.5,"rgba(0,0,0,0)"),n.addColorStop(1,e),n}const Y=[function(t){let i=8;const e=G(t)**.3;if(M.v(h.g(0,.9,"com0 bigchance")*e)){const s=h.g(0,.5,"com0 bigincchance");for(;M.v(s*e);){const s=U([t[0]-i,t[1]-i],[t[0]+i,t[1]+i]);if(!(Math.min(s[0],s[1])>.5*i))break;i*=1.5}}const o=2*i,c=[Math.ceil(M.m(1,Math.max(2,.5*i))),Math.ceil(M.m(1,Math.max(2,.5*i)))],a=Math.min(c[0],c[1])*M.m(.1,1.2),r=[c[0]+2*a,c[1]+2*a],f=[Math.ceil(o/r[0]),Math.ceil(o/r[1])],l=[Math.round(f[0]*r[0]/2),Math.round(f[1]*r[1]/2)],m=u(),d=n(m,M.m(.4,1)),b=n(m,M.m(.4,1));Q.fillStyle="rgba(0,0,0,"+M.m(0,.25)+")",Q.fillRect(t[0]-l[0]-1,t[1]-l[1]-1,r[0]*f[0]+2,r[1]*f[1]+2),Q.fillStyle=b,Q.fillRect(t[0]-l[0],t[1]-l[1],r[0]*f[0],r[1]*f[1]),Q.fillStyle=d;for(let s=0;s<f[0];s++){const h=t[0]+a+s*r[0]-l[0];for(let s=0;s<f[1];s++)Q.fillRect(h,t[1]+a+s*r[1]-l[1],c[0],c[1])}M.v(s(i/8*(.6*X/K+.3),0,.98))&&(Q.fillStyle=L(t,[t[0]+l[0],t[1]],M.m(0,.9)),Q.fillRect(t[0]-l[0],t[1]-l[1],r[0]*f[0],r[1]*f[1]))},function(t){let i=8;const e=G(t)**.2;if(M.v(h.g(.3,1,"com1 bigchance")*e)){const s=h.g(0,.6,"com1 bigincchance");for(;M.v(s*e);){const s=U([t[0]-i,t[1]-i],[t[0]+i,t[1]+i]);if(!(Math.min(s[0],s[1])>i/2))break;i*=1.5}}let o=Math.ceil(M.m(.8,2)*i);const c=Math.ceil(M.m(.8,2)*i),a=M.p(3,Math.max(4,o)),r=Math.max(1,Math.round(o/a));o=r*a;const f=n(u(),M.m(.5,1)),l=M.m(.3,.9);if(M.v(s(h.g(-.2,1.2,"com1 hchance"),0,1))){const s=[t[0]-Math.floor(o/2),t[1]-Math.floor(c/2)];Q.fillStyle="rgba(0,0,0,"+M.m(0,.25)+")",Q.fillRect(s[0]-1,s[1]-1,o+2,c+2),Q.fillStyle=f,Q.fillRect(s[0],s[1],o,c);for(let h=0;h<r;h++)Q.fillStyle=L([s[0]+(h+.5)*a,t[1]],[s[0]+h*a,t[1]],l),Q.fillRect(s[0]+h*a,s[1],a,c)}else{const s=[t[0]-Math.floor(c/2),t[1]-Math.floor(o/2)];Q.fillStyle="rgba(0,0,0,"+M.m(0,.25)+")",Q.fillRect(s[0]-1,s[1]-1,c+2,o+2),Q.fillStyle=f,Q.fillRect(s[0],s[1],c,o);for(let h=0;h<r;h++)Q.fillStyle=L([t[0],s[1]+(h+.5)*a],[t[0],s[1]+h*a],l),Q.fillRect(s[0],s[1]+h*a,o,a)}},function(t){let i=8;const e=G(t)**.05;if(M.v(h.g(0,1,"com2 bigchance")*e)){const s=h.g(0,.9,"com2 bigincchance");for(;M.v(s*e);){const s=U([t[0]-i,t[1]-i],[t[0]+i,t[1]+i]);if(!(Math.min(s[0],s[1])>.5*i))break;i*=1.5}}const o=Math.ceil(M.m(.6,1.4)*i),c=Math.ceil(M.m(1,2)*i),a=[Math.ceil(s(o*M.m(.7,1)/2,1,o)),Math.ceil(s(o*M.m(.8,1)/2,1,o))],r=[Math.floor(s(o*M.m(.05,.25),1,c)),Math.floor(s(o*M.m(.1,.3),1,c))],f=r[0]+r[1],l=M.v(h.g(0,1,"com2 oddchance")**.5),m=s(Math.floor(c/f),1,c),d=m*f+(l?r[0]:0),b=u(),p=M.m(.6,1),v=M.m(.6,1),w=[n(b,p),n(b,v)],g=1-M.m(.5,.95),x=[n(b,g*p),n(b,g*v)];if(M.v(h.g(0,1,"com2 verticalchance")**.1)){const s=Q.createLinearGradient(t[0]-a[0],t[1],t[0]+a[0],t[1]),h=Q.createLinearGradient(t[0]-a[1],t[1],t[0]+a[1],t[1]);s.addColorStop(0,x[0]),s.addColorStop(.5,w[0]),s.addColorStop(1,x[0]),h.addColorStop(0,x[1]),h.addColorStop(.5,w[1]),h.addColorStop(1,x[1]);const i=Math.floor(t[1]-d/2);for(let n=0;n<m;n++)Q.fillStyle=s,Q.fillRect(t[0]-a[0],i+n*f,2*a[0],r[0]),Q.fillStyle=h,Q.fillRect(t[0]-a[1],i+n*f+r[0],2*a[1],r[1]);l&&(Q.fillStyle=s,Q.fillRect(t[0]-a[0],i+m*f,2*a[0],r[0]))}else{const s=Q.createLinearGradient(t[0],t[1]-a[0],t[0],t[1]+a[0]),h=Q.createLinearGradient(t[0],t[1]-a[1],t[0],t[1]+a[1]);s.addColorStop(0,x[0]),s.addColorStop(.5,w[0]),s.addColorStop(1,x[0]),h.addColorStop(0,x[1]),h.addColorStop(.5,w[1]),h.addColorStop(1,x[1]);const i=Math.floor(t[0]-d/2);for(let n=0;n<m;n++)Q.fillStyle=s,Q.fillRect(i+n*f,t[1]-a[0],r[0],2*a[0]),Q.fillStyle=h,Q.fillRect(i+n*f+r[0],t[1]-a[1],r[1],2*a[1]);l&&(Q.fillStyle=s,Q.fillRect(i+m*f,t[1]-a[0],r[0],2*a[0]))}},function(t){if(M.v(C(t)-.3)||j(t[0],t[1]+6*1.2)>0||j(t[0],t[1]+10.8)>0)for(let s=0;s<100;s++){const s=M.S(a);if(3!=s)return void Y[s](t)}let s=8;const e=G(t)**.1;if(M.v(h.g(.6,1,"com3 bigchance")*e)){const i=h.g(.3,.8,"com3 bigincchance");for(;M.v(i*e);){const h=U([t[0]-s,t[1]-s],[t[0]+s,t[1]+s]);if(!(Math.min(h[0],h[1])>.5*s))break;s*=1.5}}const o=M.m(1,2)*s;let c=Math.ceil(M.m(.3,1)*s);const u=o*M.m(.25,.6),l=(o+u)/2/2,m=[Math.max(1,Math.ceil(c*M.m(.08,.25))),Math.max(1,Math.ceil(c*M.m(.03,.15)))],d=m[0]+m[1],b=Math.ceil(c/d);c=b*d+m[0];const p=r[h.D(f,"com3 basecolor")],v=h.g(.5,.8,"com3 lightness0 mid"),w=v-h.g(.2,.4,"com3 lightness0 edge"),g=h.g(0,.2,"com3 lightness1 edge"),x=[Q.createLinearGradient(t[0]-l,t[1],t[0]+l,t[1]),Q.createLinearGradient(t[0]-l,t[1],t[0]+l,t[1])];x[0].addColorStop(0,n(p,w)),x[0].addColorStop(.5,n(p,v)),x[0].addColorStop(1,n(p,w)),x[1].addColorStop(0,n(p,g)),x[1].addColorStop(.5,i(p)),x[1].addColorStop(1,n(p,g));const y=Math.ceil(t[1]-c/2);Q.fillStyle=x[0],Q.beginPath(),Q.moveTo(t[0]-u/2,y),Q.lineTo(t[0]+u/2,y),Q.lineTo(t[0]+o/2,y+c),Q.lineTo(t[0]-o/2,y+c),Q.fill(),Q.fillStyle=x[1];const k=[y+m[0],y+d];for(let s=0;s<b;s++){const h=[s*d+m[0],(s+1)*d],i=[k[0]+s*d,k[1]+s*d],n=[(u+h[0]/c*(o-u))/2,(u+h[1]/c*(o-u))/2];Q.beginPath(),Q.moveTo(t[0]-n[0],i[0]),Q.lineTo(t[0]+n[0],i[0]),Q.lineTo(t[0]+n[1],i[1]),Q.lineTo(t[0]-n[1],i[1]),Q.fill()}},function(t){const s=F(t,!1),i=M.m(.7,1),e=M.m(0,.2),o=u(),a=n(o,i),r=n(o,e),f=Math.max(3,Math.ceil(c*M.m(.4,1)**2*h.g(.02,.1,"com4 maxwidth"))),l=Math.floor(f/2),m=f%2,d=1*h.g(0,1,"com4 directionc0")**4,p=.1*h.g(0,1,"com4 directionc1")**4,v=.2*h.g(0,1,"com4 directionc2")**4,g=M.S([d*(2-s),p,v*(1+s)]);let x=null;if(g){if(1==g){const s=Math.min(Math.max(8,w-(0+t[1])-M.p(0,16)),Math.floor(.6*c*M.m(0,1)**h.g(2,7,"com4 hpower1"))),i=t[0]-l,n=t[1],e=Q.createLinearGradient(i,n,t[0]+l+m,n);e.addColorStop(0,r),e.addColorStop(.5,a),e.addColorStop(1,r),Q.fillStyle=e,Q.fillRect(i,n,f,s),x=[t[0],t[1]+s]}else if(2==g){const s=Q.createLinearGradient(t[0],t[1]-l,t[0],t[1]+l+m);s.addColorStop(0,r),s.addColorStop(.5,a),s.addColorStop(1,r),Q.fillStyle=s,Q.fillRect(t[0],t[1]-l,Math.ceil(b-t[0])+1,f),x=[b,t[1]]}}else{const s=Math.min(Math.max(8,t[1]-0-M.p(0,16)),Math.floor(.7*c*M.m(0,1)**h.g(2,6,"com4 hpower0"))),i=t[0]-l,n=t[1]-s,e=Q.createLinearGradient(i,n,t[0]+l+m,n);e.addColorStop(0,r),e.addColorStop(.5,a),e.addColorStop(1,r),Q.fillStyle=e,Q.fillRect(i,n,f,s),x=[t[0],t[1]-s]}const y=[.6*h.g(0,1,"com4 covercomc0")**2,.2*h.g(0,1,"com4 covercomc1")**2,h.g(0,1,"com4 covercomc2")**2];if(Y[M.S(y)](t),j(x[0],x[1])>0){const t=[x[0]+Math.round(6*M.m(-1,1)),x[1]+Math.round(6*M.m(-1,1))];j(t[0],t[1])>0?Y[M.S(y)](t):Y[M.S(y)](x)}},function(t){let s=8;const i=G(t)**.1;if(M.v(h.g(0,.9,"com5 bigchance")*i)){const n=h.g(0,.8,"com5 bigincchance");for(;M.v(n*i);){const h=U([t[0]-s,t[1]-s],[t[0]+s,t[1]+s]);if(!(Math.min(h[0],h[1])>.5*s))break;s*=1.5}}const e=M.m(.75,1),o=M.m(0,.25),c=u(),a=n(c,e),r=n(c,o),f=1+M.q(h.g(0,1,"com5 multxc"),Math.floor(1.2*(s/8)**.6)),l=1+M.q(h.g(0,1,"com5 multyc"),Math.floor(1.2*(s/8)**.6)),m=M.m(.5,1)*s/Math.max(f,l),d=m+.5,b=m+1,p=.2*m,v=[t[0]-m*f,t[1]-m*l];Q.fillStyle="rgba(0,0,0,"+M.m(0,.2)+")";for(let t=0;t<f;t++){const s=v[0]+(2*t+1)*m;for(let t=0;t<l;t++){const h=v[1]+(2*t+1)*m;Q.beginPath(),Q.arc(s,h,b,0,2*Math.PI),Q.fill()}}for(let t=0;t<f;t++){const s=v[0]+(2*t+1)*m;for(let t=0;t<l;t++){const h=v[1]+(2*t+1)*m,i=Q.createRadialGradient(s,h,p,s,h,d);i.addColorStop(0,a),i.addColorStop(1,r),Q.fillStyle=i,Q.beginPath(),Q.arc(s,h,d,0,2*Math.PI),Q.fill()}}},function(t){if(P<=0||M.v(C(t)))return void Y[M.S(a.slice(0,6))](t);let s=8;const i=G(t)**.05;if(M.v(h.g(0,.9,"com6 bigchance")*i)){const n=h.g(0,.8,"com6 bigincchance");for(;M.v(n*i);){const h=U([t[0]-s,t[1]-s],[t[0]+s,t[1]+s]);if(!(Math.min(h[0],h[1])>.5*s))break;s*=1.5}}const e=Math.ceil(2*s*M.m(.6,1)),o=Math.floor(e/2),c=e%2,r=e*M.m(h.g(0,.8,"com6 h1min")**.5,.9)**h.g(.5,1.5,"com6 h1power"),f=Math.floor(r/2),l=e%2,m=Math.max(0-(e-r)/2,e*(M.m(0,.45)+M.m(0,.45))*(h.H(.8,"com6 backnesstype")?h.g(.2,.9,"com6 backness#pos"):h.g(-.2,-.05,"com6 backness#neg"))),d=Math.ceil(s*M.m(.7,1)*h.g(.1,3.5,"com6 width")**.5),b=Math.floor(d/2),p=d%2,v=[[t[0]-b,t[1]+m-f],[t[0]+b+p,t[1]-o],[t[0]+b+p,t[1]+o+c],[t[0]-b,t[1]+m+f+l]],w=u();Q.fillStyle="rgba(0,0,0,"+M.m(0,.2)+")",Q.beginPath(),Q.moveTo(v[0][0]-1,v[0][1]),Q.lineTo(v[1][0]-1,v[1][1]),Q.lineTo(v[2][0]-1,v[2][1]),Q.lineTo(v[3][0]-1,v[3][1]),Q.fill(),Q.fillStyle=n(w,M.m(.7,1)),Q.beginPath(),Q.moveTo(v[0][0],v[0][1]),Q.lineTo(v[1][0],v[1][1]),Q.lineTo(v[2][0],v[2][1]),Q.lineTo(v[3][0],v[3][1]),Q.fill()}];let z=0,P=0,T=0,X=0;for(;;){let t;if(P<N)T<S.length?(t=S[T],T++):(P++,t=S[0],T=1);else{if(!(z<I))break;t=S[M.p(0,S.length-1)],z++}let s=[t.x,t.y];for(let h=0;h<10;h++){const h=[t.x+M.p(-6,6),t.y+M.p(-6,6)];if(!(h[0]<0||h[0]>d-0||h[1]<0||h[1]>w-0||q(h[0],h[1])<=0)){s=h;break}}Math.abs(s[0]-b)<6&&M.v(h.g(0,1,"com middleness"))&&(s[0]=b),Y[M.S(a)](s),X++}return Q.clearRect(b+d%2,0,d,w),Q.scale(-1,1),Q.drawImage(A,0-d,0),A}(h,o,c)}function a(t){const s=function(t,s,h,i){const n=Math.floor(t/h),e=Math.floor(s/h),o=[],c=Math.floor(s/(2*e));for(let h=0;h<e;h++){const i=h%2==0?n:n-1,a=Math.floor(h%2==0?t/(2*n):t/n);for(let r=0;r<i;r++)o.push([a+Math.round((r+1*(Math.random()-.5))*t/n),c+Math.round((h+1*(Math.random()-.5))*s/e)])}return o}(t.width,t.height,Math.max(12,Math.floor(Math.min(t.width,t.height)/12))),h=t.getContext("2d"),i=t.width,n=t.height,e=h.getImageData(0,0,i,n),o=s.map(t=>({j:1e9,C:1e9,F:0,G:0,U:t,points:[]}));for(let t=0;t<n;t++)for(let h=0;h<i;h++){const n=4*(t*i+h);if(0===e.data[n+3])continue;let c,a=1e9;for(let i=0;i<s.length;i++){const n=Math.hypot(s[i][0]-h,s[i][1]-t);n<a&&(a=n,c=i)}const r=o[c];h<r.j&&(r.j=h),h>r.F&&(r.F=h),t<r.C&&(r.C=t),t>r.G&&(r.G=t),r.points.push([h,t,e.data[n],e.data[n+1],e.data[n+2],e.data[n+3]])}const c=[];return o.forEach(t=>{if(t.j<1e9){const s=t.F-t.j+1,h=t.G-t.C+1,i=document.createElement("canvas");i.width=s,i.height=h;const n=i.getContext("2d"),e=n.createImageData(s,h);t.points.forEach(h=>{const i=4*((h[1]-t.C)*s+(h[0]-t.j));e.data[i]=h[2],e.data[i+1]=h[3],e.data[i+2]=h[4],e.data[i+3]=h[5]}),n.putImageData(e,0,0),c.push({U:t.U,canvas:i,L:[t.j,t.C]})}}),c}function r(t,s,h){const i=1.5+1.5*Math.random(),n=t.U[0]-s/2,e=t.U[1]-h/2,o=Math.sqrt(n*n+e*e),c=o*o,a=o*i;t.Y=(a-o)*Math.sqrt((c-e*e)/c)*(n>0?1:-1),t.P=(a-o)*Math.sqrt((c-n*n)/c)*(e>0?1:-1),t.angle=(720*Math.random()-360)/((Math.random()+2)*t.canvas.width)*10*(Math.PI/180)}function f(t){const s=t.getContext("2d");let h=t.width,i=t.height;const n=s.getImageData(0,0,h,i),e=function(t,s,h){for(let i=0;i<h;i++)for(let h=0;h<s;h++)if(t.data[4*(i*s+h)+3]>0)return i;return-1}(n,h,i),o=function(t,s,h){for(let i=h-1;i>=0;i--)for(let h=0;h<s;h++)if(t.data[4*(i*s+h)+3]>0)return i;return-1}(n,h,i),c=function(t,s,h){for(let i=0;i<s;i++)for(let n=0;n<h;n++)if(t.data[4*(n*s+i)+3]>0)return i;return-1}(n,h,i),a=function(t,s,h){for(let i=s-1;i>=0;i--)for(let n=0;n<h;n++)if(t.data[4*(n*s+i)+3]>0)return i;return-1}(n,h,i);if(e<0)return t.width=0,t.height=0,[0,0];h=1+a-c,i=1+o-e;const r=s.getImageData(c,e,h,i);return t.width=h,t.height=i,s.putImageData(r,0,0),[c,e]}function M(t){const s=document.createElement("canvas"),{width:h,height:i}=t;s.width=h,s.height=i;const n=t.getContext("2d").getImageData(0,0,h,i),{data:e}=n,{length:o}=e;for(let t=0;t<o;t+=4){const s=e[t+0],h=e[t+1],i=e[t+2];e[t+0]=255-(.393*s+.769*h+.189*i),e[t+1]=255-(.349*s+.686*h+.168*i),e[t+2]=255-(.272*s+.534*h+.131*i)}return s.getContext("2d").putImageData(n,0,0),s}function u(t){const s=document.createElement("canvas");s.width=Math.floor(2*N),s.height=Math.floor(2*I);const h=s.getContext("2d"),i=s.width/2-15,n=s.height/2-30;h.setTransform(1.5,0,0,I/N*1.5,0,0);const e=h.createRadialGradient(i,n,10,i,n,30-3*t);return e.addColorStop(0,"transparent"),e.addColorStop(.7,"blue"),e.addColorStop(1,"cyan"),h.fillStyle=e,h.beginPath(),h.arc(i,n,N/2,0,7),h.fill(),f(s),s}function l(t){const s=document.createElement("canvas");s.width=20,s.height=20;const h=s.getContext("2d");var i=h.createRadialGradient(10,10,0,10,10,10);return i.addColorStop(t,"yellow"),i.addColorStop(1,"red"),h.fillStyle=i,h.beginPath(),h.arc(10,10,10,0,7),h.fill(),s}function m(t){const s=document.createElement("canvas");s.width=t.width,s.height=t.height;const h=s.getContext("2d");return h.scale(1,-1),h.drawImage(t,0,0,t.width,-t.height),s}const d=480,b=700,p=240,v=350;let w,g,x=!1,y=!1,k=-1,H=-1,O={},q=!1,B=document.getElementById("a");const S=c(o("piBbgDn4CZqlkqiF"),"ie7jMyCFouoUjkVs",60);f(S);const D=a(S),N=S.width,I=S.height,K=S.getContext("2d").getImageData(0,0,N,I).data;let A,Q,j,C,F,G=[w,g,N,I,K];!function(t){const s=document.createElement("canvas");s.width=32,s.height=32;const h=s.getContext("2d");let i,n;t.width>t.height?(i=32,n=32*t.height/t.width):(n=32,i=32*t.width/t.height),h.drawImage(t,0,0,i,n);const e=document.createElement("link");e.setAttribute("rel","icon"),e.setAttribute("href",s.toDataURL()),document.head.appendChild(e)}(S);const U=function(){const t=[];for(let s=0;s<5;s++)t.push(u(s));return t}(),L=[],[Y,z]=function(){const t=document.createElement("canvas");t.width=20,t.height=60;const s=t.getContext("2d");return s.fillStyle="yellow",s.beginPath(),s.moveTo(10,60),s.lineTo(20,10),s.arc(10,10,10,0,Math.PI,!0),s.lineTo(10,60),s.fill(),s.strokeStyle="cyan",s.shadowColor="blue",s.globalCompositeOperation="source-atop",s.shadowBlur=4,s.lineWidth=10,s.beginPath(),s.moveTo(10,70),s.lineTo(23,10),s.arc(10,10,13,0,Math.PI,!0),s.lineTo(10,70),s.stroke(),[t,s.getImageData(0,0,t.width,t.height).data]}(),P=function(){const t=[];for(let s=0;s<9;s++)t.push(l(s/10));for(let s=t.length-2;s>=1;s--)t.push(t[s]);return t}(),T=P[0].getContext("2d").getImageData(0,0,P[0].width,P[0].height).data,[X,Z]=function(){const t=document.createElement("canvas");t.width=60,t.height=60;const s=t.getContext("2d");var h=s.createRadialGradient(30,30,0,30,30,30);return h.addColorStop(.6,"navy"),h.addColorStop(1,"blue"),s.fillStyle=h,s.beginPath(),s.arc(30,30,30,0,7),s.fill(),[t,s.getImageData(0,0,t.width,t.height).data]}();let E,J,V,W=performance.now(),R=0;const $=JSON.parse(self.localStorage.pnf_highscores||0)||[];let _=-1;const tt=function(){const t=document.createElement("canvas");t.width=100,t.height=100;const s=t.getContext("2d");s.font="bold 20px Helvetica",s.translate(50,50),s.rotate(-Math.PI/2),s.fillStyle="red",s.fillStyle="#fff",s.textAlign="center",s.textBaseline="middle",s.fillText("NEW!",0,0),f(t);const h=document.createElement("canvas");h.width=t.width+10,h.height=t.height+10;const i=h.getContext("2d");return i.fillStyle="red",i.fillRect(0,0,h.width,h.height),i.drawImage(t,5,5),h}();function st(t){J+=t,V=(new Intl.NumberFormat).format(J)}function ht(){const t=Math.max(400,1e3-25*E);kt+=xt.p(t,t+400)}let it,nt,et,ot;function ct(t){const s=t[0];f(s);const h=s.getContext("2d").getImageData(0,0,s.width,s.height).data,i=M(s),n=a(s);t[1]=h,t[2]=i,t[3]=n}const at=[["c4pf4K5xHzu4CyZM","Wl9w64KNQvFNbbbU",50,10,.35,0,[]],["VTjHVRDIYTbXk766","a3QM5c7MnbQlWns3",80,30,.27,0,[]],["1fOXvyryYCvwBWPL","I4xttvPYWxB1So2A",230,80,.2,6,[]],["VsM4qdcBSiuCPDGJ","q4D72OvJMb23kSZC",60,20,.4,0,[]],["l4pyu8yF0mt84Q4u","jPU5GcKNpf2JMgoG",100,40,.35,0,[[v]]],["NMp3mtsPHIwzMKYk","dBzvSKo7wpema3S5",220,90,.22,9,[]],["o67yOby6izpasGgo","fyKKupDEId96qQHu",70,20,.5,0,[[v]]],["IU7xqL8UqZIXJQDQ","aVBO8buAfBbQ4DOY",100,40,.35,0,[[v,6]]],["LP6kUeGMn7S5xZzi","p5O7jAQK67mDULTD",230,100,.25,14,[]],["SsSvCKpjLVTGITYH","aOEjI2Owpqpl06ex",65,30,.5,0,[[v]]],["AGUwhB1E94wgKe49","pwUtokX7oS7ZKFK1",110,50,.35,6,[[v,6]]],["qRF6GA3xnzX0lMcH","RIdNudvB6T2ro7C3",240,120,.3,22,[]]];function rt(t,s){const h=t[0]-t[2]/2<s[0]-s[2]/2?[t,s]:[s,t],i=t[1]-t[3]/2<s[1]-s[3]/2?[t,s]:[s,t];if(h[0][0]+h[0][2]/2>h[1][0]-h[1][2]/2&&i[0][1]+i[0][3]/2>i[1][1]-i[1][3]/2){const n=Math.floor(h[1][0]-h[1][2]/2),e=Math.floor(i[1][1]-i[1][3]/2),o=Math.floor(Math.min(h[0][0]+h[0][2]/2,h[1][0]+h[1][2]/2))-n,c=Math.floor(Math.min(i[0][1]+i[0][3]/2,i[1][1]+i[1][3]/2))-e,a=n-Math.floor(t[0]-t[2]/2),r=e-Math.floor(t[1]-t[3]/2),f=n-Math.floor(s[0]-s[2]/2),M=e-Math.floor(s[1]-s[3]/2);for(let h=0;h<c;h++)for(let i=0;i<o;i++)if(t[4][4*((r+h)*t[2]+a+i)+3]>0&&s[4][4*((M+h)*s[2]+f+i)+3]>0)return!0}return!1}const ft=[["F","orange",t=>{j=t+6500}],["S","cyan",()=>{F++}],["B","red",t=>{C=t+1e3,kt+=1500}]];class Mt{constructor(t,s,h,i){this.x=t,this.y=s,this.type=h,this.T=i,this.frame=0,this.X=!0}Z(t,s,h){if(this.y+=5*(h-this.T)/32,this.frame=(this.frame+1)%50,!A&&rt(G,[this.x,this.y,X.width,X.height,Z]))return ft[this.type][2](h),!1;if(this.y-Math.floor(X.height/2)>b)return!1;this.T=h,s.save(),s.translate(this.x,this.y),s.drawImage(X,-Math.floor(X.width/2),-Math.floor(X.height/2)),s.textAlign="center",s.textBaseline="top";let i=65;i+=this.frame<25?this.frame:50-this.frame,s.font="700 "+Math.floor(i/2)+"px Helvetica";const n=s.measureText(ft[this.type][0]),e=n.actualBoundingBoxDescent-n.actualBoundingBoxAscent;return s.fillStyle=ft[this.type][1],s.fillText(ft[this.type][0],0,-Math.floor(e/2)),s.restore(),!0}}class ut{constructor(t,s,h){this.x=t,this.y=s,this.T=h,this.J=10}Z(t,s,h){this.y-=20*(h-this.T)/32;const i=[this.x,this.y,Y.width,Y.height,z];for(let s=0;s<t.length;s++){const n=t[s];if(rt(i,n.V))return n.W(this.J,h),!1}return!(this.y+Math.floor(Y.height/2)<0||(this.T=h,s.drawImage(Y,this.x-Math.floor(Y.width/2),this.y-Math.floor(Y.height/2)),0))}}class lt{constructor(t,s,h,i,n){this.time=n,this.U=t.U,this.canvas=t.canvas,this.L=t.L,this.Y=t.Y,this.P=t.P,this.angle=t.angle,this.R=s,this.$=h,this.duration=i}Z(t,s,h){const i=h-this.time;if(i>this.duration)return!1;const n=this.R+this.U[0]+this.Y*Math.min(i,this.duration)/this.duration,e=this.$+this.U[1]+this.P*Math.min(i,this.duration)/this.duration;return s.save(),s.globalAlpha=1-(Math.min(i,this.duration)/this.duration)**2,s.translate(n,e),s.rotate(this.angle*Math.min(i,this.duration)/this.duration),s.drawImage(this.canvas,this.L[0]-this.U[0],this.L[1]-this.U[1]),s.restore(),!0}}class mt{constructor(t,s,h,i,n,e){this.width=P[0].width,this.height=P[0].height,this.x=t,this.y=s;const o=Math.sqrt((h-t)**2+(i-s)**2);this._=(h-t)/o,this.tt=(i-s)/o,this.T=e,this.speed=n,this.frame=0,this.X=!0,this.st()}Z(t,s,h){if(C>h)return!1;const i=h-this.T;if(this.y+=i*this.speed*this.tt,this.x+=i*this.speed*this._,this.st(),rt(G,this.V)){if(F)return F--,!1;A=!0}return!(this.y-Math.floor(this.height/2)>b||this.y+Math.floor(this.height/2)<0||this.x-Math.floor(this.width/2)>d||this.x+Math.floor(this.width/2)<0||(this.T=h,this.frame=(this.frame+1)%P.length,s.drawImage(P[this.frame],this.x-Math.floor(this.width/2),this.y-Math.floor(this.height/2),this.width,this.height),0))}st(){this.V=[this.x,this.y,this.width,this.height,T]}}function dt(t,s,h,i,n,e){const o=[];for(let c=0;c<t;c++){const a=i+2*c*Math.PI/t;o.push(new mt(s,h,s+Math.round(100*Math.cos(a)),h+Math.round(100*Math.sin(a)),n,e))}return o}class bt{constructor(t,s,h,i,n,e,o,c,a,r,f,M){this.ht=xt.m(0,2*Math.PI),this.canvas=t,this.mask=s,this.it=h,this.width=t.width,this.height=t.height,this.nt=c,this.x=n,this.y=e,this.T=M,this.et=0,this.ot=i,this.speed=o,this.points=a,this.ct=r,this.at=f,this.st()}Z(t,s,h){const i=this.y;let n=!1;if(this.nt<=0||C>h?n=!0:(this.y+=(h-this.T)*this.speed,this.st(),rt(G,this.V)&&(F?(F--,n=!0):A=!0)),n)return st(this.points),(this.ct>0?dt(this.ct,this.x,this.y+Math.round(17*this.speed),this.ht,.45,h):[]).concat(this.ot.map(t=>(r(t,this.width,this.height),new lt(t,this.x-Math.floor(this.width/2),this.y-Math.floor(this.height/2),500,h))));if(this.y-Math.floor(this.height/2)>b)return!1;this.T=h;const e=h-this.et;let o=0;if(e<400&&(o=(400-e)/400),s.save(),s.drawImage(this.canvas,this.x-Math.floor(this.width/2),this.y-Math.floor(this.height/2),this.width,this.height),o>0&&(s.globalAlpha=o,s.drawImage(this.it,this.x-Math.floor(this.width/2),this.y-Math.floor(this.height/2),this.width,this.height)),s.restore(),!A)for(let t=0;t<this.at.length;t++){const s=this.at[t][0];if(i<s&&this.y>s){const s=this.at[t][1],i=this.y+Math.round(17*this.speed);return s?[this,...dt(s,this.x,i,this.ht,.3,h)]:[this,new mt(this.x,i,w,g,.3,h)]}}return!0}st(){this.V=[this.x,this.y,this.width,this.height,this.mask]}W(t,s){this.et=s,this.nt-=t}}class pt{constructor(t,s){this.A=0,this.rt=s+2e3,this.nt=Number.MAX_SAFE_INTEGER,this.T=s,this.width=it.width,this.height=it.height,this.x=p,this.y=-this.height/2,this.direction=0,this.et=0,this.level=t,this.st()}Z(t,s,h){let i=!1;if(this.nt<=0)i=!0;else{const t=h-this.T;0===this.A?h>this.rt&&(this.A=1):1===this.A?(this.y+=.15*t,this.y>150&&(this.y=150,this.nt=100+250*this.level,this.A=2,this.ft=h,this.Mt=0)):0===this.direction?(this.x+=.1*t,this.x+Math.floor(this.width/2)>d&&(this.x=d-Math.floor(this.width/2),this.direction=1)):(this.x-=.1*t,this.x-Math.floor(this.width/2)<0&&(this.x=Math.floor(this.width/2),this.direction=0)),this.st(),rt(G,this.V)&&(A=!0)}if(i)return st(500*E),Bt=!1,Ht=h+1e4,kt=500+h,ht(),Ot=500+h,ot.map(t=>(r(t,this.width,this.height),new lt(t,this.x-Math.floor(this.width/2),this.y-Math.floor(this.height/2),500,h)));this.T=h;const n=h-this.et;let e=0;if(n<400&&(e=(400-n)/400),s.save(),s.drawImage(it,this.x-Math.floor(this.width/2),this.y-Math.floor(this.height/2),this.width,this.height),e>0&&(s.globalAlpha=e,s.drawImage(et,this.x-Math.floor(this.width/2),this.y-Math.floor(this.height/2),this.width,this.height)),s.restore(),!A&&2===this.A&&this.ft<h){const t=[];if(this.Mt<5*this.level){let s,i;switch(Math.floor(this.Mt/this.level)){case 0:s=28,i=119;break;case 1:s=42,i=123;break;case 2:s=108,i=94;break;case 3:s=121,i=80;break;default:s=143,i=50}t.push(new mt(this.x-s,this.y+i,this.x-s,this.y+i+100,.5,h)),t.push(new mt(this.x+s,this.y+i,this.x+s,this.y+i+100,.5,h))}else t.push(new mt(this.x,this.y+125,w,g,.3,h));return this.Mt++,this.Mt>=10*this.level?(this.Mt=0,this.ft=h+800):this.ft=this.Mt>5*this.level?h+200:this.Mt===5*this.level?h+800:this.Mt%this.level?h+180:h+500,[this,...t]}return!0}st(){this.V=[this.x,this.y,this.width,this.height,nt]}W(t,s){this.et=s,this.nt-=t}}let vt,wt,gt,xt,yt,kt,Ht,Ot,qt,Bt,St,Dt=5;function Nt(t){let s,h,i,n;t.preventDefault(),B.offsetWidth/B.offsetHeight>.6857142857142857?(h=0,n=B.offsetHeight,i=n*d/b,s=Math.floor(B.offsetWidth-i)/2):(s=0,i=B.offsetWidth,n=i*b/d,h=Math.floor(B.offsetHeight-n)/2);let e={};e=t.changedTouches?t.changedTouches[0]:t,k=Math.floor((e.pageX-s)*d/i),H=Math.floor((e.pageY-h)*b/n)}self.ontouchstart=self.onpointerdown=t=>{x=!0,Nt(t)},self.ontouchmove=self.onpointermove=Nt,self.ontouchend=self.onpointerup=t=>{t.preventDefault(),x=!1},self.onkeydown=t=>{q=!0,O[t.code]=1,t.preventDefault()},self.onkeyup=t=>{O[t.code]=0,t.preventDefault()},B.width=d,B.height=b,B.getContext("2d"),requestAnimationFrame(function s(h){(function(s){switch(R){case 0:case 1:!function(s){const h=B.getContext("2d");h.fillStyle="#000",h.fillRect(0,0,d,b),h.fillStyle="#fff";let i=(s-W)/3e3;h.save();for(let t=200;t--;){let s=50/(6-(i+t/13)%6);h.globalAlpha=Math.min(s/100,1),h.beginPath(),h.arc(Math.cos(t)*s+p,Math.sin(t*t)*s+v,s/200,0,7),h.fill()}if(h.restore(),h.textBaseline="middle",h.textAlign="center",1===R){if(0===$.length)h.font="bold 40px Helvetica",h.fillText("PLANET NOT FOUND",p,v);else{h.font="bold 30px Helvetica",h.fillText("HIGH SCORES",p,100),h.save(),h.textAlign="start",h.textBaseline="top";for(let t=0;t<$.length;t++){t===_?(h.save(),h.translate(90,185+80*t),h.drawImage(tt,-Math.floor(tt.width/2),-Math.floor(tt.height/2)),h.restore(),h.fillStyle="gold"):h.fillStyle="#fff";const s=Intl.NumberFormat().format($[t][0]),i=new Date($[t][1]).toLocaleString();h.font="50px Helvetica",h.fillText(t+1+"",115,160+80*t),h.font="60px Helvetica",h.fillText("{",145,150+80*t),h.font="25px Helvetica",h.fillText(s+" points",170,160+80*t),h.font="15px Helvetica",h.fillText(i,170,190+80*t)}h.restore()}h.font="20px Helvetica",h.fillText("<Press anywhere or any key to play>",p,670),x||q?y||(R=2,E=0,xt=new t("enemy"),yt=new t("powerup"),kt=1e3,Ht=5e3,Ot=9e3,qt=0,gt=0,vt=[],wt=[],W=performance.now(),St=performance.now(),J=0,st(0),A=!1,w=p,g=630,j=0,C=0,F=1,Bt=!1,_=-1):y=!1}else if(h.font="italic 30px Helvetica",h.fillText("Loading…",p,v),it)if(L.length<at.length)L.push(function(t,s,h,...i){return[m(c(o(t),s,h)),void 0,void 0,void 0,...i]}(...at[L.length]));else{let t=!0;for(let s=0;t&&s<L.length;s++)L[s][1]||(t=!1,ct(L[s]));t&&(R=1)}else it=m(c(o("HYj7ADLjQr6icLtO"),"CdiB9N2ZoQWuAxur",270)),f(it),et=M(it),ot=a(it),nt=it.getContext("2d").getImageData(0,0,it.width,it.height).data}(s);break;case 2:!function(t){const s=t-St;if(St=t,s>160)return W+=s,void(O={});if(!A){const t=.6*s,h=O.ArrowUp||O.KeyW,i=O.ArrowDown||O.KeyS,n=O.ArrowLeft||O.KeyA,e=O.ArrowRight||O.KeyD;if(h||i||n||e){const s=(h||i)&&(n||e)?Math.sqrt(t**2/2):t;h&&(g-=s),i&&(g+=s),n&&(w-=s),e&&(w+=s),k=w,H=g}else{let s=k-w,h=H-g;const i=Math.sqrt(s**2+h**2);i<t?(w=k,g=H):(w+=s/i*t,g+=h/i*t)}w-Math.floor(N/2)<0?w=Math.floor(N/2):w+Math.floor(N/2)>d&&(w=d-Math.floor(N/2)),g-Math.floor(I/2)<0?g=Math.floor(I/2):g+Math.floor(I/2)>b&&(g=b-Math.floor(I/2)),G=[w,g,N,I,K]}const h=B.getContext("2d");let i;h.fillStyle="#000",h.fillRect(0,0,d,b),h.fillStyle="#777";for(let s=100;s--;h.beginPath(),h.arc(Math.floor(-60*(100-s)*(w-N/2)/(100*(d-N)))+102797*(1+Math.sin(i))*s%540,b*(Math.tan(s/9)+i*(t-W)/3e3)%b,2*i,0,7),h.fill())i=149/(3*s+199);const n=A,e=[],o=[],c=[];function a(s){const i=s.Z(wt,h,t-W);"boolean"==typeof i?i&&(s.X?o.push(s):e.push(s),s.W&&c.push(s)):Array.isArray(i)&&i.forEach(t=>{s===t?i&&(s.X?o.push(s):e.push(s),s.W&&c.push(s)):a(t)})}if(vt.forEach(a),!n&&A&&(Q=t-W,D.map(s=>(r(s,N,I),new lt(s,w-Math.floor(N/2),g-Math.floor(I/2),1500,t-W))).forEach(a)),vt=e.concat(o),wt=c,h.fillStyle="#fff",h.textAlign="center",A)h.save(),h.globalAlpha=Math.min(1,(t-W-Q)/2e3),h.textBaseline="middle",h.font="40px Helvetica",h.fillText("Game Over",p,v),h.restore();else{if(F){const t=U[Math.min(F-1,U.length-1)];h.drawImage(t,w-Math.floor(t.width/2),g-Math.floor(t.height/2)+5)}h.drawImage(S,w-Math.floor(N/2),g-Math.floor(I/2))}C>t-W&&(h.save(),h.globalAlpha=(C-t+W)/1e3,h.fillStyle="#fff",h.fillRect(0,0,d,b),h.restore()),h.textBaseline="top",h.font="16px Helvetica",h.fillText(V,p,5);const f=j>t-W;if(!A&&gt+(f?100:200)<t-W&&(Dt=-Dt,vt.push(new ut(w+(f?Dt:0),g-Math.floor(I/2),t-W)),gt=Math.max(t-W)),Ht<t-W&&!Bt&&(E++,E%5?Ht=t-W+1e4:(Bt=!0,vt.push(new pt(Math.floor(E/5),t-W)))),Ot<t-W&&!Bt&&(vt.push(new Mt(yt.p(30,450),Math.floor(-X.height/2),qt,t-W)),qt=(qt+1)%ft.length,Ot=t-W+9e3),kt<t-W&&!Bt){const s=xt.p(Math.min(Math.max(E-2,0),L.length-3),Math.min(E,L.length-1)),[h,i,n,e,o,c,a,r]=L[s];vt.push(new bt(h,i,n,e,xt.p(30,450),Math.floor(-h.height/2),c,o,50*(s+1),a,r,t-W)),ht()}A&&Q+3500<t-W&&(function(){if(J){const t=[J,Date.now()];$.push(t),$.sort((t,s)=>{const h=s[0]-t[0];return 0===h?s[1]-t[1]:h}),$.length=Math.min($.length,5),_=$.indexOf(t),self.localStorage.pnf_highscores=JSON.stringify($)}}(),R=1,y=x)}(s)}q=!1})(h),requestAnimationFrame(s)})}();
+(function () {
+    'use strict';
+
+    class Randomizer {
+        constructor(p_seed) {
+            this.seedPosition = 0;
+            this.arrayPosition = 0;
+            this.hrCache = {};
+            this.seed = p_seed;
+            if (this.seed.length < 8) {
+                this.seed = "padding_" + this.seed;
+            }
+            if (this.seed.length % 2 == 0) {
+                this.seed = "1" + this.seed;
+            }
+            this.stateArray = [
+                2972948403,
+                3086140710,
+                2071788248,
+                3026137486,
+                1411764137,
+                2265725585,
+                2923087685,
+                1593177610,
+            ];
+            this.current = 3234042090;
+            for (let i = this.seed.length - 1; i >= 0; i--) {
+                const c = this.seed.charCodeAt(i);
+                this.current =
+                    (((this.current << 5) + this.current) ^
+                        c ^
+                        (this.current << ((c % 13) + 1)) ^
+                        (this.current >> ((c % 17) + 1))) >>>
+                        0;
+                this.stateArray[i % 8] ^=
+                    (((this.current >> 9) * ((this.current % 16384) + 3427)) ^ c) >>> 0;
+            }
+        }
+        //Returns a raw unsigned 32-bit integer from the stream.
+        sr() {
+            const c = this.seed.charCodeAt(this.seedPosition);
+            const lsa = this.stateArray[this.arrayPosition];
+            this.current =
+                (((this.current << 5) + this.current + lsa) ^
+                    c ^
+                    (this.current << ((c % 17) + 1)) ^
+                    (this.current >> ((c % 13) + 1))) >>>
+                    0;
+            this.stateArray[this.arrayPosition] =
+                ((lsa >> 3) ^
+                    (lsa << ((c % 19) + 1)) ^
+                    ((this.current % 134217728) * 3427)) >>>
+                    0;
+            this.seedPosition = (this.seedPosition + 1) % this.seed.length;
+            this.arrayPosition = (this.arrayPosition + 1) % 8;
+            return this.current;
+        }
+        //Returns a raw unsigned 32-bit integer based on hashing this object's seed with the specified string.
+        /*
+        hr_original(seed?: string): number {
+          let t = 1206170165;
+          if (seed != null) {
+            for (let x = seed.length - 1; x >= 0; x--) {
+              const c = seed.charCodeAt(x);
+              t = ((t << 5) + t) ^ c ^ (t << ((c % 13) + 1)) ^ (t >> ((c % 17) + 1));
+            }
+          }
+          for (let y = this.seed.length - 1; y >= 0; y--) {
+            const c = this.seed.charCodeAt(y);
+            t = ((t << 5) + t) ^ c ^ (t << ((c % 13) + 1)) ^ (t >> ((c % 17) + 1));
+          }
+          return t >>> 0;
+        }
+        */
+        //Returns a raw unsigned 32-bit integer based on hashing this object's seed with the specified string
+        hr(seed) {
+            const state = [1160605769, 1424711319, 876532818, 1419174464];
+            let rv = 1206170165;
+            if (seed == null) {
+                seed = "?/?/?/";
+                rv = 3379896793;
+            }
+            if (this.hrCache.hasOwnProperty(seed)) {
+                return this.hrCache[seed];
+            }
+            for (let x = seed.length - 1; x >= 0; x--) {
+                const c = seed.charCodeAt(x);
+                let t = state[0] ^ c;
+                t = (t ^ (t << 11)) >>> 0;
+                t = (t ^ (t >> 8)) >>> 0;
+                state[0] = state[1];
+                state[1] = state[2];
+                state[2] = state[3];
+                state[3] = (state[3] ^ (state[3] >> 19) ^ t) >>> 0;
+                rv = ((rv ^ (c << 24)) * 3427) ^ state[3];
+            }
+            for (let y = this.seed.length - 1; y >= 0; y--) {
+                const c = this.seed.charCodeAt(y);
+                let t = state[0] ^ c;
+                t = (t ^ (t << 11)) >>> 0;
+                t = (t ^ (t >> 8)) >>> 0;
+                state[0] = state[1];
+                state[1] = state[2];
+                state[2] = state[3];
+                state[3] = (state[3] ^ (state[3] >> 19) ^ t) >>> 0;
+                rv = ((rv ^ (c << 24)) * 3427) ^ state[3];
+            }
+            this.hrCache[seed] = rv >>> 0;
+            return this.hrCache[seed];
+        }
+        //Returns a double between the specified minimum and maximum, from the stream.
+        sd(min, max) {
+            return (((this.sr() * 4294967296 + this.sr()) / 18446744073709551616) *
+                (max - min) +
+                min);
+        }
+        //Returns an integer between the specified minimum and maximum, from the stream.
+        si(min, max) {
+            return Math.floor(this.sd(min, max + 1));
+        }
+        //Returns a boolean with the specified chance of bein true (and false otherwise), from the stream
+        sb(chance) {
+            return this.sd(0, 1) < chance;
+        }
+        //Returns a double between the specified minimum and maximum, by hashing this object's seed with the specified string.
+        hd(min, max, seed) {
+            return (((this.hr(seed) * 4294967296 + this.hr(seed + "@")) /
+                18446744073709551616) *
+                (max - min) +
+                min);
+        }
+        //Returns an integer between the specified minimum and maximum, by hashing this object's seed with the specified string.
+        hi(min, max, s) {
+            return Math.floor(this.hd(min, max + 1, s));
+        }
+        //Returns a boolean with the specified chance of being true (and false otherwise), by hashing this object's seed with the specified string.
+        hb(chance, seed) {
+            return (this.hd(0, 1, seed) < chance);
+        }
+        //Returns an integer with the specified chance of being -1 (and 1 otherwise), from the stream.
+        ss(chance) {
+            return this.sb(chance)
+                ? -1
+                : 1;
+        }
+        //Returns an integer with the specified chance of being -1 (and 1 otherwise), by hashing this object's seed with the specified string.
+        /*
+        hs(chance: number, seed: string): number {
+          return (this.hr(seed) * 4294967296 +
+            this.hr(seed + "@")) /
+            18446744073709551616 <
+            chance
+            ? -1
+            : 1;
+        }
+        */
+        //Returns an integer {0,1,2,...}, starting from 0, with the specified chance of advancing to each successive integer, from the stream.
+        sseq(chance, max) {
+            let rv = 0;
+            while (this.sb(chance) &&
+                rv < max) {
+                rv++;
+            }
+            return rv;
+        }
+        //Returns an integer {0,1,2,...}, starting from 0, with the specified chance of advancing to each successive integer, by hashing this object's seed with the specified string.
+        hseq(chance, max, seed) {
+            let rv = 0;
+            while ((this.hr(seed + rv) * 4294967296 + this.hr(seed + "@" + rv)) /
+                18446744073709551616 <
+                chance &&
+                rv < max) {
+                rv++;
+            }
+            return rv;
+        }
+        //Returns an index of the array chances with the relative probability equal to that element of chances, based on a stream value.
+        schoose(chances) {
+            let sum = 0;
+            for (let i = 0; i < chances.length; i++) {
+                sum += chances[i];
+            }
+            let which = this.sd(0, sum);
+            for (let j = 0; j < chances.length; j++) {
+                which -= chances[j];
+                if (which < 0) {
+                    return j;
+                }
+            }
+            return 0;
+        }
+        // Returns an index of the array chances with the relative probability equal to that element of chances, based on a hash value with the specified seed.
+        hchoose(chances, seed) {
+            let sum = 0;
+            for (let i = 0; i < chances.length; i++) {
+                sum += chances[i];
+            }
+            let which = this.hd(0, sum, seed);
+            for (let j = 0; j < chances.length; j++) {
+                which -= chances[j];
+                if (which < 0) {
+                    return j;
+                }
+            }
+            return 0;
+        }
+    }
+
+    //Size of the component grid
+    const COMPONENT_GRID_SIZE = 6;
+    //Minimum distance between the edge of the ship outline and the edge of the canvas
+    const CANVAS_SHIP_EDGE = 0;
+    //Base maximum extent of a component from its origin point. Should be at least equal to cgridsize, but no greater than csedge.
+    const COMPONENT_MAXIMUM_SIZE = 8;
+
+    function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+    }
+    function colorChannelToHex(n) {
+        return Math.floor(clamp(n, 0, 1) * 255).toString(16).padStart(2, "0");
+    }
+    function colorToHex(color) {
+        return "#" +
+            colorChannelToHex(color[0]) +
+            colorChannelToHex(color[1]) +
+            colorChannelToHex(color[2]);
+    }
+    // Take a color and multiplies it with a factor. factor = 0 produces black.
+    function scaleColorBy(color, factor) {
+        return colorToHex([color[0] * factor, color[1] * factor, color[2] * factor]);
+    }
+    // Takes a triplet [H,S,V] and returns a triplet [R,G,B], representing the same color. All components are 0 - 1.
+    function hsvToRgb(hsv) {
+        const c = hsv[1] * hsv[2];
+        const m = hsv[2] - c;
+        const h = ((hsv[0] % 1) + 1) % 1;
+        const hrel = 6 * h;
+        const hseg = Math.floor(hrel);
+        const x = c * (1 - Math.abs((hrel % 2) - 1));
+        switch (hseg) {
+            case 0:
+                return [c + m, x + m, m];
+            case 1:
+                return [x + m, c + m, m];
+            case 2:
+                return [m, c + m, x + m];
+            case 3:
+                return [m, x + m, c + m];
+            case 4:
+                return [x + m, m, c + m];
+            default:
+                return [c + m, m, x + m];
+        }
+    }
+
+    function computeFactionComponentChances(factionRandomizer) {
+        const componentChances = [];
+        const dp = 8; // Default maximum power
+        // TODO: once we dont need backwards compatibility, we can probably simplify this file; the first argument of sd seems
+        // unnecessary
+        componentChances[0] =
+            0.8 * factionRandomizer.sd(0.001, 1) * (2 ** factionRandomizer.sd(0, dp));
+        componentChances[1] =
+            0.9 * factionRandomizer.sd(0.01, 1) * (2 ** factionRandomizer.sd(0, dp));
+        componentChances[2] =
+            1 * factionRandomizer.sd(0.001, 1) * (2 ** factionRandomizer.sd(0, dp));
+        componentChances[3] =
+            3 * factionRandomizer.sd(0, 1) * (2 ** factionRandomizer.sd(0, dp));
+        componentChances[4] =
+            0.5 * factionRandomizer.sd(0, 1) * (2 ** factionRandomizer.sd(0, dp));
+        componentChances[5] =
+            0.05 * factionRandomizer.sd(0, 1) * (2 ** factionRandomizer.sd(0, dp));
+        componentChances[6] =
+            0.5 * factionRandomizer.sd(0, 1) * (2 ** factionRandomizer.sd(0, dp));
+        return componentChances;
+    }
+    function computeFactionColors(factionRandomizer) {
+        const colors = [];
+        const colorChances = [];
+        const dp = 6; // Default maximum power
+        const baseColorCount = 1 +
+            (factionRandomizer.hb(0.7, "base color +1") ? 1 : 0) +
+            factionRandomizer.hseq(0.3, 3, "base color count");
+        for (let i = 0; i < baseColorCount; i++) {
+            const ls = "base color" + i;
+            colors.push(hsvToRgb([
+                (factionRandomizer.hd(0, 1, ls + "hue") ** 2),
+                clamp(factionRandomizer.hd(-0.2, 1, ls + "saturation"), 0, (factionRandomizer.hd(0, 1, ls + "saturation bound") ** 4)),
+                clamp(factionRandomizer.hd(0.7, 1.1, ls + "value"), 0, 1),
+            ]));
+            colorChances.push((2 ** factionRandomizer.hd(0, dp, ls + "chances")));
+        }
+        return [colors, colorChances];
+    }
+    //Where lp is the ship to get the color for
+    /*
+    getwindowcolor(lp) {
+      if (this.cache["window colors"] == null) {
+        const dp = 5; //Default maximum power.
+        this.cache["window color count"] =
+          1 + (this.r.hb(0.3, "window color +1") ? 1 : 0);
+        this.cache["window colors"] = new Array(this.cache["window color count"]);
+        this.cache["window color chances"] = new Array(
+          this.cache["window color count"]
+        );
+        for (let i = 0; i < this.cache["window color count"]; i++) {
+          const ls = "window color" + i;
+          this.cache["window colors"][i] = hsvToRgb([
+            this.r.hb(0.6, "window color blues only")
+              ? this.r.hd(1 / 3, 3 / 4, "window color blue hue")
+              : this.r.hd(0, 1, "window color hue"),
+            Math.pow(
+              clamp(this.r.hd(-0.2, 1.2, "window color hue"), 0, 1),
+              0.5
+            ),
+            Math.pow(
+              clamp(this.r.hd(0.4, 1.3, "window color value"), 0, 1),
+              0.5
+            ),
+          ]);
+          this.cache["window color chances"][i] = Math.pow(
+            2,
+            this.r.hd(0, dp, ls + "chances")
+          );
+        }
+      }
+      const rv = this.cache["window colors"][
+        lp.r.schoose(this.cache["window color chances"])
+      ];
+      return rv;
+    }
+    */
+
+    function buildShip(factionRandomizer, p_seed, size) {
+        const componentChances = computeFactionComponentChances(factionRandomizer);
+        const [colors, colorChances] = computeFactionColors(factionRandomizer);
+        const shipRandomizer = new Randomizer(factionRandomizer.seed + p_seed);
+        function computeBaseColor() {
+            let rv = colors[shipRandomizer.schoose(colorChances)];
+            if (shipRandomizer.sb(factionRandomizer.hd(0, 0.5, "base color shift chance") ** 2)) {
+                rv = [rv[0], rv[1], rv[2]];
+                rv[0] = clamp(rv[0] +
+                    (factionRandomizer.hd(0, 0.6, "base color shift range red") ** 2) *
+                        clamp(shipRandomizer.sd(-1, 1.2), 0, 1) *
+                        clamp(shipRandomizer.ss(0.7) + shipRandomizer.ss(0.7), -1, 1), 0, 1);
+                rv[1] = clamp(rv[1] +
+                    (factionRandomizer.hd(0, 0.6, "base color shift range green") ** 2) *
+                        clamp(shipRandomizer.sd(-1, 1.2), 0, 1) *
+                        clamp(shipRandomizer.ss(0.7) + shipRandomizer.ss(0.7), -1, 1), 0, 1);
+                rv[2] = clamp(rv[2] +
+                    (factionRandomizer.hd(0, 0.6, "base color shift range blue") ** 2) *
+                        clamp(shipRandomizer.sd(-1, 1.2), 0, 1) *
+                        clamp(shipRandomizer.ss(0.7) + shipRandomizer.ss(0.7), -1, 1), 0, 1);
+            }
+            return rv;
+        }
+        //The initial overall size of this ship, in pixels
+        size =
+            size == null
+                ? shipRandomizer.sd(factionRandomizer.hd(2.5, 3.5, "size min"), factionRandomizer.hd(5, 7, "size max")) ** 3
+                : size;
+        const wratio = shipRandomizer.sd(factionRandomizer.hd(0.5, 1, "wratio min"), factionRandomizer.hd(1, 1.3, "wratio max"));
+        const hratio = shipRandomizer.sd(factionRandomizer.hd(0.7, 1, "hratio min"), factionRandomizer.hd(1.1, 1.7, "hratio max"));
+        const w = Math.floor(size * wratio) + 2 * CANVAS_SHIP_EDGE; // Maximum width of this ship, in pixels
+        const hw = Math.floor(w / 2);
+        const gw = Math.floor((w - 2 * CANVAS_SHIP_EDGE) / COMPONENT_GRID_SIZE);
+        const gwextra = (w - gw * COMPONENT_GRID_SIZE) / 2;
+        const h = Math.floor(size * hratio) + 2 * CANVAS_SHIP_EDGE; // Maximum height of this ship, in pixels
+        const hh = Math.floor(h / 2);
+        const gh = Math.floor((h - 2 * CANVAS_SHIP_EDGE) / COMPONENT_GRID_SIZE);
+        const ghextra = (h - gh * COMPONENT_GRID_SIZE) / 2;
+        const cs = document.createElement("canvas"); // Canvas on which the basic outline of the ship is drawn. Ships face upwards, with front towards Y=0
+        cs.width = w;
+        cs.height = h;
+        const csx = cs.getContext("2d");
+        // ------ Define outlines ---------------------------------------
+        const outlines = [
+            // 0: Joined rectangles.
+            function () {
+                const csarea = (w - 2 * CANVAS_SHIP_EDGE) * (h - 2 * CANVAS_SHIP_EDGE);
+                const csarealimit = csarea / 20;
+                const initialWidth = Math.ceil((w - 2 * CANVAS_SHIP_EDGE) * factionRandomizer.hd(0.1, 1, "outline0 iw") / 5);
+                const blocks = [
+                    [
+                        [hw - initialWidth, CANVAS_SHIP_EDGE],
+                        [hw + initialWidth, h - CANVAS_SHIP_EDGE],
+                    ],
+                ];
+                const blockcount = 2 +
+                    Math.floor(shipRandomizer.sd(0.5, 1) * factionRandomizer.hd(2, 8, "outline0 bc") * size ** 0.5);
+                for (let i = 1; i < blockcount; i++) {
+                    const base = blocks[shipRandomizer.si(0, blocks.length - 1)];
+                    const v0 = [
+                        base[0][0] + shipRandomizer.sd(0, 1) * (base[1][0] - base[0][0]),
+                        base[0][1] + shipRandomizer.sd(0, 1) * (base[1][1] - base[0][1]),
+                    ];
+                    if (v0[1] < (base[0][1] + base[1][1]) / 2 &&
+                        shipRandomizer.sb(factionRandomizer.hd(0.5, 1.5, "outline0 frontbias"))) {
+                        v0[1] = base[1][1] - (v0[1] - base[0][1]);
+                    }
+                    const v1 = [
+                        clamp(shipRandomizer.sd(0, 1) * w, CANVAS_SHIP_EDGE, w - CANVAS_SHIP_EDGE),
+                        clamp(shipRandomizer.sd(0, 1) * h, CANVAS_SHIP_EDGE, h - CANVAS_SHIP_EDGE),
+                    ];
+                    const area = Math.abs((v1[0] - v0[0]) * (v1[1] - v0[1]));
+                    const ratio = csarealimit / area;
+                    if (ratio < 1) {
+                        v1[0] = v0[0] + (v1[0] - v0[0]) * ratio;
+                        v1[1] = v0[1] + (v1[1] - v0[1]) * ratio;
+                    }
+                    if (v0[0] > v1[0]) {
+                        const t = v0[0];
+                        v0[0] = v1[0];
+                        v1[0] = t;
+                    }
+                    if (v0[1] > v1[1]) {
+                        const t = v0[1];
+                        v0[1] = v1[1];
+                        v1[1] = t;
+                    }
+                    blocks.push([
+                        [Math.floor(v0[0]), Math.floor(v0[1])],
+                        [Math.ceil(v1[0]), Math.ceil(v1[1])],
+                    ]);
+                }
+                csx.fillStyle = "#fff";
+                for (let i = 0; i < blocks.length; i++) {
+                    const lb = blocks[i];
+                    csx.fillRect(lb[0][0], lb[0][1], lb[1][0] - lb[0][0], lb[1][1] - lb[0][1]);
+                    csx.fillRect(w - lb[1][0], lb[0][1], lb[1][0] - lb[0][0], lb[1][1] - lb[0][1]);
+                }
+            },
+            // 1: Joined circles
+            function () {
+                const csarea = (w - 2 * CANVAS_SHIP_EDGE) * (h - 2 * CANVAS_SHIP_EDGE);
+                const csarealimit = csarea / 20;
+                const csrlimit = Math.max(2, (csarealimit / Math.PI) ** 0.5);
+                const initialwidth = Math.ceil((w - 2 * CANVAS_SHIP_EDGE) * factionRandomizer.hd(0.1, 1, "outline1 iw") / 5);
+                const circles = [];
+                const initialcount = Math.floor((h - 2 * CANVAS_SHIP_EDGE) / (initialwidth * 2));
+                for (let i = 0; i < initialcount; i++) {
+                    let lv = [hw, h - (CANVAS_SHIP_EDGE + initialwidth * (i * 2 + 1))];
+                    circles.push({ v: lv, r: initialwidth });
+                }
+                const circlecount = initialcount +
+                    Math.floor(shipRandomizer.sd(0.5, 1) * factionRandomizer.hd(10, 50, "outline1 cc") * size ** 0.5);
+                for (let i = initialcount; i < circlecount; i++) {
+                    const base = circles[Math.max(shipRandomizer.si(0, circles.length - 1), shipRandomizer.si(0, circles.length - 1))];
+                    let ncr = shipRandomizer.sd(1, csrlimit);
+                    const pr = shipRandomizer.sd(Math.max(0, base.r - ncr), base.r);
+                    let pa = shipRandomizer.sd(0, 2 * Math.PI);
+                    if (pa > Math.PI && shipRandomizer.sb(factionRandomizer.hd(0.5, 1.5, "outline1 frontbias"))) {
+                        pa = shipRandomizer.sd(0, Math.PI);
+                    }
+                    let lv = [base.v[0] + Math.cos(pa) * pr, base.v[1] + Math.sin(pa) * pr];
+                    ncr = Math.min(ncr, lv[0] - CANVAS_SHIP_EDGE, w - CANVAS_SHIP_EDGE - lv[0], lv[1] - CANVAS_SHIP_EDGE, h - CANVAS_SHIP_EDGE - lv[1]);
+                    circles.push({ v: lv, r: ncr });
+                }
+                csx.fillStyle = "#fff";
+                for (let i = 0; i < circles.length; i++) {
+                    const lc = circles[i];
+                    csx.beginPath();
+                    csx.arc(lc.v[0], lc.v[1], lc.r, 0, 2 * Math.PI);
+                    csx.fill();
+                    csx.beginPath();
+                    csx.arc(w - lc.v[0], lc.v[1], lc.r, 0, 2 * Math.PI);
+                    csx.fill();
+                }
+            },
+            // 2: Mess of lines
+            function () {
+                const innersize = [w - 2 * CANVAS_SHIP_EDGE, h - 2 * CANVAS_SHIP_EDGE];
+                const points = [
+                    [hw, shipRandomizer.sd(0, 0.05) * innersize[1] + CANVAS_SHIP_EDGE],
+                    [hw, shipRandomizer.sd(0.95, 1) * innersize[1] + CANVAS_SHIP_EDGE],
+                ];
+                const basefatness = COMPONENT_GRID_SIZE / size +
+                    factionRandomizer.hd(0.03, 0.1, "outline2 basefatness");
+                const basemessiness = 1 / basefatness;
+                const pointcount = Math.max(3, Math.ceil(basemessiness * shipRandomizer.sd(0.05, 0.1) * size ** 0.5));
+                // @ts-ignore - We're doing it properly
+                csx.lineCap = ["round", "square"][factionRandomizer.hi(0, 1, "outline2 linecap")];
+                csx.strokeStyle = "#fff";
+                for (let npi = 1; npi < pointcount; npi++) {
+                    let np = points[npi];
+                    if (np == null) {
+                        np = [
+                            shipRandomizer.sd(0, 1) * innersize[0] + CANVAS_SHIP_EDGE,
+                            (shipRandomizer.sd(0, 1) ** factionRandomizer.hd(0.1, 1, "outline2 frontbias")) *
+                                innersize[1] +
+                                CANVAS_SHIP_EDGE,
+                        ];
+                        points.push(np);
+                    }
+                    const cons = 1 + shipRandomizer.sseq(factionRandomizer.hd(0, 1, "outline2 conadjust"), 3);
+                    for (let nci = 0; nci < cons; nci++) {
+                        const pre = points[shipRandomizer.si(0, points.length - 2)];
+                        csx.lineWidth = shipRandomizer.sd(0.7, 1) * basefatness * size;
+                        csx.beginPath();
+                        csx.moveTo(pre[0], pre[1]);
+                        csx.lineTo(np[0], np[1]);
+                        csx.stroke();
+                        csx.beginPath();
+                        csx.moveTo(w - pre[0], pre[1]);
+                        csx.lineTo(w - np[0], np[1]);
+                        csx.stroke();
+                    }
+                }
+            }
+        ];
+        // ------ End define outlines -----------------------------------
+        outlines[factionRandomizer.hchoose([1, 1, 1], "outline type")]();
+        const outline = csx.getImageData(0, 0, w, h);
+        //Returns the alpha value (0 - 255) for the pixel of csd corresponding to the point (X,Y), or -1 if (X,Y) is out of bounds.
+        function getOutlineAlpha(x, y) {
+            if (x < 0 || x > w || y < 0 || y > h) {
+                return -1;
+            }
+            return outline.data[(y * w + x) * 4 + 3];
+        }
+        const cgrid = [];
+        for (let gx = 0; gx < gw; gx++) {
+            cgrid[gx] = [];
+            for (let gy = 0; gy < gh; gy++) {
+                cgrid[gx][gy] = {
+                    gx: gx,
+                    gy: gy,
+                    x: Math.floor(gwextra + (gx + 0.5) * COMPONENT_GRID_SIZE),
+                    y: Math.floor(ghextra + (gy + 0.5) * COMPONENT_GRID_SIZE),
+                    phase: 0,
+                }; // Phase is 0 for unchecked, 1 for checked and good, and -1 for checked and bad
+            }
+        }
+        const goodcells = [
+            cgrid[Math.floor(gw / 2)][Math.floor(gh / 2)],
+        ];
+        let nextcheck = 0;
+        while (nextcheck < goodcells.length) {
+            const lcell = goodcells[nextcheck];
+            if (lcell.gx > 0) {
+                const ncell = cgrid[lcell.gx - 1][lcell.gy];
+                if (ncell.phase == 0) {
+                    if (getOutlineAlpha(ncell.x, ncell.y) > 0) {
+                        ncell.phase = 1;
+                        goodcells.push(ncell);
+                    }
+                    else {
+                        ncell.phase = -1;
+                    }
+                }
+            }
+            if (lcell.gx < gw - 1) {
+                const ncell = cgrid[lcell.gx + 1][lcell.gy];
+                if (ncell.phase == 0) {
+                    if (getOutlineAlpha(ncell.x, ncell.y) > 0) {
+                        ncell.phase = 1;
+                        goodcells.push(ncell);
+                    }
+                    else {
+                        ncell.phase = -1;
+                    }
+                }
+            }
+            if (lcell.gy > 0) {
+                const ncell = cgrid[lcell.gx][lcell.gy - 1];
+                if (ncell.phase == 0) {
+                    if (getOutlineAlpha(ncell.x, ncell.y) > 0) {
+                        ncell.phase = 1;
+                        goodcells.push(ncell);
+                    }
+                    else {
+                        ncell.phase = -1;
+                    }
+                }
+            }
+            if (lcell.gy < gh - 1) {
+                const ncell = cgrid[lcell.gx][lcell.gy + 1];
+                if (ncell.phase == 0) {
+                    if (getOutlineAlpha(ncell.x, ncell.y) > 0) {
+                        ncell.phase = 1;
+                        goodcells.push(ncell);
+                    }
+                    else {
+                        ncell.phase = -1;
+                    }
+                }
+            }
+            nextcheck++;
+        }
+        for (let i = 0; i < goodcells.length; i++) {
+            const lcell = goodcells[i];
+            const ocell = cgrid[gw - 1 - lcell.gx][lcell.gy];
+            if (ocell.phase != 1) {
+                ocell.phase = 1;
+                goodcells.push(ocell);
+            }
+        }
+        const passes = factionRandomizer.hi(1, 2, "base component passes");
+        const extra = Math.max(1, Math.floor(goodcells.length *
+            factionRandomizer.hd(0, 1 / passes, "extra component amount")));
+        const totalcomponents = passes * goodcells.length + extra;
+        const cf = document.createElement("canvas"); // Canvas on which the actual ship components are drawn. Ships face upwards, with front towards Y=0
+        cf.width = w;
+        cf.height = h;
+        const cfx = cf.getContext("2d");
+        // ------ Define components ---------------------------------------
+        //Returns the phase of the cell containing (X,Y), or 0 if there is no such cell
+        function getCellPhase(x, y) {
+            const gx = Math.floor((x - gwextra) / COMPONENT_GRID_SIZE);
+            const gy = Math.floor((y - ghextra) / COMPONENT_GRID_SIZE);
+            if (gx < 0 || gx >= gw || gy < 0 || gy >= gh) {
+                return 0;
+            }
+            return cgrid[gx][gy].phase;
+        }
+        function frontness(v) {
+            return 1 - v[1] / h;
+        }
+        function centerness(v, doY) {
+            let rv = Math.min(1, 1 - Math.abs(v[0] - hw) / hw);
+            if (doY) {
+                rv = Math.min(rv, 1 - Math.abs(v[1] - hh) / hh);
+            }
+            return rv;
+        }
+        function bigness(v) {
+            const effectCenter = centerness(v, true);
+            const effectShipsize = 1 - 1 / ((w + h) / 1000 + 1);
+            const effectFaction = factionRandomizer.hd(0, 1, "master bigness") ** 0.5;
+            const effectStack = 1 - totaldone / totalcomponents;
+            return effectCenter * effectShipsize * effectFaction * effectStack;
+        }
+        function leeway(v1, v2) {
+            return [
+                Math.min(v1[0] - CANVAS_SHIP_EDGE, w - CANVAS_SHIP_EDGE - v2[0]),
+                Math.min(v1[1] - CANVAS_SHIP_EDGE, h - CANVAS_SHIP_EDGE - v2[1]),
+            ];
+        }
+        //lp is the ship. amount is the amount of shadow at the edges, 0 - 1 (the middle is always 0). middlep and edgep should be vectors at the middle and edge of the gradient.
+        function shadowGradient(middlePoint, edgePoint, amount) {
+            const grad = cfx.createLinearGradient(edgePoint[0], edgePoint[1], middlePoint[0] * 2 - edgePoint[0], middlePoint[1] * 2 - edgePoint[1]);
+            const darkness = `rgba(0,0,0,${clamp(amount, 0, 1)})`;
+            grad.addColorStop(0, darkness);
+            grad.addColorStop(0.5, "rgba(0,0,0,0)");
+            grad.addColorStop(1, darkness);
+            return grad;
+        }
+        // Each component function takes an argument 'lp' (for the ship) and 'v' (an integral 2-vector denoting the center of the component)
+        const components = [
+            // Bordered block
+            function (v) {
+                let lcms = COMPONENT_MAXIMUM_SIZE;
+                const bn = bigness(v) ** 0.3;
+                if (shipRandomizer.sb(factionRandomizer.hd(0, 0.9, "com0 bigchance") * bn)) {
+                    const chance = factionRandomizer.hd(0, 0.5, "com0 bigincchance");
+                    while (shipRandomizer.sb(chance * bn)) {
+                        const lw = leeway([v[0] - lcms, v[1] - lcms], [v[0] + lcms, v[1] + lcms]);
+                        if (Math.min(lw[0], lw[1]) > lcms / 2) {
+                            lcms *= 1.5;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                const lcms2 = lcms * 2;
+                const dhi = [
+                    Math.ceil(shipRandomizer.sd(1, Math.max(2, lcms / 2))),
+                    Math.ceil(shipRandomizer.sd(1, Math.max(2, lcms / 2))),
+                ];
+                const borderwidth = Math.min(dhi[0], dhi[1]) * shipRandomizer.sd(0.1, 1.2);
+                const dho = [dhi[0] + borderwidth * 2, dhi[1] + borderwidth * 2];
+                const counts = [Math.ceil(lcms2 / dho[0]), Math.ceil(lcms2 / dho[1])];
+                const trv = [
+                    Math.round((counts[0] * dho[0]) / 2),
+                    Math.round((counts[1] * dho[1]) / 2),
+                ];
+                const baseColor = computeBaseColor();
+                const icolorh = scaleColorBy(baseColor, shipRandomizer.sd(0.4, 1));
+                const ocolorh = scaleColorBy(baseColor, shipRandomizer.sd(0.4, 1));
+                cfx.fillStyle = "rgba(0,0,0," + shipRandomizer.sd(0, 0.25) + ")";
+                cfx.fillRect(v[0] - trv[0] - 1, v[1] - trv[1] - 1, dho[0] * counts[0] + 2, dho[1] * counts[1] + 2);
+                cfx.fillStyle = ocolorh;
+                cfx.fillRect(v[0] - trv[0], v[1] - trv[1], dho[0] * counts[0], dho[1] * counts[1]);
+                cfx.fillStyle = icolorh;
+                for (let x = 0; x < counts[0]; x++) {
+                    const bx = v[0] + borderwidth + x * dho[0] - trv[0];
+                    for (let y = 0; y < counts[1]; y++) {
+                        const by = v[1] + borderwidth + y * dho[1] - trv[1];
+                        cfx.fillRect(bx, by, dhi[0], dhi[1]);
+                    }
+                }
+                if (shipRandomizer.sb(clamp((totaldone * 0.6 / totalcomponents + 0.3) * (lcms / COMPONENT_MAXIMUM_SIZE), 0, 0.98))) {
+                    cfx.fillStyle = shadowGradient(v, [v[0] + trv[0], v[1]], shipRandomizer.sd(0, 0.9));
+                    cfx.fillRect(v[0] - trv[0], v[1] - trv[1], dho[0] * counts[0], dho[1] * counts[1]);
+                }
+            },
+            // Cylinder array
+            function (v) {
+                let lcms = COMPONENT_MAXIMUM_SIZE;
+                const bn = bigness(v) ** 0.2;
+                if (shipRandomizer.sb(factionRandomizer.hd(0.3, 1, "com1 bigchance") * bn)) {
+                    const chance = factionRandomizer.hd(0, 0.6, "com1 bigincchance");
+                    while (shipRandomizer.sb(chance * bn)) {
+                        const lw = leeway([v[0] - lcms, v[1] - lcms], [v[0] + lcms, v[1] + lcms]);
+                        if (Math.min(lw[0], lw[1]) > lcms / 2) {
+                            lcms *= 1.5;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                let componentWidth = Math.ceil(shipRandomizer.sd(0.8, 2) * lcms);
+                const componentHeight = Math.ceil(shipRandomizer.sd(0.8, 2) * lcms);
+                const cw = shipRandomizer.si(3, Math.max(4, componentWidth));
+                const count = Math.max(1, Math.round(componentWidth / cw));
+                componentWidth = count * cw;
+                const baseColor = computeBaseColor();
+                const ccolor = scaleColorBy(baseColor, shipRandomizer.sd(0.5, 1));
+                const darkness = shipRandomizer.sd(0.3, 0.9);
+                // true = horizontal array, false = vertical array
+                const orientation = shipRandomizer.sb(clamp(factionRandomizer.hd(-0.2, 1.2, "com1 hchance"), 0, 1));
+                if (orientation) {
+                    const bv = [v[0] - Math.floor(componentWidth / 2), v[1] - Math.floor(componentHeight / 2)];
+                    cfx.fillStyle = "rgba(0,0,0," + shipRandomizer.sd(0, 0.25) + ")";
+                    cfx.fillRect(bv[0] - 1, bv[1] - 1, componentWidth + 2, componentHeight + 2);
+                    cfx.fillStyle = ccolor;
+                    cfx.fillRect(bv[0], bv[1], componentWidth, componentHeight);
+                    for (let i = 0; i < count; i++) {
+                        cfx.fillStyle = shadowGradient([bv[0] + (i + 0.5) * cw, v[1]], [bv[0] + i * cw, v[1]], darkness);
+                        cfx.fillRect(bv[0] + i * cw, bv[1], cw, componentHeight);
+                    }
+                }
+                else {
+                    const bv = [v[0] - Math.floor(componentHeight / 2), v[1] - Math.floor(componentWidth / 2)];
+                    cfx.fillStyle = "rgba(0,0,0," + shipRandomizer.sd(0, 0.25) + ")";
+                    cfx.fillRect(bv[0] - 1, bv[1] - 1, componentHeight + 2, componentWidth + 2);
+                    cfx.fillStyle = ccolor;
+                    cfx.fillRect(bv[0], bv[1], componentHeight, componentWidth);
+                    for (let i = 0; i < count; i++) {
+                        cfx.fillStyle = shadowGradient([v[0], bv[1] + (i + 0.5) * cw], [v[0], bv[1] + i * cw], darkness);
+                        cfx.fillRect(bv[0], bv[1] + i * cw, componentWidth, cw);
+                    }
+                }
+            },
+            // Banded cylinder
+            function (v) {
+                let lcms = COMPONENT_MAXIMUM_SIZE;
+                const bn = bigness(v) ** 0.05;
+                if (shipRandomizer.sb(factionRandomizer.hd(0, 1, "com2 bigchance") * bn)) {
+                    const chance = factionRandomizer.hd(0, 0.9, "com2 bigincchance");
+                    while (shipRandomizer.sb(chance * bn)) {
+                        const lw = leeway([v[0] - lcms, v[1] - lcms], [v[0] + lcms, v[1] + lcms]);
+                        if (Math.min(lw[0], lw[1]) > lcms / 2) {
+                            lcms *= 1.5;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                const componentWidth = Math.ceil(shipRandomizer.sd(0.6, 1.4) * lcms);
+                const componentHeight = Math.ceil(shipRandomizer.sd(1, 2) * lcms);
+                const wh2 = [
+                    Math.ceil(clamp((componentWidth * shipRandomizer.sd(0.7, 1)) / 2, 1, componentWidth)),
+                    Math.ceil(clamp((componentWidth * shipRandomizer.sd(0.8, 1)) / 2, 1, componentWidth)),
+                ];
+                const h2 = [
+                    Math.floor(clamp(componentWidth * shipRandomizer.sd(0.05, 0.25), 1, componentHeight)),
+                    Math.floor(clamp(componentWidth * shipRandomizer.sd(0.1, 0.3), 1, componentHeight)),
+                ];
+                const hpair = h2[0] + h2[1];
+                const odd = shipRandomizer.sb(factionRandomizer.hd(0, 1, "com2 oddchance") ** 0.5);
+                const count = clamp(Math.floor(componentHeight / hpair), 1, componentHeight);
+                const htotal = count * hpair + (odd ? h2[0] : 0);
+                const baseColor = computeBaseColor();
+                const scale_0 = shipRandomizer.sd(0.6, 1);
+                const scale_1 = shipRandomizer.sd(0.6, 1);
+                const color2 = [
+                    scaleColorBy(baseColor, scale_0),
+                    scaleColorBy(baseColor, scale_1),
+                ];
+                const lightness = 1 - shipRandomizer.sd(0.5, 0.95);
+                const colord2 = [
+                    scaleColorBy(baseColor, lightness * scale_0),
+                    scaleColorBy(baseColor, lightness * scale_1),
+                ];
+                const orientation = shipRandomizer.sb(factionRandomizer.hd(0, 1, "com2 verticalchance") ** 0.1);
+                if (orientation) {
+                    const grad2_0 = cfx.createLinearGradient(v[0] - wh2[0], v[1], v[0] + wh2[0], v[1]);
+                    const grad2_1 = cfx.createLinearGradient(v[0] - wh2[1], v[1], v[0] + wh2[1], v[1]);
+                    grad2_0.addColorStop(0, colord2[0]);
+                    grad2_0.addColorStop(0.5, color2[0]);
+                    grad2_0.addColorStop(1, colord2[0]);
+                    grad2_1.addColorStop(0, colord2[1]);
+                    grad2_1.addColorStop(0.5, color2[1]);
+                    grad2_1.addColorStop(1, colord2[1]);
+                    const by = Math.floor(v[1] - htotal / 2);
+                    for (let i = 0; i < count; i++) {
+                        cfx.fillStyle = grad2_0;
+                        cfx.fillRect(v[0] - wh2[0], by + i * hpair, wh2[0] * 2, h2[0]);
+                        cfx.fillStyle = grad2_1;
+                        cfx.fillRect(v[0] - wh2[1], by + i * hpair + h2[0], wh2[1] * 2, h2[1]);
+                    }
+                    if (odd) {
+                        cfx.fillStyle = grad2_0;
+                        cfx.fillRect(v[0] - wh2[0], by + count * hpair, wh2[0] * 2, h2[0]);
+                    }
+                }
+                else {
+                    const grad2_0 = cfx.createLinearGradient(v[0], v[1] - wh2[0], v[0], v[1] + wh2[0]);
+                    const grad2_1 = cfx.createLinearGradient(v[0], v[1] - wh2[1], v[0], v[1] + wh2[1]);
+                    grad2_0.addColorStop(0, colord2[0]);
+                    grad2_0.addColorStop(0.5, color2[0]);
+                    grad2_0.addColorStop(1, colord2[0]);
+                    grad2_1.addColorStop(0, colord2[1]);
+                    grad2_1.addColorStop(0.5, color2[1]);
+                    grad2_1.addColorStop(1, colord2[1]);
+                    const bx = Math.floor(v[0] - htotal / 2);
+                    for (let i = 0; i < count; i++) {
+                        cfx.fillStyle = grad2_0;
+                        cfx.fillRect(bx + i * hpair, v[1] - wh2[0], h2[0], wh2[0] * 2);
+                        cfx.fillStyle = grad2_1;
+                        cfx.fillRect(bx + i * hpair + h2[0], v[1] - wh2[1], h2[1], wh2[1] * 2);
+                    }
+                    if (odd) {
+                        cfx.fillStyle = grad2_0;
+                        cfx.fillRect(bx + count * hpair, v[1] - wh2[0], h2[0], wh2[0] * 2);
+                    }
+                }
+            },
+            //Rocket engine (or tries to call another random component if too far forward)
+            function (v) {
+                if (shipRandomizer.sb(frontness(v) - 0.3) ||
+                    getCellPhase(v[0], v[1] + COMPONENT_GRID_SIZE * 1.2) > 0 ||
+                    getCellPhase(v[0], v[1] + COMPONENT_GRID_SIZE * 1.8) > 0) {
+                    for (let tries = 0; tries < 100; tries++) {
+                        const which = shipRandomizer.schoose(componentChances);
+                        if (which != 3) {
+                            components[which](v);
+                            return;
+                        }
+                    }
+                }
+                let lcms = COMPONENT_MAXIMUM_SIZE;
+                const bn = bigness(v) ** 0.1;
+                if (shipRandomizer.sb(factionRandomizer.hd(0.6, 1, "com3 bigchance") * bn)) {
+                    const chance = factionRandomizer.hd(0.3, 0.8, "com3 bigincchance");
+                    while (shipRandomizer.sb(chance * bn)) {
+                        const lw = leeway([v[0] - lcms, v[1] - lcms], [v[0] + lcms, v[1] + lcms]);
+                        if (Math.min(lw[0], lw[1]) > lcms / 2) {
+                            lcms *= 1.5;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                const componentWidth = shipRandomizer.sd(1, 2) * lcms;
+                let componentHeight = Math.ceil(shipRandomizer.sd(0.3, 1) * lcms);
+                const nratio = shipRandomizer.sd(0.25, 0.6);
+                const nw = componentWidth * nratio;
+                const midw = (componentWidth + nw) / 2;
+                const midwh = midw / 2;
+                const componentHeight2 = [
+                    Math.max(1, Math.ceil(componentHeight * shipRandomizer.sd(0.08, 0.25))),
+                    Math.max(1, Math.ceil(componentHeight * shipRandomizer.sd(0.03, 0.15))),
+                ];
+                const hpair = componentHeight2[0] + componentHeight2[1];
+                const count = Math.ceil(componentHeight / hpair);
+                componentHeight = count * hpair + componentHeight2[0];
+                const basecolor = colors[factionRandomizer.hchoose(colorChances, "com3 basecolor")];
+                const lightness0_mid = factionRandomizer.hd(0.5, 0.8, "com3 lightness0 mid");
+                const lightness0_edge = lightness0_mid - factionRandomizer.hd(0.2, 0.4, "com3 lightness0 edge");
+                const lightness1_edge = factionRandomizer.hd(0, 0.2, "com3 lightness1 edge");
+                const grad2 = [
+                    cfx.createLinearGradient(v[0] - midwh, v[1], v[0] + midwh, v[1]),
+                    cfx.createLinearGradient(v[0] - midwh, v[1], v[0] + midwh, v[1]),
+                ];
+                grad2[0].addColorStop(0, scaleColorBy(basecolor, lightness0_edge));
+                grad2[0].addColorStop(0.5, scaleColorBy(basecolor, lightness0_mid));
+                grad2[0].addColorStop(1, scaleColorBy(basecolor, lightness0_edge));
+                grad2[1].addColorStop(0, scaleColorBy(basecolor, lightness1_edge));
+                grad2[1].addColorStop(0.5, colorToHex(basecolor));
+                grad2[1].addColorStop(1, scaleColorBy(basecolor, lightness1_edge));
+                const by = Math.ceil(v[1] - componentHeight / 2);
+                cfx.fillStyle = grad2[0];
+                cfx.beginPath();
+                cfx.moveTo(v[0] - nw / 2, by);
+                cfx.lineTo(v[0] + nw / 2, by);
+                cfx.lineTo(v[0] + componentWidth / 2, by + componentHeight);
+                cfx.lineTo(v[0] - componentWidth / 2, by + componentHeight);
+                cfx.fill();
+                cfx.fillStyle = grad2[1];
+                const byh = [by + componentHeight2[0], by + hpair];
+                for (let i = 0; i < count; i++) {
+                    const lyr = [i * hpair + componentHeight2[0], (i + 1) * hpair];
+                    const ly = [byh[0] + i * hpair, byh[1] + i * hpair];
+                    const lw = [
+                        (nw + (componentWidth - nw) * (lyr[0] / componentHeight)) / 2,
+                        (nw + (componentWidth - nw) * (lyr[1] / componentHeight)) / 2,
+                    ];
+                    cfx.beginPath();
+                    cfx.moveTo(v[0] - lw[0], ly[0]);
+                    cfx.lineTo(v[0] + lw[0], ly[0]);
+                    cfx.lineTo(v[0] + lw[1], ly[1]);
+                    cfx.lineTo(v[0] - lw[1], ly[1]);
+                    cfx.fill();
+                }
+            },
+            //Elongated cylinder (calls component 0 - 2 on top of its starting point)
+            function (v) {
+                const cn = centerness(v, false);
+                const lightmid = shipRandomizer.sd(0.7, 1);
+                const lightedge = shipRandomizer.sd(0, 0.2);
+                const baseColor = computeBaseColor();
+                const colormid = scaleColorBy(baseColor, lightmid);
+                const coloredge = scaleColorBy(baseColor, lightedge);
+                const componentWidth = Math.max(3, Math.ceil(size *
+                    (shipRandomizer.sd(0.4, 1) ** 2) *
+                    factionRandomizer.hd(0.02, 0.1, "com4 maxwidth")));
+                const hwi = Math.floor(componentWidth / 2);
+                const hwe = componentWidth % 2;
+                const forwards = 1 * (factionRandomizer.hd(0, 1, "com4 directionc0") ** 4);
+                const backwards = 0.1 * (factionRandomizer.hd(0, 1, "com4 directionc1") ** 4);
+                const toCenter = 0.2 * (factionRandomizer.hd(0, 1, "com4 directionc2") ** 4);
+                const direction = shipRandomizer.schoose([
+                    forwards * (2 - cn),
+                    backwards,
+                    toCenter * (1 + cn),
+                ]);
+                let ev = null;
+                // Shorter than comparing with 0
+                if (!direction) {
+                    //forwards
+                    const hlimit = v[1] - CANVAS_SHIP_EDGE;
+                    const componentHeight = Math.min(Math.max(COMPONENT_MAXIMUM_SIZE, hlimit - shipRandomizer.si(0, COMPONENT_MAXIMUM_SIZE * 2)), Math.floor(0.7 * size * (shipRandomizer.sd(0, 1) ** factionRandomizer.hd(2, 6, "com4 hpower0"))));
+                    const bb_0_0 = v[0] - hwi, bb_0_1 = v[1] - componentHeight, bb_1_0 = v[0] + hwi + hwe;
+                    const grad = cfx.createLinearGradient(bb_0_0, bb_0_1, bb_1_0, bb_0_1);
+                    grad.addColorStop(0, coloredge);
+                    grad.addColorStop(0.5, colormid);
+                    grad.addColorStop(1, coloredge);
+                    cfx.fillStyle = grad;
+                    cfx.fillRect(bb_0_0, bb_0_1, componentWidth, componentHeight);
+                    ev = [v[0], v[1] - componentHeight];
+                }
+                else if (direction == 1) {
+                    //backwards
+                    const hlimit = h - (CANVAS_SHIP_EDGE + v[1]);
+                    const componentHeight = Math.min(Math.max(COMPONENT_MAXIMUM_SIZE, hlimit - shipRandomizer.si(0, COMPONENT_MAXIMUM_SIZE * 2)), Math.floor(0.6 * size * (shipRandomizer.sd(0, 1) ** factionRandomizer.hd(2, 7, "com4 hpower1"))));
+                    const bb_0_0 = v[0] - hwi, bb_0_1 = v[1], bb_1_0 = v[0] + hwi + hwe;
+                    const grad = cfx.createLinearGradient(bb_0_0, bb_0_1, bb_1_0, bb_0_1);
+                    grad.addColorStop(0, coloredge);
+                    grad.addColorStop(0.5, colormid);
+                    grad.addColorStop(1, coloredge);
+                    cfx.fillStyle = grad;
+                    cfx.fillRect(bb_0_0, bb_0_1, componentWidth, componentHeight);
+                    ev = [v[0], v[1] + componentHeight];
+                }
+                else if (direction == 2) {
+                    //to center
+                    const grad = cfx.createLinearGradient(v[0], v[1] - hwi, v[0], v[1] + hwi + hwe);
+                    grad.addColorStop(0, coloredge);
+                    grad.addColorStop(0.5, colormid);
+                    grad.addColorStop(1, coloredge);
+                    cfx.fillStyle = grad;
+                    cfx.fillRect(v[0], v[1] - hwi, Math.ceil(hw - v[0]) + 1, componentWidth);
+                    ev = [hw, v[1]];
+                }
+                const coverComC = [
+                    0.6 * (factionRandomizer.hd(0, 1, "com4 covercomc0") ** 2),
+                    0.2 * (factionRandomizer.hd(0, 1, "com4 covercomc1") ** 2),
+                    (factionRandomizer.hd(0, 1, "com4 covercomc2") ** 2),
+                ];
+                components[shipRandomizer.schoose(coverComC)](v);
+                if (getCellPhase(ev[0], ev[1]) > 0) {
+                    const nev = [
+                        ev[0] + Math.round(shipRandomizer.sd(-1, 1) * COMPONENT_GRID_SIZE),
+                        ev[1] + Math.round(shipRandomizer.sd(-1, 1) * COMPONENT_GRID_SIZE),
+                    ];
+                    if (getCellPhase(nev[0], nev[1]) > 0) {
+                        components[shipRandomizer.schoose(coverComC)](nev);
+                    }
+                    else {
+                        components[shipRandomizer.schoose(coverComC)](ev);
+                    }
+                }
+            },
+            //Ball
+            function (v) {
+                let lcms = COMPONENT_MAXIMUM_SIZE;
+                const bn = bigness(v) ** 0.1;
+                if (shipRandomizer.sb(factionRandomizer.hd(0, 0.9, "com5 bigchance") * bn)) {
+                    const chance = factionRandomizer.hd(0, 0.8, "com5 bigincchance");
+                    while (shipRandomizer.sb(chance * bn)) {
+                        const lw = leeway([v[0] - lcms, v[1] - lcms], [v[0] + lcms, v[1] + lcms]);
+                        if (Math.min(lw[0], lw[1]) > lcms / 2) {
+                            lcms *= 1.5;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                const lightmid = shipRandomizer.sd(0.75, 1);
+                const lightedge = shipRandomizer.sd(0, 0.25);
+                const baseColor = computeBaseColor();
+                const colormid = scaleColorBy(baseColor, lightmid);
+                const coloredge = scaleColorBy(baseColor, lightedge);
+                const countx = 1 +
+                    shipRandomizer.sseq(factionRandomizer.hd(0, 1, "com5 multxc"), Math.floor(1.2 * ((lcms / COMPONENT_MAXIMUM_SIZE) ** 0.6)));
+                const county = 1 +
+                    shipRandomizer.sseq(factionRandomizer.hd(0, 1, "com5 multyc"), Math.floor(1.2 * ((lcms / COMPONENT_MAXIMUM_SIZE) ** 0.6)));
+                const smallr = (shipRandomizer.sd(0.5, 1) * lcms) / Math.max(countx, county);
+                const drawr = smallr + 0.5;
+                const shadowr = smallr + 1;
+                const centerr = smallr / 5;
+                const componentHw = smallr * countx;
+                const componentHh = smallr * county;
+                const bv = [v[0] - componentHw, v[1] - componentHh];
+                cfx.fillStyle = "rgba(0,0,0," + shipRandomizer.sd(0, 0.2) + ")";
+                for (let ax = 0; ax < countx; ax++) {
+                    const px = bv[0] + (ax * 2 + 1) * smallr;
+                    for (let ay = 0; ay < county; ay++) {
+                        const py = bv[1] + (ay * 2 + 1) * smallr;
+                        cfx.beginPath();
+                        cfx.arc(px, py, shadowr, 0, 2 * Math.PI);
+                        cfx.fill();
+                    }
+                }
+                for (let ax = 0; ax < countx; ax++) {
+                    const px = bv[0] + (ax * 2 + 1) * smallr;
+                    for (let ay = 0; ay < county; ay++) {
+                        const py = bv[1] + (ay * 2 + 1) * smallr;
+                        const grad = cfx.createRadialGradient(px, py, centerr, px, py, drawr);
+                        grad.addColorStop(0, colormid);
+                        grad.addColorStop(1, coloredge);
+                        cfx.fillStyle = grad;
+                        cfx.beginPath();
+                        cfx.arc(px, py, drawr, 0, 2 * Math.PI);
+                        cfx.fill();
+                    }
+                }
+            },
+            //Forward-facing trapezoidal fin
+            function (v) {
+                if (nextpass <= 0 || shipRandomizer.sb(frontness(v))) {
+                    components[shipRandomizer.schoose(componentChances.slice(0, 6))](v);
+                    return;
+                }
+                let lcms = COMPONENT_MAXIMUM_SIZE;
+                const bn = bigness(v) ** 0.05;
+                if (shipRandomizer.sb(factionRandomizer.hd(0, 0.9, "com6 bigchance") * bn)) {
+                    const chance = factionRandomizer.hd(0, 0.8, "com6 bigincchance");
+                    while (shipRandomizer.sb(chance * bn)) {
+                        const lw = leeway([v[0] - lcms, v[1] - lcms], [v[0] + lcms, v[1] + lcms]);
+                        if (Math.min(lw[0], lw[1]) > lcms / 2) {
+                            lcms *= 1.5;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                const h0 = Math.ceil(lcms * 2 * shipRandomizer.sd(0.6, 1)); //Inner height, longer.
+                const hh0i = Math.floor(h0 / 2);
+                const hh0e = h0 % 2;
+                //Outer height, shorter
+                const h1 = h0 *
+                    (shipRandomizer.sd(factionRandomizer.hd(0, 0.8, "com6 h1min") ** 0.5, 0.9) **
+                        factionRandomizer.hd(0.5, 1.5, "com6 h1power"));
+                const hh1i = Math.floor(h1 / 2);
+                const hh1e = h0 % 2;
+                const backamount = Math.max(0 - (h0 - h1) / 2, h0 *
+                    (shipRandomizer.sd(0, 0.45) + shipRandomizer.sd(0, 0.45)) *
+                    (factionRandomizer.hb(0.8, "com6 backnesstype")
+                        ? factionRandomizer.hd(0.2, 0.9, "com6 backness#pos")
+                        : factionRandomizer.hd(-0.2, -0.05, "com6 backness#neg")));
+                const componentWidth = Math.ceil(lcms * shipRandomizer.sd(0.7, 1) * (factionRandomizer.hd(0.1, 3.5, "com6 width") ** 0.5));
+                const hwi = Math.floor(componentWidth / 2);
+                const hwe = componentWidth % 2;
+                const quad = [
+                    [v[0] - hwi, v[1] + backamount - hh1i],
+                    [v[0] + hwi + hwe, v[1] - hh0i],
+                    [v[0] + hwi + hwe, v[1] + hh0i + hh0e],
+                    [v[0] - hwi, v[1] + backamount + hh1i + hh1e],
+                ];
+                const baseColor = computeBaseColor();
+                cfx.fillStyle = "rgba(0,0,0," + shipRandomizer.sd(0, 0.2) + ")";
+                cfx.beginPath();
+                cfx.moveTo(quad[0][0] - 1, quad[0][1]);
+                cfx.lineTo(quad[1][0] - 1, quad[1][1]);
+                cfx.lineTo(quad[2][0] - 1, quad[2][1]);
+                cfx.lineTo(quad[3][0] - 1, quad[3][1]);
+                cfx.fill();
+                cfx.fillStyle = scaleColorBy(baseColor, shipRandomizer.sd(0.7, 1));
+                cfx.beginPath();
+                cfx.moveTo(quad[0][0], quad[0][1]);
+                cfx.lineTo(quad[1][0], quad[1][1]);
+                cfx.lineTo(quad[2][0], quad[2][1]);
+                cfx.lineTo(quad[3][0], quad[3][1]);
+                cfx.fill();
+            }
+        ];
+        // ------ End define components -----------------------------------
+        // Add components
+        let extradone = 0, nextpass = 0, nextcell = 0, totaldone = 0;
+        for (;;) {
+            let ncell;
+            if (nextpass < passes) {
+                if (nextcell < goodcells.length) {
+                    ncell = goodcells[nextcell];
+                    nextcell++;
+                }
+                else {
+                    nextpass++;
+                    ncell = goodcells[0];
+                    nextcell = 1;
+                }
+            }
+            else if (extradone < extra) {
+                ncell = goodcells[shipRandomizer.si(0, goodcells.length - 1)];
+                extradone++;
+            }
+            else {
+                break;
+            }
+            let lv = [ncell.x, ncell.y];
+            for (let t = 0; t < 10; t++) {
+                const nv = [
+                    ncell.x + shipRandomizer.si(-COMPONENT_GRID_SIZE, COMPONENT_GRID_SIZE),
+                    ncell.y + shipRandomizer.si(-COMPONENT_GRID_SIZE, COMPONENT_GRID_SIZE),
+                ];
+                if (nv[0] < CANVAS_SHIP_EDGE ||
+                    nv[0] > w - CANVAS_SHIP_EDGE ||
+                    nv[1] < CANVAS_SHIP_EDGE ||
+                    nv[1] > h - CANVAS_SHIP_EDGE) {
+                    continue;
+                }
+                if (getOutlineAlpha(nv[0], nv[1]) <= 0) {
+                    continue;
+                }
+                lv = nv;
+                break;
+            }
+            if (Math.abs(lv[0] - hw) < COMPONENT_GRID_SIZE) {
+                if (shipRandomizer.sb(factionRandomizer.hd(0, 1, "com middleness"))) {
+                    lv[0] = hw;
+                }
+            }
+            components[shipRandomizer.schoose(componentChances)](lv);
+            totaldone++;
+        }
+        // Mirror
+        cfx.clearRect(hw + (w % 2), 0, w, h);
+        cfx.scale(-1, 1);
+        cfx.drawImage(cf, 0 - w, 0);
+        return cf;
+    }
+
+    //
+    function generateFactionRandomizer(seed) {
+        return new Randomizer(seed);
+    }
+    function generateShip(factionRandomizer, seed, size) {
+        return buildShip(factionRandomizer, seed, size);
+    }
+
+    const MAX_ANGLE = 360;
+
+    function createSplitPoints(width, height, targetSize, noise) {
+      const xPoints = Math.floor(width / targetSize);
+      const yPoints = Math.floor(height / targetSize);
+      const result = [];
+      const yOffset = Math.floor(height / (2 * yPoints));
+      for (let currentY = 0; currentY < yPoints; currentY++) {
+        const iterationXPoints = currentY % 2 === 0 ? xPoints : xPoints - 1;
+        const xOffset =
+          currentY % 2 === 0
+            ? Math.floor(width / (2 * xPoints))
+            : Math.floor(width / xPoints);
+        for (let currentX = 0; currentX < iterationXPoints; currentX++) {
+          result.push([
+            xOffset +
+              Math.round(
+                ((currentX + (Math.random() - 0.5) * 2 * noise) * width) / xPoints
+              ),
+            yOffset +
+              Math.round(
+                ((currentY + (Math.random() - 0.5) * 2 * noise) * height) / yPoints
+              ),
+          ]);
+        }
+      }
+      return result;
+    }
+
+    function createSprites(targetCanvas) {
+      const splitPoints = createSplitPoints(
+        targetCanvas.width,
+        targetCanvas.height,
+        Math.max(
+          12,
+          Math.floor(Math.min(targetCanvas.width, targetCanvas.height) / 12)
+        ),
+        0.5
+      );
+      const targetCtx = targetCanvas.getContext("2d");
+      const width = targetCanvas.width,
+        height = targetCanvas.height;
+      const imageData = targetCtx.getImageData(0, 0, width, height);
+      // Assigning extreme values so we know they'll be overriden
+      const sprites = splitPoints.map((p) => ({
+        minX: 1e9,
+        minY: 1e9,
+        maxX: 0,
+        maxY: 0,
+        center: p,
+        points: [],
+      }));
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const pos = (y * width + x) * 4;
+          if (imageData.data[pos + 3] === 0) {
+            // Transparent pixel, nothing to do
+            continue;
+          }
+          // With the size of the images we are working, 1,000,000,000 behaves the same as infinity
+          let minDistance = 1e9;
+          let minIndex;
+          for (let i = 0; i < splitPoints.length; i++) {
+            const distance = Math.hypot(
+              splitPoints[i][0] - x,
+              splitPoints[i][1] - y
+            );
+            if (distance < minDistance) {
+              minDistance = distance;
+              minIndex = i;
+            }
+          }
+
+          const targetSprite = sprites[minIndex];
+          if (x < targetSprite.minX) {
+            targetSprite.minX = x;
+          }
+          if (x > targetSprite.maxX) {
+            targetSprite.maxX = x;
+          }
+          if (y < targetSprite.minY) {
+            targetSprite.minY = y;
+          }
+          if (y > targetSprite.maxY) {
+            targetSprite.maxY = y;
+          }
+
+          targetSprite.points.push([
+            x,
+            y,
+            imageData.data[pos],
+            imageData.data[pos + 1],
+            imageData.data[pos + 2],
+            imageData.data[pos + 3],
+          ]);
+        }
+      }
+      const result = [];
+      sprites.forEach((sprite) => {
+        if (sprite.minX < 1e9) {
+          const shardWidth = sprite.maxX - sprite.minX + 1;
+          const shardHeight = sprite.maxY - sprite.minY + 1;
+          const shardCanvas = document.createElement("canvas");
+          shardCanvas.width = shardWidth;
+          shardCanvas.height = shardHeight;
+          const shardCtx = shardCanvas.getContext("2d");
+          const imgData = shardCtx.createImageData(shardWidth, shardHeight);
+          sprite.points.forEach((point) => {
+            const pos =
+              4 *
+              ((point[1] - sprite.minY) * shardWidth + (point[0] - sprite.minX));
+            imgData.data[pos] = point[2];
+            imgData.data[pos + 1] = point[3];
+            imgData.data[pos + 2] = point[4];
+            imgData.data[pos + 3] = point[5];
+          });
+          shardCtx.putImageData(imgData, 0, 0);
+          result.push({
+            center: sprite.center,
+            canvas: shardCanvas,
+            corner: [sprite.minX, sprite.minY],
+          });
+        }
+      });
+      return result;
+    }
+
+    function calculateSpriteFinalState(sprite, width, height) {
+      const radiusFactor = 1.5 + 1.5 * Math.random();
+      const cx = sprite.center[0] - width / 2;
+      const cy = sprite.center[1] - height / 2;
+      const distance = Math.hypot(cx, cy);
+      const distanceSquare = distance * distance;
+      const finalDistance = distance * radiusFactor;
+
+      sprite.translateX =
+        (finalDistance - distance) *
+        ((distanceSquare - cy * cy) / distanceSquare) ** 0.5 *
+        (cx > 0 ? 1 : -1);
+      sprite.translateY =
+        (finalDistance - distance) *
+        ((distanceSquare - cx * cx) / distanceSquare) ** 0.5 *
+        (cy > 0 ? 1 : -1);
+      sprite.angle =
+        ((Math.random() * MAX_ANGLE * 2 - MAX_ANGLE) /
+          ((Math.random() + 2) * sprite.canvas.width)) *
+        10 *
+        (Math.PI / 180);
+    }
+
+    function findTopRow(imageData, width, height) {
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const index = (y * width + x) * 4;
+          if (imageData.data[index + 3] > 0) {
+            return y;
+          }
+        }
+      }
+      return -1;
+    }
+
+    function findBottomRow(imageData, width, height) {
+      for (let y = height - 1; y >= 0; y--) {
+        for (let x = 0; x < width; x++) {
+          const index = (y * width + x) * 4;
+          if (imageData.data[index + 3] > 0) {
+            return y;
+          }
+        }
+      }
+      return -1;
+    }
+
+    function findLeftColumn(imageData, width, height) {
+      for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+          const index = (y * width + x) * 4;
+          if (imageData.data[index + 3] > 0) {
+            return x;
+          }
+        }
+      }
+      return -1;
+    }
+
+    function findRightColumn(imageData, width, height) {
+      for (let x = width - 1; x >= 0; x--) {
+        for (let y = 0; y < height; y++) {
+          const index = (y * width + x) * 4;
+          if (imageData.data[index + 3] > 0) {
+            return x;
+          }
+        }
+      }
+      return -1;
+    }
+
+    function trimCanvas(canvas) {
+      const ctx = canvas.getContext("2d");
+      let w = canvas.width,
+        h = canvas.height;
+      const imageData = ctx.getImageData(0, 0, w, h);
+
+      const topRow = findTopRow(imageData, w, h),
+        bottomRow = findBottomRow(imageData, w, h),
+        leftColumn = findLeftColumn(imageData, w, h),
+        rightColumn = findRightColumn(imageData, w, h);
+      // No need to check all of them; if one is -1, all will be and viceversa
+      if (topRow < 0) {
+        canvas.width = 0;
+        canvas.height = 0;
+        return [0, 0];
+      }
+      w = 1 + rightColumn - leftColumn;
+      h = 1 + bottomRow - topRow;
+      const cut = ctx.getImageData(leftColumn, topRow, w, h);
+
+      canvas.width = w;
+      canvas.height = h;
+      ctx.putImageData(cut, 0, 0);
+      return [leftColumn, topRow];
+    }
+
+    function createFavicon(img) {
+      const favicon = document.createElement("canvas");
+      favicon.width = 32;
+      favicon.height = 32;
+      const favCtx = favicon.getContext("2d");
+      let destWidth, destHeight;
+      if (img.width > img.height) {
+        destWidth = 32;
+        destHeight = (32 * img.height) / img.width;
+      } else {
+        destHeight = 32;
+        destWidth = (32 * img.width) / img.height;
+      }
+      favCtx.drawImage(img, 0, 0, destWidth, destHeight);
+
+      const link = document.createElement("link");
+      link.setAttribute("rel", "icon");
+      link.setAttribute("href", favicon.toDataURL());
+      document.head.appendChild(link);
+    }
+
+    function hitEffect(canvas) {
+      const destCanvas = document.createElement("canvas");
+      const { width, height } = canvas;
+      destCanvas.width = width;
+      destCanvas.height = height;
+      const ctx = canvas.getContext("2d");
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const { data } = imageData;
+      const { length } = data;
+      for (let i = 0; i < length; i += 4) {
+        const r = data[i + 0];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        data[i + 0] = 255 - (0.393 * r + 0.769 * g + 0.189 * b);
+        data[i + 1] = 255 - (0.349 * r + 0.686 * g + 0.168 * b);
+        data[i + 2] = 255 - (0.272 * r + 0.534 * g + 0.131 * b);
+      }
+      destCanvas.getContext("2d").putImageData(imageData, 0, 0);
+      return destCanvas;
+    }
+
+    function generateShield(level) {
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.floor(shipWidth * 2);
+      canvas.height = Math.floor(shipHeight * 2);
+      const ctx = canvas.getContext("2d");
+      const centerX = canvas.width / 2 - 15;
+      const centerY = canvas.height / 2 - 30;
+      ctx.setTransform(1.5, 0, 0, (shipHeight / shipWidth) * 1.5, 0, 0);
+      const grad = ctx.createRadialGradient(
+        centerX,
+        centerY,
+        10,
+        centerX,
+        centerY,
+        30 - level * 3
+      );
+      grad.addColorStop(0, "transparent");
+      grad.addColorStop(0.7, "blue");
+      grad.addColorStop(1, "cyan");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, shipWidth / 2, 0, 7);
+      ctx.fill();
+      trimCanvas(canvas);
+      return canvas;
+    }
+
+    function generateShields() {
+      const shields = [];
+      for (let c = 0; c < 5; c++) {
+        shields.push(generateShield(c));
+      }
+      return shields;
+    }
+
+    function generateBullet() {
+      const canvas = document.createElement("canvas");
+      canvas.width = 20;
+      canvas.height = 60;
+      const ctx = canvas.getContext("2d");
+      // gold filled rect
+      ctx.fillStyle = "yellow";
+      ctx.beginPath();
+      ctx.moveTo(10, 60);
+      ctx.lineTo(20, 10);
+      ctx.arc(10, 10, 10, 0, Math.PI, true);
+      ctx.lineTo(10, 60);
+      ctx.fill();
+
+      // shadow
+      ctx.strokeStyle = "cyan";
+      ctx.shadowColor = "blue";
+      // restrict new draw to cover existing pixels
+      ctx.globalCompositeOperation = "source-atop";
+      // shadowed stroke
+      // "source-atop" clips off the undesired outer shadow
+      ctx.shadowBlur = 4;
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.moveTo(10, 70);
+      ctx.lineTo(23, 10);
+      ctx.arc(10, 10, 13, 0, Math.PI, true);
+      ctx.lineTo(10, 70);
+      ctx.stroke();
+
+      return [canvas, ctx.getImageData(0, 0, canvas.width, canvas.height).data];
+    }
+
+    function generateEnemyBulletFrame(colorStop) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 20;
+      canvas.height = 20;
+      const ctx = canvas.getContext("2d");
+      var grd = ctx.createRadialGradient(10, 10, 0, 10, 10, 10);
+      grd.addColorStop(colorStop, "yellow");
+      grd.addColorStop(1, "red");
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(10, 10, 10, 0, 7);
+      ctx.fill();
+
+      return canvas;
+    }
+
+    function generateEnemyBullet() {
+      const frames = [];
+      for (let c = 0; c < 9; c++) {
+        frames.push(generateEnemyBulletFrame(c / 10));
+      }
+      // Inverse animation, copying by reference
+      for (let d = frames.length - 2; d >= 1; d--) {
+        frames.push(frames[d]);
+      }
+      return frames;
+    }
+
+    function generatePowerupCanvas() {
+      const canvas = document.createElement("canvas");
+      canvas.width = 60;
+      canvas.height = 60;
+      const ctx = canvas.getContext("2d");
+      var grd = ctx.createRadialGradient(30, 30, 0, 30, 30, 30);
+      grd.addColorStop(0.6, "navy");
+      grd.addColorStop(1, "blue");
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(30, 30, 30, 0, 7);
+      ctx.fill();
+      return [canvas, ctx.getImageData(0, 0, canvas.width, canvas.height).data];
+    }
+
+    function flipCanvas(canvas) {
+      const flippedCanvas = document.createElement("canvas");
+      flippedCanvas.width = canvas.width;
+      flippedCanvas.height = canvas.height;
+      const ctx = flippedCanvas.getContext("2d");
+      ctx.scale(1, -1);
+      ctx.drawImage(canvas, 0, 0, canvas.width, -canvas.height);
+      return flippedCanvas;
+    }
+
+    function generateNewTag() {
+      const canvas = document.createElement("canvas");
+      canvas.width = 100;
+      canvas.height = 100;
+      const ctx = canvas.getContext("2d");
+      ctx.font = "bold 20px Helvetica";
+      ctx.translate(50, 50);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = "red";
+      ctx.fillStyle = "#fff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("NEW!", 0, 0);
+      trimCanvas(canvas);
+      const tagCanvas = document.createElement("canvas");
+      tagCanvas.width = canvas.width + 10;
+      tagCanvas.height = canvas.height + 10;
+      const tagCtx = tagCanvas.getContext("2d");
+      tagCtx.fillStyle = "red";
+      tagCtx.fillRect(0, 0, tagCanvas.width, tagCanvas.height);
+      tagCtx.drawImage(canvas, 5, 5);
+      return tagCanvas;
+    }
+
+    const CANVAS_WIDTH = 480;
+    const CANVAS_HEIGHT = 700;
+    const HALF_CANVAS_WIDTH = Math.floor(CANVAS_WIDTH / 2);
+    const HALF_CANVAS_HEIGHT = Math.floor(CANVAS_HEIGHT / 2);
+    const SHIP_SPEED = 0.6;
+    const STARS_WIDTH = 540;
+
+    let pointer_down = false;
+    let introInhibitPress = false;
+
+    let move_x = -1,
+      move_y = -1,
+      x,
+      y,
+      keysPressed = {},
+      anyKeyPressed = false;
+
+    let a = document.getElementById("a");
+    const faction = generateFactionRandomizer("piBbgDn4CZqlkqiF");
+    const ship = generateShip(faction, "ie7jMyCFouoUjkVs", 60);
+
+    trimCanvas(ship);
+
+    const destroyedShipSprites = createSprites(ship);
+    const shipWidth = ship.width;
+    const shipHeight = ship.height;
+    const shipMask = ship.getContext("2d").getImageData(0, 0, shipWidth, shipHeight)
+      .data;
+
+    let shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
+    let shipDestroyed;
+    let gameOverTime;
+    let fastFire;
+    const BOMB_DURATION = 1000;
+    let bombEffect;
+    let shieldLevel;
+
+    // Create favicon
+    createFavicon(ship);
+
+    const shields = generateShields();
+
+    const enemyBlueprints = [];
+
+    const [bullet, bulletMask] = generateBullet();
+    const enemyBulletFrames = generateEnemyBullet();
+    const enemyBulletMask = enemyBulletFrames[0]
+      .getContext("2d")
+      .getImageData(0, 0, enemyBulletFrames[0].width, enemyBulletFrames[0].height)
+      .data;
+
+    const [powerupCanvas, powerupMask] = generatePowerupCanvas();
+
+    let initialTime = performance.now();
+
+    const STATE_LOADING = 0,
+      STATE_INTRO = 1,
+      STATE_GAME = 2;
+
+    let difficulty;
+    let score;
+    let scoreText;
+    let state = STATE_LOADING;
+
+    const highscores = JSON.parse(self.localStorage["pnf_highscores"] || 0) || [];
+    let highlightHighscore = -1;
+    const newTag = generateNewTag();
+
+    function addScore(points) {
+      score += points;
+      scoreText = new Intl.NumberFormat().format(score);
+    }
+
+    function updateNextEnemy() {
+      const minNextEnemy = Math.max(400, 1000 - difficulty * 25);
+      nextEnemy += enemyRandomizer.si(minNextEnemy, minNextEnemy + 400);
+    }
+
+    function updateHighscores() {
+      if (score) {
+        const newScore = [score, Date.now()];
+        highscores.push(newScore);
+        // Sort by score
+        highscores.sort((a, b) => {
+          const scoreDiff = b[0] - a[0];
+          if (scoreDiff === 0) {
+            // Tie, newer first
+            return b[1] - a[1];
+          }
+          return scoreDiff;
+        });
+        // Only keep the top 5
+        highscores.length = Math.min(highscores.length, 5);
+        highlightHighscore = highscores.indexOf(newScore);
+        self.localStorage["pnf_highscores"] = JSON.stringify(highscores);
+      }
+    }
+
+    let bossShip;
+    let bossMask;
+    let bossHit;
+    let destroyedBossSprites;
+
+    function generateBoss() {
+      bossShip = flipCanvas(
+        generateShip(
+          generateFactionRandomizer("HYj7ADLjQr6icLtO"),
+          "CdiB9N2ZoQWuAxur",
+          270
+        )
+      );
+      trimCanvas(bossShip);
+      bossHit = hitEffect(bossShip);
+      destroyedBossSprites = createSprites(bossShip);
+      bossMask = bossShip
+        .getContext("2d")
+        .getImageData(0, 0, bossShip.width, bossShip.height).data;
+    }
+
+    function generateEnemy(faction, seed, size, ...more) {
+      const enemyShip = flipCanvas(
+        generateShip(generateFactionRandomizer(faction), seed, size)
+      );
+      return [enemyShip, undefined, undefined, undefined, ...more];
+    }
+
+    function generateEnemyAssets(enemyBlueprint) {
+      const enemyShip = enemyBlueprint[0];
+      trimCanvas(enemyShip);
+      const mask = enemyShip
+        .getContext("2d")
+        .getImageData(0, 0, enemyShip.width, enemyShip.height).data;
+      const hitEnemyShip = hitEffect(enemyShip);
+      const destroyedEnemyShipSprites = createSprites(enemyShip);
+      enemyBlueprint[1] = mask;
+      enemyBlueprint[2] = hitEnemyShip;
+      enemyBlueprint[3] = destroyedEnemyShipSprites;
+    }
+
+    const enemyDefinitions = [
+      ["c4pf4K5xHzu4CyZM", "Wl9w64KNQvFNbbbU", 50, 10, 0.35, 0, []],
+      ["VTjHVRDIYTbXk766", "a3QM5c7MnbQlWns3", 80, 30, 0.27, 0, []],
+      ["1fOXvyryYCvwBWPL", "I4xttvPYWxB1So2A", 230, 80, 0.2, 6, []],
+
+      ["VsM4qdcBSiuCPDGJ", "q4D72OvJMb23kSZC", 60, 20, 0.4, 0, []],
+      [
+        "l4pyu8yF0mt84Q4u",
+        "jPU5GcKNpf2JMgoG",
+        100,
+        40,
+        0.35,
+        0,
+        [[HALF_CANVAS_HEIGHT]],
+      ],
+      ["NMp3mtsPHIwzMKYk", "dBzvSKo7wpema3S5", 220, 90, 0.22, 9, []],
+
+      [
+        "o67yOby6izpasGgo",
+        "fyKKupDEId96qQHu",
+        70,
+        20,
+        0.5,
+        0,
+        [[HALF_CANVAS_HEIGHT]],
+      ],
+      [
+        "IU7xqL8UqZIXJQDQ",
+        "aVBO8buAfBbQ4DOY",
+        100,
+        40,
+        0.35,
+        0,
+        [[HALF_CANVAS_HEIGHT, 6]],
+      ],
+      ["LP6kUeGMn7S5xZzi", "p5O7jAQK67mDULTD", 230, 100, 0.25, 14, []],
+
+      [
+        "SsSvCKpjLVTGITYH",
+        "aOEjI2Owpqpl06ex",
+        65,
+        30,
+        0.5,
+        0,
+        [[HALF_CANVAS_HEIGHT]],
+      ],
+      [
+        "AGUwhB1E94wgKe49",
+        "pwUtokX7oS7ZKFK1",
+        110,
+        50,
+        0.35,
+        6,
+        [[HALF_CANVAS_HEIGHT, 6]],
+      ],
+      ["qRF6GA3xnzX0lMcH", "RIdNudvB6T2ro7C3", 240, 120, 0.3, 22, []],
+    ];
+    //    generateEnemy("KVoA08jfxzGQlU26", "bxfJMJri6hSgr3zD", 220, 80, 0.2),
+
+    function increaseDifficulty() {
+      difficulty++;
+    }
+
+    function render(now) {
+      switch (state) {
+        case STATE_LOADING:
+        case STATE_INTRO:
+          introRender(now);
+          break;
+        case STATE_GAME:
+          gameRender(now);
+          break;
+      }
+      // Any key press detection should have been consumed now
+      anyKeyPressed = false;
+    }
+
+    function newGame() {
+      state = STATE_GAME;
+      difficulty = 0;
+      enemyRandomizer = new Randomizer("enemy");
+      powerupRandomizer = new Randomizer("powerup");
+      nextEnemy = 1000;
+      nextDifficulty = 5000;
+      nextPowerup = POWERUP_INTERVAL;
+      powerupIndex = 0;
+      lastBullet = 0;
+      entities = [];
+      hitables = [];
+      initialTime = performance.now();
+      lastTime = performance.now();
+      score = 0;
+      addScore(0);
+      shipDestroyed = false;
+      x = HALF_CANVAS_WIDTH;
+      y = Math.floor(CANVAS_HEIGHT * 0.9);
+      fastFire = 0;
+      bombEffect = 0;
+      shieldLevel = 1;
+      bossTime = false;
+      highlightHighscore = -1;
+    }
+
+    function introRender(now) {
+      // reset
+      const ctx = a.getContext("2d");
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+      ctx.fillStyle = "#fff";
+      let ellapsed = (now - initialTime) / 3000;
+
+      ctx.save();
+      for (let j = 200; j--; ) {
+        let r = 50 / (6 - ((ellapsed + j / 13) % 6));
+        ctx.globalAlpha = Math.min(r / 100, 1);
+        ctx.beginPath();
+        ctx.arc(
+          Math.cos(j) * r + HALF_CANVAS_WIDTH,
+          Math.sin(j * j) * r + HALF_CANVAS_HEIGHT,
+          r / 200,
+          0,
+          7
+        );
+        ctx.fill();
+      }
+
+      ctx.restore();
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "center";
+      if (state === STATE_INTRO) {
+        if (highscores.length === 0) {
+          ctx.font = "bold 40px Helvetica";
+          ctx.fillText("PLANET NOT FOUND", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+        } else {
+          ctx.font = "bold 30px Helvetica";
+          ctx.fillText("HIGH SCORES", HALF_CANVAS_WIDTH, 100);
+
+          ctx.save();
+          ctx.textAlign = "start";
+          ctx.textBaseline = "top";
+          for (let c = 0; c < highscores.length; c++) {
+            if (c === highlightHighscore) {
+              ctx.save();
+              ctx.translate(90, 185 + 80 * c);
+              ctx.drawImage(
+                newTag,
+                -Math.floor(newTag.width / 2),
+                -Math.floor(newTag.height / 2)
+              );
+              ctx.restore();
+              ctx.fillStyle = "gold";
+            } else {
+              ctx.fillStyle = "#fff";
+            }
+            const score = Intl.NumberFormat().format(highscores[c][0]);
+            const time = new Date(highscores[c][1]).toLocaleString();
+            ctx.font = "50px Helvetica";
+            ctx.fillText(String(c + 1), 115, 160 + 80 * c);
+            ctx.font = "60px Helvetica";
+            ctx.fillText("{", 145, 150 + 80 * c);
+            ctx.font = "25px Helvetica";
+            ctx.fillText(score + " points", 170, 160 + 80 * c);
+            ctx.font = "15px Helvetica";
+            ctx.fillText(time, 170, 190 + 80 * c);
+          }
+
+          ctx.restore();
+        }
+        ctx.font = "20px Helvetica";
+        ctx.fillText(
+          "<Press anywhere or any key to play>",
+          HALF_CANVAS_WIDTH,
+          CANVAS_HEIGHT - 30
+        );
+
+        if (pointer_down || anyKeyPressed) {
+          if (!introInhibitPress) {
+            // Start game
+            newGame();
+          }
+        } else {
+          introInhibitPress = false;
+        }
+      } else {
+        ctx.font = "italic 30px Helvetica";
+        ctx.fillText("Loading…", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+        // Generate assets
+        if (!bossShip) {
+          generateBoss();
+        } else if (enemyBlueprints.length < enemyDefinitions.length) {
+          enemyBlueprints.push(
+            generateEnemy(...enemyDefinitions[enemyBlueprints.length])
+          );
+        } else {
+          let generatedAllAssets = true;
+          for (let c = 0; generatedAllAssets && c < enemyBlueprints.length; c++) {
+            if (!enemyBlueprints[c][1]) {
+              generatedAllAssets = false;
+              generateEnemyAssets(enemyBlueprints[c]);
+            }
+          }
+          if (generatedAllAssets) {
+            state = STATE_INTRO;
+          }
+        }
+      }
+    }
+
+    function collide(o1, o2) {
+      const xs = o1[0] - o1[2] / 2 < o2[0] - o2[2] / 2 ? [o1, o2] : [o2, o1];
+      const ys = o1[1] - o1[3] / 2 < o2[1] - o2[3] / 2 ? [o1, o2] : [o2, o1];
+
+      // Do bounding boxes collide
+      if (
+        xs[0][0] + xs[0][2] / 2 > xs[1][0] - xs[1][2] / 2 &&
+        ys[0][1] + ys[0][3] / 2 > ys[1][1] - ys[1][3] / 2
+      ) {
+        // Create the collision bounding box
+        const cBoundingX = Math.floor(xs[1][0] - xs[1][2] / 2);
+        const cBoundingY = Math.floor(ys[1][1] - ys[1][3] / 2);
+        const cBoundingWidth =
+          Math.floor(Math.min(xs[0][0] + xs[0][2] / 2, xs[1][0] + xs[1][2] / 2)) -
+          cBoundingX;
+        const cBoundingHeight =
+          Math.floor(Math.min(ys[0][1] + ys[0][3] / 2, ys[1][1] + ys[1][3] / 2)) -
+          cBoundingY;
+
+        const o1StartX = cBoundingX - Math.floor(o1[0] - o1[2] / 2);
+        const o1StartY = cBoundingY - Math.floor(o1[1] - o1[3] / 2);
+        const o2StartX = cBoundingX - Math.floor(o2[0] - o2[2] / 2);
+        const o2StartY = cBoundingY - Math.floor(o2[1] - o2[3] / 2);
+        for (let c = 0; c < cBoundingHeight; c++) {
+          for (let d = 0; d < cBoundingWidth; d++) {
+            if (
+              o1[4][((o1StartY + c) * o1[2] + o1StartX + d) * 4 + 3] > 0 &&
+              o2[4][((o2StartY + c) * o2[2] + o2StartX + d) * 4 + 3] > 0
+            ) {
+              //Found common filled pixel!!
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    }
+
+    const powerupDefinitions = [
+      [
+        "F",
+        "orange",
+        (time) => {
+          fastFire = time + 6500;
+        },
+      ],
+      [
+        "S",
+        "cyan",
+        () => {
+          shieldLevel++;
+        },
+      ],
+      [
+        "B",
+        "red",
+        (time) => {
+          // Bomb
+          bombEffect = time + BOMB_DURATION;
+          nextEnemy += 1500;
+        },
+      ],
+    ];
+
+    class Powerup {
+      constructor(x, y, typeIndex, time) {
+        this.x = x;
+        this.y = y;
+        this.type = typeIndex;
+        this.lastTime = time;
+        this.frame = 0;
+        this.alwaysOnTop = true;
+      }
+
+      run(hitables, ctx, time) {
+        this.y += (5 * (time - this.lastTime)) / 32;
+        this.frame = (this.frame + 1) % 50;
+
+        const hitBox = [
+          this.x,
+          this.y,
+          powerupCanvas.width,
+          powerupCanvas.height,
+          powerupMask,
+        ];
+
+        // Check powerup against ship
+        if (!shipDestroyed && collide(shipHitBox, hitBox)) {
+          powerupDefinitions[this.type][2](time);
+          return false;
+        }
+
+        if (this.y - Math.floor(powerupCanvas.height / 2) > CANVAS_HEIGHT) {
+          return false;
+        }
+        this.lastTime = time;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.drawImage(
+          powerupCanvas,
+          -Math.floor(powerupCanvas.width / 2),
+          -Math.floor(powerupCanvas.height / 2)
+        );
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        let size = 65;
+        if (this.frame < 25) {
+          size += this.frame;
+        } else {
+          size += 50 - this.frame;
+        }
+        ctx.font = "700 " + Math.floor(size / 2) + "px Helvetica";
+        const measure = ctx.measureText(powerupDefinitions[this.type][0]);
+        const textHeight =
+          measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
+        ctx.fillStyle = powerupDefinitions[this.type][1];
+        ctx.fillText(
+          powerupDefinitions[this.type][0],
+          0,
+          -Math.floor(textHeight / 2)
+        );
+        ctx.restore();
+        return true;
+      }
+    }
+
+    const BULLET_SPEED = 20;
+
+    class Bullet {
+      constructor(x, y, time) {
+        this.x = x;
+        this.y = y;
+        this.lastTime = time;
+        this.power = 10;
+      }
+
+      run(hitables, ctx, time) {
+        this.y -= (BULLET_SPEED * (time - this.lastTime)) / 32;
+
+        const hitBox = [this.x, this.y, bullet.width, bullet.height, bulletMask];
+        // Check collision with hitables
+        for (let c = 0; c < hitables.length; c++) {
+          const hitable = hitables[c];
+          if (collide(hitBox, hitable.hitBox)) {
+            hitable.hit(this.power, time);
+            // We're done, get rid of bullet
+            return false;
+          }
+        }
+
+        if (this.y + Math.floor(bullet.height / 2) < 0) {
+          return false;
+        }
+        this.lastTime = time;
+        ctx.drawImage(
+          bullet,
+          this.x - Math.floor(bullet.width / 2),
+          this.y - Math.floor(bullet.height / 2)
+        );
+        return true;
+      }
+    }
+
+    const ENEMY_EXPLOSION_DURATION = 500;
+    const BOSS_EXPLOSION_DURATION = 500;
+    const PLAYER_EXPLOSION_DURATION = 1500;
+
+    class Shard {
+      constructor(sprite, shipX, shipY, duration, time) {
+        this.time = time;
+        this.center = sprite.center;
+        this.canvas = sprite.canvas;
+        this.corner = sprite.corner;
+        this.translateX = sprite.translateX;
+        this.translateY = sprite.translateY;
+        this.angle = sprite.angle;
+        this.shipX = shipX;
+        this.shipY = shipY;
+        this.duration = duration;
+      }
+
+      run(hitables, ctx, time) {
+        const ellapsed = time - this.time;
+        if (ellapsed > this.duration) {
+          // Explosion is over
+          return false;
+        }
+        const destX =
+          this.shipX +
+          this.center[0] +
+          (this.translateX * Math.min(ellapsed, this.duration)) / this.duration;
+        const destY =
+          this.shipY +
+          this.center[1] +
+          (this.translateY * Math.min(ellapsed, this.duration)) / this.duration;
+        ctx.save();
+        ctx.globalAlpha =
+          1 - (Math.min(ellapsed, this.duration) / this.duration) ** 2;
+        ctx.translate(destX, destY);
+        ctx.rotate(
+          (this.angle * Math.min(ellapsed, this.duration)) / this.duration
+        );
+        const offsetX = this.corner[0] - this.center[0];
+        const offsetY = this.corner[1] - this.center[1];
+        ctx.drawImage(this.canvas, offsetX, offsetY);
+        ctx.restore();
+
+        return true;
+      }
+    }
+
+    class EnemyBullet {
+      constructor(startX, startY, destinationX, destinationY, speed, time) {
+        this.width = enemyBulletFrames[0].width;
+        this.height = enemyBulletFrames[0].height;
+        this.x = startX;
+        this.y = startY;
+        const magnitude = Math.hypot(destinationX - startX, destinationY - startY);
+        this.xFactor = (destinationX - startX) / magnitude;
+        this.yFactor = (destinationY - startY) / magnitude;
+        this.lastTime = time;
+        this.speed = speed;
+        this.frame = 0;
+        this.alwaysOnTop = true;
+        this.updateHitBox();
+      }
+
+      run(hitables, ctx, time) {
+        // Destroy bullets if bomb time
+        if (bombEffect > time) {
+          return false;
+        }
+        const ellapsed = time - this.lastTime;
+        this.y += ellapsed * this.speed * this.yFactor;
+        this.x += ellapsed * this.speed * this.xFactor;
+        this.updateHitBox();
+
+        // Check collision to ship
+        if (collide(shipHitBox, this.hitBox)) {
+          if (shieldLevel) {
+            shieldLevel--;
+            return false;
+          }
+          shipDestroyed = true;
+        }
+
+        // Make it disappear after it leaves the screen
+        if (
+          this.y - Math.floor(this.height / 2) > CANVAS_HEIGHT ||
+          this.y + Math.floor(this.height / 2) < 0 ||
+          this.x - Math.floor(this.width / 2) > CANVAS_WIDTH ||
+          this.x + Math.floor(this.width / 2) < 0
+        ) {
+          return false;
+        }
+
+        this.lastTime = time;
+
+        this.frame = (this.frame + 1) % enemyBulletFrames.length;
+        ctx.drawImage(
+          enemyBulletFrames[this.frame],
+          this.x - Math.floor(this.width / 2),
+          this.y - Math.floor(this.height / 2),
+          this.width,
+          this.height
+        );
+        return true;
+      }
+
+      updateHitBox() {
+        this.hitBox = [this.x, this.y, this.width, this.height, enemyBulletMask];
+      }
+    }
+
+    function fireBullets(amount, x, y, initialAngle, speed, time) {
+      const bullets = [];
+      for (let c = 0; c < amount; c++) {
+        const angle = initialAngle + (2 * c * Math.PI) / amount;
+        bullets.push(
+          new EnemyBullet(
+            x,
+            y,
+            x + Math.round(100 * Math.cos(angle)),
+            y + Math.round(100 * Math.sin(angle)),
+            speed,
+            time
+          )
+        );
+      }
+      return bullets;
+    }
+
+    class Enemy {
+      constructor(
+        canvas,
+        mask,
+        hitCanvas,
+        destroyedSprites,
+        startX,
+        startY,
+        speed,
+        health,
+        points,
+        deathBullets,
+        fireSequences,
+        time
+      ) {
+        this.fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
+        this.canvas = canvas;
+        this.mask = mask;
+        this.hitCanvas = hitCanvas;
+        this.width = canvas.width;
+        this.height = canvas.height;
+        this.health = health;
+        this.x = startX;
+        this.y = startY;
+        this.lastTime = time;
+        this.hitTime = 0;
+        this.destroyedSprites = destroyedSprites;
+        this.speed = speed;
+        this.points = points;
+        this.deathBullets = deathBullets;
+        this.fireSequences = fireSequences;
+        this.updateHitBox();
+      }
+
+      run(hitables, ctx, time) {
+        const originalY = this.y;
+        let isDead = false;
+        // Destroy enemies if no health or bomb time
+        if (this.health <= 0 || bombEffect > time) {
+          isDead = true;
+        } else {
+          const ellapsed = time - this.lastTime;
+          this.y += ellapsed * this.speed;
+          this.updateHitBox();
+
+          // Check collision to ship
+          if (collide(shipHitBox, this.hitBox)) {
+            if (shieldLevel) {
+              shieldLevel--;
+              isDead = true;
+            } else {
+              shipDestroyed = true;
+            }
+          }
+        }
+
+        if (isDead) {
+          // Add score
+          addScore(this.points);
+          // Return array with pieces
+          const returnEntities =
+            this.deathBullets > 0
+              ? fireBullets(
+                  this.deathBullets,
+                  this.x,
+                  this.y + Math.round(17 * this.speed),
+                  this.fireAngle,
+                  0.45,
+                  time
+                )
+              : [];
+
+          return returnEntities.concat(
+            this.destroyedSprites.map((sprite) => {
+              calculateSpriteFinalState(sprite, this.width, this.height);
+              return new Shard(
+                sprite,
+                this.x - Math.floor(this.width / 2),
+                this.y - Math.floor(this.height / 2),
+                ENEMY_EXPLOSION_DURATION,
+                time
+              );
+            })
+          );
+        }
+
+        // Make it disappear after it leaves the screen
+        if (this.y - Math.floor(this.height / 2) > CANVAS_HEIGHT) {
+          return false;
+        }
+
+        this.lastTime = time;
+
+        const hitTimeEllapsed = time - this.hitTime;
+        let hitTint = 0;
+        if (hitTimeEllapsed < 400) {
+          hitTint = (400 - hitTimeEllapsed) / 400;
+        }
+        ctx.save();
+        ctx.drawImage(
+          this.canvas,
+          this.x - Math.floor(this.width / 2),
+          this.y - Math.floor(this.height / 2),
+          this.width,
+          this.height
+        );
+        if (hitTint > 0) {
+          ctx.globalAlpha = hitTint;
+          ctx.drawImage(
+            this.hitCanvas,
+            this.x - Math.floor(this.width / 2),
+            this.y - Math.floor(this.height / 2),
+            this.width,
+            this.height
+          );
+        }
+        ctx.restore();
+
+        if (!shipDestroyed) {
+          for (let c = 0; c < this.fireSequences.length; c++) {
+            const fireY = this.fireSequences[c][0];
+            if (originalY < fireY && this.y > fireY) {
+              const bulletAmount = this.fireSequences[c][1];
+              const fromY = this.y + Math.round(17 * this.speed);
+              if (bulletAmount) {
+                // Fire bullet spread, a bit forward as it looks better
+                return [
+                  this,
+                  ...fireBullets(
+                    bulletAmount,
+                    this.x,
+                    fromY,
+                    this.fireAngle,
+                    0.3,
+                    time
+                  ),
+                ];
+              } else {
+                // Fire single bullet targeted to the user
+                return [this, new EnemyBullet(this.x, fromY, x, y, 0.3, time)];
+              }
+            }
+          }
+        }
+
+        return true;
+      }
+
+      updateHitBox() {
+        this.hitBox = [this.x, this.y, this.width, this.height, this.mask];
+      }
+
+      hit(power, now) {
+        this.hitTime = now;
+        this.health -= power;
+      }
+    }
+
+    const BOSS_WAITING = 0;
+    const BOSS_COMING = 1;
+    const BOSS_FIGHT = 2;
+    const DIRECTION_RIGHT = 0;
+    const DIRECTION_LEFT = 1;
+
+    class Boss {
+      constructor(level, time) {
+        this.phase = BOSS_WAITING;
+        this.nextPhase = time + 2000;
+        // We want to be basically immortal until we start the fight
+        this.health = Number.MAX_SAFE_INTEGER;
+        this.lastTime = time;
+        this.width = bossShip.width;
+        this.height = bossShip.height;
+        this.x = HALF_CANVAS_WIDTH;
+        this.y = -this.height / 2;
+        this.direction = DIRECTION_RIGHT;
+        this.hitTime = 0;
+        this.level = level;
+        this.updateHitBox();
+      }
+
+      run(hitables, ctx, time) {
+        const originalY = this.y;
+        let isDead = false;
+        // Destroy enemies if no health or bomb time
+        if (this.health <= 0) {
+          isDead = true;
+        } else {
+          const ellapsed = time - this.lastTime;
+          if (this.phase === BOSS_WAITING) {
+            if (time > this.nextPhase) {
+              this.phase = BOSS_COMING;
+            }
+          } else if (this.phase === BOSS_COMING) {
+            this.y += ellapsed * 0.15;
+            if (this.y > 150) {
+              this.y = 150;
+              // Give it normal health
+              this.health = 100 + 250 * this.level;
+              this.phase = BOSS_FIGHT;
+              this.nextBullet = time;
+              this.bulletCount = 0;
+            }
+          } else {
+            // Update X
+            if (this.direction === DIRECTION_RIGHT) {
+              this.x += ellapsed * 0.1;
+              if (this.x + Math.floor(this.width / 2) > CANVAS_WIDTH) {
+                this.x = CANVAS_WIDTH - Math.floor(this.width / 2);
+                this.direction = DIRECTION_LEFT;
+              }
+            } else {
+              this.x -= ellapsed * 0.1;
+              if (this.x - Math.floor(this.width / 2) < 0) {
+                this.x = Math.floor(this.width / 2);
+                this.direction = DIRECTION_RIGHT;
+              }
+            }
+          }
+
+          this.updateHitBox();
+
+          // Check collision to ship
+          if (collide(shipHitBox, this.hitBox)) {
+            shipDestroyed = true;
+          }
+        }
+
+        if (isDead) {
+          addScore(difficulty * 500);
+
+          // Restore game!
+          bossTime = false;
+          nextDifficulty = time + 10000;
+          nextEnemy = BOSS_EXPLOSION_DURATION + time;
+          updateNextEnemy();
+          nextPowerup = BOSS_EXPLOSION_DURATION + time;
+
+          return destroyedBossSprites.map((sprite) => {
+            calculateSpriteFinalState(sprite, this.width, this.height);
+            return new Shard(
+              sprite,
+              this.x - Math.floor(this.width / 2),
+              this.y - Math.floor(this.height / 2),
+              BOSS_EXPLOSION_DURATION,
+              time
+            );
+          });
+        }
+
+        this.lastTime = time;
+
+        const hitTimeEllapsed = time - this.hitTime;
+        let hitTint = 0;
+        if (hitTimeEllapsed < 400) {
+          hitTint = (400 - hitTimeEllapsed) / 400;
+        }
+        ctx.save();
+        ctx.drawImage(
+          bossShip,
+          this.x - Math.floor(this.width / 2),
+          this.y - Math.floor(this.height / 2),
+          this.width,
+          this.height
+        );
+        if (hitTint > 0) {
+          ctx.globalAlpha = hitTint;
+          ctx.drawImage(
+            bossHit,
+            this.x - Math.floor(this.width / 2),
+            this.y - Math.floor(this.height / 2),
+            this.width,
+            this.height
+          );
+        }
+        ctx.restore();
+
+        if (!shipDestroyed && this.phase === BOSS_FIGHT) {
+          // Fire bullets if needed
+          if (this.nextBullet < time) {
+            const bullets = [];
+            if (this.bulletCount < 5 * this.level) {
+              let offsetX, offsetY;
+              switch (Math.floor(this.bulletCount / this.level)) {
+                case 0:
+                  offsetX = 28;
+                  offsetY = 119;
+                  break;
+                case 1:
+                  offsetX = 42;
+                  offsetY = 123;
+                  break;
+                case 2:
+                  offsetX = 108;
+                  offsetY = 94;
+                  break;
+                case 3:
+                  offsetX = 121;
+                  offsetY = 80;
+                  break;
+                default:
+                  offsetX = 143;
+                  offsetY = 50;
+                  break;
+              }
+              // Side bullets
+              bullets.push(
+                new EnemyBullet(
+                  this.x - offsetX,
+                  this.y + offsetY,
+                  this.x - offsetX,
+                  this.y + offsetY + 100,
+                  0.5,
+                  time
+                )
+              );
+              bullets.push(
+                new EnemyBullet(
+                  this.x + offsetX,
+                  this.y + offsetY,
+                  this.x + offsetX,
+                  this.y + offsetY + 100,
+                  0.5,
+                  time
+                )
+              );
+            } else {
+              // Targeted bullets
+              bullets.push(new EnemyBullet(this.x, this.y + 125, x, y, 0.3, time));
+            }
+            this.bulletCount++;
+            if (this.bulletCount >= 10 * this.level) {
+              this.bulletCount = 0;
+              this.nextBullet = time + 800;
+            } else if (this.bulletCount > 5 * this.level) {
+              this.nextBullet = time + 200;
+            } else if (this.bulletCount === 5 * this.level) {
+              this.nextBullet = time + 800;
+            } else {
+              // this.bulletCount < 5 * this.level
+              if (this.bulletCount % this.level) {
+                this.nextBullet = time + 180;
+              } else {
+                this.nextBullet = time + 500;
+              }
+            }
+            return [this, ...bullets];
+          }
+        }
+
+        return true;
+      }
+
+      updateHitBox() {
+        this.hitBox = [this.x, this.y, this.width, this.height, bossMask];
+      }
+
+      hit(power, now) {
+        this.hitTime = now;
+        this.health -= power;
+      }
+    }
+
+    let entities;
+    let hitables;
+    let lastBullet;
+    let bulletOffset = 5;
+
+    let enemyRandomizer;
+    let powerupRandomizer;
+    let nextEnemy;
+    let nextDifficulty;
+    let nextPowerup;
+    let powerupIndex;
+    let bossTime;
+
+    const POWERUP_INTERVAL = 9000;
+
+    let lastTime;
+    function gameRender(now) {
+      const ellapsed = now - lastTime;
+      lastTime = now;
+      if (ellapsed > 160) {
+        // First frame or detecting a pause
+        initialTime += ellapsed;
+        // We don't want the controls to get stuck
+        keysPressed = {};
+        return;
+      }
+
+      if (!shipDestroyed) {
+        // Check pressed keys
+        const toTravel = SHIP_SPEED * ellapsed,
+          keyUp = keysPressed["ArrowUp"] || keysPressed["KeyW"],
+          keyDown = keysPressed["ArrowDown"] || keysPressed["KeyS"],
+          keyLeft = keysPressed["ArrowLeft"] || keysPressed["KeyA"],
+          keyRight = keysPressed["ArrowRight"] || keysPressed["KeyD"];
+
+        if (keyUp || keyDown || keyLeft || keyRight) {
+          const distance =
+            (keyUp || keyDown) && (keyLeft || keyRight)
+              ? (toTravel ** 2 / 2) ** 0.5
+              : toTravel;
+          if (keyUp) {
+            y -= distance;
+          }
+          if (keyDown) {
+            y += distance;
+          }
+          if (keyLeft) {
+            x -= distance;
+          }
+          if (keyRight) {
+            x += distance;
+          }
+          // We don't want to move to the pointer position unless it's updated
+          move_x = x;
+          move_y = y;
+        } else {
+          // Move ship with pointer
+          let vx = move_x - x,
+            vy = move_y - y;
+          const distance = Math.hypot(vx, vy);
+
+          if (distance < toTravel) {
+            x = move_x;
+            y = move_y;
+          } else {
+            x += (vx / distance) * toTravel;
+            y += (vy / distance) * toTravel;
+          }
+        }
+        if (x - Math.floor(shipWidth / 2) < 0) {
+          x = Math.floor(shipWidth / 2);
+        } else if (x + Math.floor(shipWidth / 2) > CANVAS_WIDTH) {
+          x = CANVAS_WIDTH - Math.floor(shipWidth / 2);
+        }
+        if (y - Math.floor(shipHeight / 2) < 0) {
+          y = Math.floor(shipHeight / 2);
+        } else if (y + Math.floor(shipHeight / 2) > CANVAS_HEIGHT) {
+          y = CANVAS_HEIGHT - Math.floor(shipHeight / 2);
+        }
+        shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
+      }
+
+      // Reset canvas
+      const ctx = a.getContext("2d");
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+      // Paint background stars
+      let s;
+      ctx.fillStyle = "#777";
+
+      for (
+        let i = 100;
+        i--;
+        ctx.beginPath(),
+          ctx.arc(
+            Math.floor(
+              ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
+                (100 * (CANVAS_WIDTH - shipWidth))
+            ) +
+              ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
+            (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
+              CANVAS_HEIGHT,
+            s * 2,
+            0,
+            7
+          ),
+          ctx.fill()
+      )
+        s = 149 / (i * 3 + 199);
+
+      const previousShipDestroyed = shipDestroyed;
+
+      // Run entities
+      const nextEntities = [],
+        alwaysOnTop = [],
+        nextHitables = [];
+      function runEntity(entity) {
+        const result = entity.run(hitables, ctx, now - initialTime);
+        if (typeof result === "boolean") {
+          if (result) {
+            if (entity.alwaysOnTop) {
+              alwaysOnTop.push(entity);
+            } else {
+              nextEntities.push(entity);
+            }
+            if (entity.hit) {
+              nextHitables.push(entity);
+            }
+          }
+        } else if (Array.isArray(result)) {
+          result.forEach((subEntity) => {
+            if (entity === subEntity) {
+              // The original wants to be persisted, don't rerun it
+              if (result) {
+                if (entity.alwaysOnTop) {
+                  alwaysOnTop.push(entity);
+                } else {
+                  nextEntities.push(entity);
+                }
+                if (entity.hit) {
+                  nextHitables.push(entity);
+                }
+              }
+            } else {
+              // New subentity, run it
+              runEntity(subEntity);
+            }
+          });
+        }
+      }
+      entities.forEach(runEntity);
+
+      if (!previousShipDestroyed && shipDestroyed) {
+        // Record time
+        gameOverTime = now - initialTime;
+        // add shards
+        destroyedShipSprites
+          .map((sprite) => {
+            calculateSpriteFinalState(sprite, shipWidth, shipHeight);
+            return new Shard(
+              sprite,
+              x - Math.floor(shipWidth / 2),
+              y - Math.floor(shipHeight / 2),
+              PLAYER_EXPLOSION_DURATION,
+              now - initialTime
+            );
+          })
+          .forEach(runEntity);
+      }
+
+      entities = nextEntities.concat(alwaysOnTop);
+      hitables = nextHitables;
+
+      // Common styles
+      ctx.fillStyle = "#fff";
+      ctx.textAlign = "center";
+
+      if (!shipDestroyed) {
+        if (shieldLevel) {
+          const shieldCanvas =
+            shields[Math.min(shieldLevel - 1, shields.length - 1)];
+          // Paint shield
+          ctx.drawImage(
+            shieldCanvas,
+            x - Math.floor(shieldCanvas.width / 2),
+            y - Math.floor(shieldCanvas.height / 2) + 5
+          );
+        }
+        // Paint ship
+        ctx.drawImage(
+          ship,
+          x - Math.floor(shipWidth / 2),
+          y - Math.floor(shipHeight / 2)
+        );
+      } else {
+        // Paint game over
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, (now - initialTime - gameOverTime) / 2000);
+        ctx.textBaseline = "middle";
+        ctx.font = "40px Helvetica";
+        ctx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+
+        ctx.restore();
+      }
+
+      // Paint bomb
+      if (bombEffect > now - initialTime) {
+        ctx.save();
+        ctx.globalAlpha = (bombEffect - now + initialTime) / BOMB_DURATION;
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.restore();
+      }
+
+      // Paint HUD
+      ctx.textBaseline = "top";
+      ctx.font = "16px Helvetica";
+      ctx.fillText(scoreText, HALF_CANVAS_WIDTH, 5);
+
+      const isFastFire = fastFire > now - initialTime;
+      // Should we fire?
+      if (
+        !shipDestroyed &&
+        lastBullet + (isFastFire ? 100 : 200) < now - initialTime
+      ) {
+        bulletOffset = -bulletOffset;
+        entities.push(
+          new Bullet(
+            x + (isFastFire ? bulletOffset : 0),
+            y - Math.floor(shipHeight / 2),
+            now - initialTime
+          )
+        );
+        lastBullet = Math.max(now - initialTime);
+      }
+      if (nextDifficulty < now - initialTime && !bossTime) {
+        increaseDifficulty();
+        if (difficulty % 5) {
+          nextDifficulty = now - initialTime + 10000;
+        } else {
+          bossTime = true;
+          entities.push(new Boss(Math.floor(difficulty / 5), now - initialTime));
+        }
+      }
+
+      // Should we spawn powerup
+      if (nextPowerup < now - initialTime && !bossTime) {
+        entities.push(
+          new Powerup(
+            powerupRandomizer.si(30, CANVAS_WIDTH - 30),
+            Math.floor(-powerupCanvas.height / 2),
+            powerupIndex,
+            now - initialTime
+          )
+        );
+        powerupIndex = (powerupIndex + 1) % powerupDefinitions.length;
+        nextPowerup = now - initialTime + POWERUP_INTERVAL;
+      }
+
+      // Should we spawn enemy
+      if (nextEnemy < now - initialTime && !bossTime) {
+        const enemyDifficulty = enemyRandomizer.si(
+          Math.min(Math.max(difficulty - 2, 0), enemyBlueprints.length - 3),
+          Math.min(difficulty, enemyBlueprints.length - 1)
+        );
+
+        const [
+          enemyShip,
+          enemyMask,
+          hitEnemyShip,
+          destroyedEnemyShipSprites,
+          health,
+          speed,
+          deathBullets,
+          fireSequences,
+        ] = enemyBlueprints[enemyDifficulty];
+        entities.push(
+          new Enemy(
+            enemyShip,
+            enemyMask,
+            hitEnemyShip,
+            destroyedEnemyShipSprites,
+            enemyRandomizer.si(30, CANVAS_WIDTH - 30),
+            Math.floor(-enemyShip.height / 2),
+            speed,
+            health,
+            (enemyDifficulty + 1) * 50,
+            deathBullets,
+            fireSequences,
+            now - initialTime
+          )
+        );
+        updateNextEnemy();
+      }
+
+      if (shipDestroyed && gameOverTime + 3500 < now - initialTime) {
+        // Update highscores if needed
+        updateHighscores();
+
+        state = STATE_INTRO;
+        introInhibitPress = pointer_down;
+      }
+    }
+
+    /* Compute mouse / touch coordinates on the canvas */
+
+    function handleMouseEvent(e) {
+      e.preventDefault();
+      let offsetLeft, offsetTop, offsetWidth, offsetHeight;
+      if (a.offsetWidth / a.offsetHeight > CANVAS_WIDTH / CANVAS_HEIGHT) {
+        // Wider
+        offsetTop = 0;
+        offsetHeight = a.offsetHeight;
+        offsetWidth = (offsetHeight * CANVAS_WIDTH) / CANVAS_HEIGHT;
+        offsetLeft = Math.floor(a.offsetWidth - offsetWidth) / 2;
+      } else {
+        // Narrower
+        offsetLeft = 0;
+        offsetWidth = a.offsetWidth;
+        offsetHeight = (offsetWidth * CANVAS_HEIGHT) / CANVAS_WIDTH;
+        offsetTop = Math.floor(a.offsetHeight - offsetHeight) / 2;
+      }
+      let pointer = {};
+      if (e.changedTouches) {
+        pointer = e.changedTouches[0];
+      } else {
+        pointer = e;
+      }
+      move_x = Math.floor(
+        ((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth
+      );
+      move_y = Math.floor(
+        ((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight
+      );
+    }
+
+    /* Down */
+    self.ontouchstart = self.onpointerdown = (e) => {
+      pointer_down = true;
+      handleMouseEvent(e);
+    };
+
+    /* Move */
+    self.ontouchmove = self.onpointermove = handleMouseEvent;
+
+    /* Up */
+    self.ontouchend = self.onpointerup = (e) => {
+      e.preventDefault();
+      pointer_down = false;
+    };
+
+    self.onkeydown = (e) => {
+      anyKeyPressed = true;
+      keysPressed[e.code] = 1;
+      e.preventDefault();
+    };
+
+    self.onkeyup = (e) => {
+      keysPressed[e.code] = 0;
+      e.preventDefault();
+    };
+
+    // Let's run the game
+    a.width = CANVAS_WIDTH;
+    a.height = CANVAS_HEIGHT;
+    let c = a.getContext("2d");
+    function renderWrapper(now) {
+      render(now);
+      requestAnimationFrame(renderWrapper);
+    }
+    requestAnimationFrame(renderWrapper);
+
+}());

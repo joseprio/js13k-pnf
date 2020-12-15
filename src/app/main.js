@@ -738,9 +738,7 @@ class EnemyBullet {
     this.height = enemyBulletFrames[0].height;
     this.x = startX;
     this.y = startY;
-    const magnitude = Math.sqrt(
-      (destinationX - startX) ** 2 + (destinationY - startY) ** 2
-    );
+    const magnitude = Math.hypot(destinationX - startX, destinationY - startY);
     this.xFactor = (destinationX - startX) / magnitude;
     this.yFactor = (destinationY - startY) / magnitude;
     this.lastTime = time;
@@ -1216,7 +1214,7 @@ function gameRender(now) {
     if (keyUp || keyDown || keyLeft || keyRight) {
       const distance =
         (keyUp || keyDown) && (keyLeft || keyRight)
-          ? Math.sqrt(toTravel ** 2 / 2)
+          ? (toTravel ** 2 / 2) ** 0.5
           : toTravel;
       if (keyUp) {
         y -= distance;
@@ -1237,7 +1235,7 @@ function gameRender(now) {
       // Move ship with pointer
       let vx = move_x - x,
         vy = move_y - y;
-      const distance = Math.sqrt(vx ** 2 + vy ** 2);
+      const distance = Math.hypot(vx, vy);
 
       if (distance < toTravel) {
         x = move_x;
