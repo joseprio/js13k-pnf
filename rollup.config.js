@@ -39,6 +39,10 @@ export default {
             keep_quoted: true,
           },
         },
+        format: {
+          wrap_func_args: false,
+          ecma: 2015,
+        },
       }),
     production &&
       useClosureCompiler &&
