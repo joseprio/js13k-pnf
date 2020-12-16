@@ -186,7 +186,7 @@ let move_x = -1,
   move_y = -1,
   x,
   y,
-  keysPressed = {},
+  keysPressed = [],
   anyKeyPressed = false;
 
 let a = document.getElementById("a");
@@ -1204,17 +1204,17 @@ function gameRender(now) {
     // First frame or detecting a pause
     initialTime += ellapsed;
     // We don't want the controls to get stuck
-    keysPressed = {};
+    keysPressed = [];
     return;
   }
 
   if (!shipDestroyed) {
     // Check pressed keys
     const toTravel = SHIP_SPEED * ellapsed,
-      keyUp = keysPressed["ArrowUp"] || keysPressed["KeyW"],
-      keyDown = keysPressed["ArrowDown"] || keysPressed["KeyS"],
-      keyLeft = keysPressed["ArrowLeft"] || keysPressed["KeyA"],
-      keyRight = keysPressed["ArrowRight"] || keysPressed["KeyD"];
+      keyUp = keysPressed[38] || keysPressed[90],
+      keyDown = keysPressed[40] || keysPressed[83],
+      keyLeft = keysPressed[37] || keysPressed[65],
+      keyRight = keysPressed[39] || keysPressed[68];
 
     if (keyUp || keyDown || keyLeft || keyRight) {
       const distance =
@@ -1533,15 +1533,8 @@ self.ontouchend = self.onpointerup = (e) => {
   pointer_down = false;
 };
 
-self.onkeydown = (e) => {
-  anyKeyPressed = true;
-  keysPressed[e.code] = 1;
-  e.preventDefault();
-};
-
-self.onkeyup = (e) => {
-  keysPressed[e.code] = 0;
-  e.preventDefault();
+self.onkeydown = self.onkeyup = (e) => {
+  anyKeyPressed = keysPressed[e.keyCode] = e.type[5];
 };
 
 // Let's run the game
