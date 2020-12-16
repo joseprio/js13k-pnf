@@ -591,13 +591,13 @@ class Powerup {
     this.y = y;
     this.type = typeIndex;
     this.lastTime = time;
-    this.frame = 0;
+    this.frameIndex = 0;
     this.alwaysOnTop = true;
   }
 
   run(hitables, ctx, time) {
     this.y += (5 * (time - this.lastTime)) / 32;
-    this.frame = (this.frame + 1) % 50;
+    this.frameIndex = (this.frameIndex + 1) % 50;
 
     const hitBox = [
       this.x,
@@ -627,10 +627,10 @@ class Powerup {
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     let size = 65;
-    if (this.frame < 25) {
-      size += this.frame;
+    if (this.frameIndex < 25) {
+      size += this.frameIndex;
     } else {
-      size += 50 - this.frame;
+      size += 50 - this.frameIndex;
     }
     ctx.font = "700 " + Math.floor(size / 2) + "px Helvetica";
     const measure = ctx.measureText(powerupDefinitions[this.type][0]);
@@ -699,29 +699,34 @@ class Shard {
     this.angle = sprite.angle;
     this.shipX = shipX;
     this.shipY = shipY;
-    this.duration = duration;
+    this.explosionDuration = duration;
   }
 
   run(hitables, ctx, time) {
     const ellapsed = time - this.time;
-    if (ellapsed > this.duration) {
+    if (ellapsed > this.explosionDuration) {
       // Explosion is over
       return false;
     }
     const destX =
       this.shipX +
       this.center[0] +
-      (this.translateX * Math.min(ellapsed, this.duration)) / this.duration;
+      (this.translateX * Math.min(ellapsed, this.explosionDuration)) /
+        this.explosionDuration;
     const destY =
       this.shipY +
       this.center[1] +
-      (this.translateY * Math.min(ellapsed, this.duration)) / this.duration;
+      (this.translateY * Math.min(ellapsed, this.explosionDuration)) /
+        this.explosionDuration;
     ctx.save();
     ctx.globalAlpha =
-      1 - (Math.min(ellapsed, this.duration) / this.duration) ** 2;
+      1 -
+      (Math.min(ellapsed, this.explosionDuration) / this.explosionDuration) **
+        2;
     ctx.translate(destX, destY);
     ctx.rotate(
-      (this.angle * Math.min(ellapsed, this.duration)) / this.duration
+      (this.angle * Math.min(ellapsed, this.explosionDuration)) /
+        this.explosionDuration
     );
     const offsetX = this.corner[0] - this.center[0];
     const offsetY = this.corner[1] - this.center[1];
@@ -743,7 +748,7 @@ class EnemyBullet {
     this.yFactor = (destinationY - startY) / magnitude;
     this.lastTime = time;
     this.speed = speed;
-    this.frame = 0;
+    this.frameIndex = 0;
     this.alwaysOnTop = true;
     this.updateHitBox();
   }
@@ -779,9 +784,9 @@ class EnemyBullet {
 
     this.lastTime = time;
 
-    this.frame = (this.frame + 1) % enemyBulletFrames.length;
+    this.frameIndex = (this.frameIndex + 1) % enemyBulletFrames.length;
     ctx.drawImage(
-      enemyBulletFrames[this.frame],
+      enemyBulletFrames[this.frameIndex],
       this.x - Math.floor(this.width / 2),
       this.y - Math.floor(this.height / 2),
       this.width,
@@ -830,7 +835,7 @@ class Enemy {
   ) {
     this.fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
     this.canvas = canvas;
-    this.mask = mask;
+    this.enemyMask = mask;
     this.hitCanvas = hitCanvas;
     this.width = canvas.width;
     this.height = canvas.height;
@@ -841,7 +846,7 @@ class Enemy {
     this.hitTime = 0;
     this.destroyedSprites = destroyedSprites;
     this.speed = speed;
-    this.points = points;
+    this.killPoints = points;
     this.deathBullets = deathBullets;
     this.fireSequences = fireSequences;
     this.updateHitBox();
@@ -871,7 +876,7 @@ class Enemy {
 
     if (isDead) {
       // Add score
-      addScore(this.points);
+      addScore(this.killPoints);
       // Return array with pieces
       const returnEntities =
         this.deathBullets > 0
@@ -962,7 +967,7 @@ class Enemy {
   }
 
   updateHitBox() {
-    this.hitBox = [this.x, this.y, this.width, this.height, this.mask];
+    this.hitBox = [this.x, this.y, this.width, this.height, this.enemyMask];
   }
 
   hit(power, now) {
@@ -978,7 +983,7 @@ const DIRECTION_RIGHT = 0;
 const DIRECTION_LEFT = 1;
 
 class Boss {
-  constructor(level, time) {
+  constructor(difficulty, time) {
     this.phase = BOSS_WAITING;
     this.nextPhase = time + 2000;
     // We want to be basically immortal until we start the fight
@@ -990,7 +995,7 @@ class Boss {
     this.y = -this.height / 2;
     this.direction = DIRECTION_RIGHT;
     this.hitTime = 0;
-    this.level = level;
+    this.difficulty = difficulty;
     this.updateHitBox();
   }
 
@@ -1011,7 +1016,7 @@ class Boss {
         if (this.y > 150) {
           this.y = 150;
           // Give it normal health
-          this.health = 100 + 250 * this.level;
+          this.health = 100 + 250 * this.difficulty;
           this.phase = BOSS_FIGHT;
           this.nextBullet = time;
           this.bulletCount = 0;
@@ -1094,9 +1099,9 @@ class Boss {
       // Fire bullets if needed
       if (this.nextBullet < time) {
         const bullets = [];
-        if (this.bulletCount < 5 * this.level) {
+        if (this.bulletCount < 5 * this.difficulty) {
           let offsetX, offsetY;
-          switch (Math.floor(this.bulletCount / this.level)) {
+          switch (Math.floor(this.bulletCount / this.difficulty)) {
             case 0:
               offsetX = 28;
               offsetY = 119;
@@ -1144,16 +1149,16 @@ class Boss {
           bullets.push(new EnemyBullet(this.x, this.y + 125, x, y, 0.3, time));
         }
         this.bulletCount++;
-        if (this.bulletCount >= 10 * this.level) {
+        if (this.bulletCount >= 10 * this.difficulty) {
           this.bulletCount = 0;
           this.nextBullet = time + 800;
-        } else if (this.bulletCount > 5 * this.level) {
+        } else if (this.bulletCount > 5 * this.difficulty) {
           this.nextBullet = time + 200;
-        } else if (this.bulletCount === 5 * this.level) {
+        } else if (this.bulletCount === 5 * this.difficulty) {
           this.nextBullet = time + 800;
         } else {
           // this.bulletCount < 5 * this.level
-          if (this.bulletCount % this.level) {
+          if (this.bulletCount % this.difficulty) {
             this.nextBullet = time + 180;
           } else {
             this.nextBullet = time + 500;
