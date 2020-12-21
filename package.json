@@ -25,6 +25,6 @@
     "web-resource-inliner": "5.0.0"
   },
   "dependencies": {
-    "starshipwright": "github:joseprio/starshipwright#master"
+    "starshipwright": "1.0.1"
   }
 }
