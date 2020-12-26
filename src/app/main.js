@@ -27,39 +27,56 @@ function hitEffect(canvas) {
   return destCanvas;
 }
 
-function generateShield(level) {
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.floor(shipWidth * 2);
-  canvas.height = Math.floor(shipHeight * 2);
-  const ctx = canvas.getContext("2d");
-  const centerX = canvas.width / 2 - 15;
-  const centerY = canvas.height / 2 - 30;
-  ctx.setTransform(1.5, 0, 0, (shipHeight / shipWidth) * 1.5, 0, 0);
-  const grad = ctx.createRadialGradient(
-    centerX,
-    centerY,
-    10,
-    centerX,
-    centerY,
-    30 - level * 3
-  );
-  grad.addColorStop(0, "transparent");
-  grad.addColorStop(0.7, "blue");
-  grad.addColorStop(1, "cyan");
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, shipWidth / 2, 0, 7);
-  ctx.fill();
-  trimCanvas(canvas);
-  return canvas;
-}
-
 function generateShields() {
-  const shields = [];
-  for (let c = 0; c < 5; c++) {
-    shields.push(generateShield(c));
+  const phases = [ship];
+  for (let c = 0; c < 10; c++) {
+    const shieldPhase = document.createElement("canvas");
+    const shieldPhaseCtx = shieldPhase.getContext("2d");
+    shieldPhase.width = shipWidth * 2;
+    shieldPhase.height = shipHeight * 2;
+
+    for (let offsetY = 0; offsetY < 3; offsetY++) {
+      for (let offsetX = 0; offsetX < 3; offsetX++) {
+        shieldPhaseCtx.drawImage(
+          phases[0],
+          Math.floor(shipWidth / 2) - phases.length - 1 + offsetX,
+          Math.floor(shipHeight / 2) - phases.length - 1 + offsetY
+        );
+      }
+    }
+    shieldPhaseCtx.globalCompositeOperation = "source-in";
+    if (c > 5) {
+      // Solid cyan
+      shieldPhaseCtx.fillStyle = "cyan";
+    } else {
+      shieldPhaseCtx.fillStyle = "blue";
+    }
+    shieldPhaseCtx.fillRect(0, 0, shieldPhase.width, shieldPhase.height);
+    shieldPhaseCtx.globalCompositeOperation = "source-over";
+    shieldPhaseCtx.drawImage(
+      phases[0],
+      Math.floor(shipWidth / 2) - phases.length,
+      Math.floor(shipHeight / 2) - phases.length
+    );
+    trimCanvas(shieldPhase);
+    phases.unshift(shieldPhase);
   }
-  return shields;
+  // Remove original ship from processing
+  phases.pop();
+  phases.map((phase) => {
+    const phaseCtx = phase.getContext("2d");
+    phaseCtx.globalCompositeOperation = "destination-out";
+    phaseCtx.globalAlpha = 0.2;
+    for (let c = 5; c < 10; c++) {
+      phaseCtx.drawImage(
+        phases[c],
+        Math.floor((phase.width - phases[c].width) / 2),
+        Math.floor((phase.height - phases[c].height) / 2)
+      );
+    }
+  });
+  phases.length = 5;
+  return phases;
 }
 
 function generateBullet() {
@@ -1361,13 +1378,12 @@ function gameRender(now) {
 
   if (!shipDestroyed) {
     if (shieldLevel) {
-      const shieldCanvas =
-        shields[Math.min(shieldLevel - 1, shields.length - 1)];
+      const shieldCanvas = shields[Math.max(0, shields.length - shieldLevel)];
       // Paint shield
       ctx.drawImage(
         shieldCanvas,
         x - Math.floor(shieldCanvas.width / 2),
-        y - Math.floor(shieldCanvas.height / 2) + 5
+        y - Math.floor(shieldCanvas.height / 2)
       );
     }
     // Paint ship
