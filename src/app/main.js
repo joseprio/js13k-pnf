@@ -5,6 +5,7 @@ import {
 } from "starshipwright";
 import { createSprites, calculateSpriteFinalState } from "./voronoi";
 import { trimCanvas, createFavicon } from "./utils";
+import * as sounds from "./sounds";
 
 function hitEffect(canvas) {
   const destCanvas = document.createElement("canvas");
@@ -576,6 +577,16 @@ function collide(o1, o2) {
   return false;
 }
 
+function hitShip() {
+  if (shieldLevel) {
+    shieldLevel--;
+    sounds.shieldHit();
+  } else if (!shipDestroyed) {
+    sounds.explosion();
+    shipDestroyed = true;
+  }
+}
+
 const powerupDefinitions = [
   [
     "F",
@@ -595,6 +606,7 @@ const powerupDefinitions = [
     "B",
     "red",
     (time) => {
+      sounds.explosion();
       // Bomb
       bombEffect = time + BOMB_DURATION;
       nextEnemy += 1500;
@@ -782,11 +794,10 @@ class EnemyBullet {
 
     // Check collision to ship
     if (collide(shipHitBox, this.hitBox)) {
-      if (shieldLevel) {
-        shieldLevel--;
+      hitShip();
+      if (!shipDestroyed) {
         return false;
       }
-      shipDestroyed = true;
     }
 
     // Make it disappear after it leaves the screen
@@ -882,16 +893,15 @@ class Enemy {
 
       // Check collision to ship
       if (collide(shipHitBox, this.hitBox)) {
-        if (shieldLevel) {
-          shieldLevel--;
+        hitShip();
+        if (!shipDestroyed) {
           isDead = true;
-        } else {
-          shipDestroyed = true;
         }
       }
     }
 
     if (isDead) {
+      sounds.explosion();
       // Add score
       addScore(this.killPoints);
       // Return array with pieces
@@ -957,6 +967,7 @@ class Enemy {
       for (let c = 0; c < this.fireSequences.length; c++) {
         const fireY = this.fireSequences[c][0];
         if (originalY < fireY && this.y > fireY) {
+          sounds.enemyFire();
           const bulletAmount = this.fireSequences[c][1];
           const fromY = this.y + Math.round(17 * this.speed);
           if (bulletAmount) {
@@ -990,6 +1001,9 @@ class Enemy {
   hit(power, now) {
     this.hitTime = now;
     this.health -= power;
+    if (this.health > 0) {
+      sounds.enemyHit();
+    }
   }
 }
 
@@ -1064,6 +1078,7 @@ class Boss {
     }
 
     if (isDead) {
+      sounds.bossExplosion();
       addScore(difficulty * 500);
 
       // Restore game!
@@ -1115,6 +1130,7 @@ class Boss {
     if (!shipDestroyed && this.phase === BOSS_FIGHT) {
       // Fire bullets if needed
       if (this.nextBullet < time) {
+        sounds.enemyFire();
         const bullets = [];
         if (this.bulletCount < 5 * this.difficulty) {
           let offsetX, offsetY;
@@ -1195,6 +1211,9 @@ class Boss {
   hit(power, now) {
     this.hitTime = now;
     this.health -= power;
+    if (this.health > 0) {
+      sounds.enemyHit();
+    }
   }
 }
 
@@ -1432,6 +1451,7 @@ function gameRender(now) {
       )
     );
     lastBullet = Math.max(now - initialTime);
+    sounds.bullet();
   }
   if (nextDifficulty < now - initialTime && !bossTime) {
     increaseDifficulty();
