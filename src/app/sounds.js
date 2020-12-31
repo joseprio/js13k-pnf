@@ -210,7 +210,7 @@ export function enemyHit() {
 export function explosion() {
   zzfx(
     ...[
-      1,
+      ,
       ,
       274,
       ,
@@ -236,7 +236,7 @@ export function explosion() {
 export function shieldHit() {
   zzfx(
     ...[
-      1,
+      ,
       ,
       119,
       ,
@@ -255,6 +255,32 @@ export function shieldHit() {
       0.01,
       0.85,
       0.08,
+    ]
+  );
+}
+
+export function shieldPowerup() {
+  zzfx(
+    ...[
+      ,
+      ,
+      505,
+      0.21,
+      0.12,
+      0.46,
+      2,
+      1.67,
+      ,
+      ,
+      58,
+      0.02,
+      0.28,
+      ,
+      ,
+      ,
+      ,
+      0.69,
+      0.03,
     ]
   );
 }

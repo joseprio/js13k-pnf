@@ -7,6 +7,8 @@ import { createSprites, calculateSpriteFinalState } from "./voronoi";
 import { trimCanvas, createFavicon } from "./utils";
 import * as sounds from "./sounds";
 
+const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
+
 function hitEffect(canvas) {
   const destCanvas = document.createElement("canvas");
   const { width, height } = canvas;
@@ -438,11 +440,12 @@ function introRender(now) {
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  ctx.fillStyle = "#fff";
   let ellapsed = (now - initialTime) / 3000;
 
+  // Intro starfield
   ctx.save();
   for (let j = 200; j--; ) {
+    ctx.fillStyle = STAR_COLORS[j % STAR_COLORS.length];
     let r = 50 / (6 - ((ellapsed + j / 13) % 6));
     ctx.globalAlpha = Math.min(r / 100, 1);
     ctx.beginPath();
@@ -457,6 +460,7 @@ function introRender(now) {
   }
 
   ctx.restore();
+  ctx.fillStyle = "#fff";
   ctx.textBaseline = "middle";
   ctx.textAlign = "center";
   if (state === STATE_INTRO) {
@@ -599,6 +603,7 @@ const powerupDefinitions = [
     "S",
     "cyan",
     () => {
+      sounds.shieldPowerup();
       shieldLevel++;
     },
   ],
@@ -1306,12 +1311,12 @@ function gameRender(now) {
 
   // Paint background stars
   let s;
-  ctx.fillStyle = "#777";
 
   for (
     let i = 100;
     i--;
-    ctx.beginPath(),
+    ctx.fillStyle = STAR_COLORS[i % STAR_COLORS.length],
+      ctx.beginPath(),
       ctx.arc(
         Math.floor(
           ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
@@ -1320,13 +1325,13 @@ function gameRender(now) {
           ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
         (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
           CANVAS_HEIGHT,
-        s * 2,
+        (s - 0.3) * 3.3,
         0,
         7
       ),
       ctx.fill()
   )
-    s = 149 / (i * 3 + 199);
+    s = 150 / (i * 3 + 200);
 
   const previousShipDestroyed = shipDestroyed;
 
@@ -1425,8 +1430,8 @@ function gameRender(now) {
   // Paint bomb
   if (bombEffect > now - initialTime) {
     ctx.save();
+    // Fill style is already white
     ctx.globalAlpha = (bombEffect - now + initialTime) / BOMB_DURATION;
-    ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.restore();
   }
