@@ -578,7 +578,7 @@ function hitShip() {
     shieldLevel--;
     sounds.shieldHit();
   } else if (!shipDestroyed) {
-    sounds.explosion();
+    sounds.explosion(1);
     shipDestroyed = true;
   }
 }
@@ -603,7 +603,7 @@ const powerupDefinitions = [
     "B",
     "red",
     (time) => {
-      sounds.explosion();
+      sounds.explosion(1.5);
       // Bomb
       bombEffect = time + BOMB_DURATION;
       nextEnemy += 1500;
@@ -898,7 +898,7 @@ class Enemy {
     }
 
     if (isDead) {
-      sounds.explosion();
+      sounds.explosion(this.width / 275);
       // Add score
       addScore(this.killPoints);
       // Return array with pieces

@@ -183,7 +183,7 @@ export function bullet() {
 export function enemyHit() {
   zzfx(
     ...[
-      0.3,
+      0.1,
       ,
       467,
       ,
@@ -207,10 +207,10 @@ export function enemyHit() {
   );
 }
 
-export function explosion() {
+export function explosion(volume) {
   zzfx(
     ...[
-      ,
+      volume,
       ,
       274,
       ,
@@ -262,7 +262,7 @@ export function shieldHit() {
 export function shieldPowerup() {
   zzfx(
     ...[
-      0.8,
+      0.5,
       ,
       505,
       0.21,
@@ -288,7 +288,7 @@ export function shieldPowerup() {
 export function bossExplosion() {
   zzfx(
     ...[
-      1.5,
+      1.2,
       ,
       369,
       ,
@@ -314,7 +314,7 @@ export function bossExplosion() {
 export function enemyFire() {
   zzfx(
     ...[
-      0.6,
+      0.3,
       ,
       279,
       0.02,
