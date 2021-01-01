@@ -262,7 +262,7 @@ export function shieldHit() {
 export function shieldPowerup() {
   zzfx(
     ...[
-      ,
+      0.8,
       ,
       505,
       0.21,

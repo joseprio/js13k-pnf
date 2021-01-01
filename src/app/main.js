@@ -1,8 +1,4 @@
-import {
-  generateShip,
-  generateFactionRandomizer,
-  Randomizer,
-} from "starshipwright";
+import { generateShip, Randomizer } from "starshipwright";
 import { createSprites, calculateSpriteFinalState } from "./voronoi";
 import { trimCanvas, createFavicon } from "./utils";
 import * as sounds from "./sounds";
@@ -210,7 +206,7 @@ let move_x = -1,
   anyKeyPressed = false;
 
 let a = document.getElementById("a");
-const faction = generateFactionRandomizer("piBbgDn4CZqlkqiF");
+const faction = new Randomizer("piBbgDn4CZqlkqiF");
 const ship = generateShip(faction, "ie7jMyCFouoUjkVs", 60);
 
 trimCanvas(ship);
@@ -297,11 +293,7 @@ let destroyedBossSprites;
 
 function generateBoss() {
   bossShip = flipCanvas(
-    generateShip(
-      generateFactionRandomizer("HYj7ADLjQr6icLtO"),
-      "CdiB9N2ZoQWuAxur",
-      270
-    )
+    generateShip(new Randomizer("HYj7ADLjQr6icLtO"), "CdiB9N2ZoQWuAxur", 270)
   );
   trimCanvas(bossShip);
   bossHit = hitEffect(bossShip);
@@ -313,7 +305,7 @@ function generateBoss() {
 
 function generateEnemy(faction, seed, size, ...more) {
   const enemyShip = flipCanvas(
-    generateShip(generateFactionRandomizer(faction), seed, size)
+    generateShip(new Randomizer(faction), seed, size)
   );
   return [enemyShip, undefined, undefined, undefined, ...more];
 }
