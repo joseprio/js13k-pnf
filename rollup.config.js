@@ -26,12 +26,17 @@ export default {
     production &&
       !useClosureCompiler &&
       terser({
+        ecma: 2020,
         compress: {
-          passes: 5,
-          unsafe_arrows: true,
-          unsafe_math: true,
-          unsafe: true,
+          passes: 10,
+          keep_fargs: false,
           pure_getters: true,
+          unsafe: true,
+          unsafe_arrows: true,
+          unsafe_comps: true,
+          unsafe_math: true,
+          unsafe_methods: true,
+          unsafe_symbols: true,
         },
         // This is dangerous, and just brings a 200 byte benefit
         mangle: {
@@ -41,7 +46,7 @@ export default {
         },
         format: {
           wrap_func_args: false,
-          ecma: 2015,
+          quote_style: 1,
         },
       }),
     production &&

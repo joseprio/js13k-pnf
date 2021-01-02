@@ -236,7 +236,7 @@ export function explosion(volume) {
 export function shieldHit() {
   zzfx(
     ...[
-      ,
+      0.9,
       ,
       119,
       ,
@@ -288,7 +288,7 @@ export function shieldPowerup() {
 export function bossExplosion() {
   zzfx(
     ...[
-      1.2,
+      1.1,
       ,
       369,
       ,
