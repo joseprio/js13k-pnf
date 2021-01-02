@@ -456,12 +456,12 @@ function introRender(now) {
   ctx.textBaseline = "middle";
   ctx.textAlign = "center";
   if (state === STATE_INTRO) {
+    ctx.font =
+      "italic small-caps 40px Futura-CondensedMedium,sans-serif-condensed,sans-serif";
     if (highscores.length === 0) {
-      ctx.font = "bold 40px Helvetica";
-      ctx.fillText("PLANET NOT FOUND", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+      ctx.fillText("Planet Not Found", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     } else {
-      ctx.font = "bold 30px Helvetica";
-      ctx.fillText("HIGH SCORES", HALF_CANVAS_WIDTH, 100);
+      ctx.fillText("High Scores", HALF_CANVAS_WIDTH, 100);
 
       ctx.save();
       ctx.textAlign = "start";
