@@ -1281,14 +1281,14 @@ function gameRender(now) {
         y += (vy / distance) * toTravel;
       }
     }
-    if (x - Math.floor(shipWidth / 2) < 0) {
+    if (x < Math.floor(shipWidth / 2)) {
       x = Math.floor(shipWidth / 2);
-    } else if (x + Math.floor(shipWidth / 2) > CANVAS_WIDTH) {
+    } else if (x > CANVAS_WIDTH - Math.floor(shipWidth / 2)) {
       x = CANVAS_WIDTH - Math.floor(shipWidth / 2);
     }
-    if (y - Math.floor(shipHeight / 2) < 0) {
+    if (y < Math.floor(shipHeight / 2)) {
       y = Math.floor(shipHeight / 2);
-    } else if (y + Math.floor(shipHeight / 2) > CANVAS_HEIGHT) {
+    } else if (y > CANVAS_HEIGHT - Math.floor(shipHeight / 2)) {
       y = CANVAS_HEIGHT - Math.floor(shipHeight / 2);
     }
     shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
@@ -1300,10 +1300,8 @@ function gameRender(now) {
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   // Paint background stars
-  let s;
-
   for (
-    let i = 100;
+    let i = 100, s;
     i--;
     ctx.fillStyle = STAR_COLORS[i % STAR_COLORS.length],
       ctx.beginPath(),
