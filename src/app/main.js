@@ -1251,9 +1251,7 @@ function gameRender(now) {
 
     if (keyUp || keyDown || keyLeft || keyRight) {
       const distance =
-        (keyUp || keyDown) && (keyLeft || keyRight)
-          ? (toTravel ** 2 / 2) ** 0.5
-          : toTravel;
+        toTravel / ((keyUp || keyDown) && (keyLeft || keyRight) ? 2 ** 0.5 : 1);
       if (keyUp) {
         y -= distance;
       }
@@ -1271,7 +1269,7 @@ function gameRender(now) {
       move_y = y;
     } else {
       // Move ship with pointer
-      let vx = move_x - x,
+      const vx = move_x - x,
         vy = move_y - y;
       const distance = Math.hypot(vx, vy);
 
