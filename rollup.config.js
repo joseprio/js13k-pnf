@@ -15,6 +15,7 @@ export default {
   output: {
     file: "dist/bundle.js",
     format: "iife", // immediately-invoked function expression — suitable for <script> tags
+    preferConst: true,
     sourcemap: false,
   },
   plugins: [
@@ -26,7 +27,9 @@ export default {
     production &&
       !useClosureCompiler &&
       terser({
-        ecma: 2020,
+        ecma: 9,
+        module: true,
+        toplevel: true,
         compress: {
           passes: 10,
           keep_fargs: false,
