@@ -31,7 +31,7 @@ export default {
         module: true,
         toplevel: true,
         compress: {
-          passes: 10,
+          passes: 5,
           keep_fargs: false,
           pure_getters: true,
           unsafe: true,
