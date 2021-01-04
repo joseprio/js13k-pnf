@@ -38,7 +38,15 @@ inliner(
 
     output.on("close", function () {
       console.log(`Applying ECT to html file ${ZIP_FILE}`);
-      const result = execFileSync(ect, ["-9", "-zip", ZIP_FILE]);
+      // ECT -#
+      // Select compression level [1-9] (default: 3).
+      // Advanced usage:
+      // A different syntax may be used to achieve even more compression for deflate compression if time (and efficiency) is not a concern.
+      // If the value is above 10000, the blocksplitting-compression cycle is repeated # / 10000 times. If # % 10000 is above 9, level 9 is
+      // used and the number of iterations of deflate compression per block is set to # % 10000. If # % 10000 is 9 or below, this number
+      // specifies the level.
+      // For instance, "-100500" saved 3 bytes
+      const result = execFileSync(ect, ["-9", "-strip", "-zip", ZIP_FILE]);
       console.log(result.toString("utf8"));
 
       const stats = fs.statSync(ZIP_FILE);
