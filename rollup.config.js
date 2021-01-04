@@ -27,7 +27,7 @@ export default {
     production &&
       !useClosureCompiler &&
       terser({
-        ecma: 9,
+        ecma: 2019,
         module: true,
         toplevel: true,
         compress: {
@@ -49,7 +49,8 @@ export default {
         },
         format: {
           wrap_func_args: false,
-          quote_style: 1,
+          semicolons: true,
+          ecma: 2019,
         },
       }),
     production &&
