@@ -7,14 +7,14 @@ const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
 
 function hitEffect(canvas) {
   const destCanvas = document.createElement("canvas");
-  const { width, height } = canvas;
+  const width = canvas.width;
+  const height = canvas.height;
   destCanvas.width = width;
   destCanvas.height = height;
   const ctx = canvas.getContext("2d");
   const imageData = ctx.getImageData(0, 0, width, height);
-  const { data } = imageData;
-  const { length } = data;
-  for (let i = 0; i < length; i += 4) {
+  const data = imageData.data;
+  for (let i = 0; i < data.length; i += 4) {
     const r = data[i + 0];
     const g = data[i + 1];
     const b = data[i + 2];
