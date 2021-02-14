@@ -30,13 +30,12 @@ export function createFavicon(img) {
   favicon.width = 32;
   favicon.height = 32;
   const favCtx = favicon.getContext("2d");
-  let destWidth, destHeight;
-  if (img.width > img.height) {
-    destWidth = 32;
-    destHeight = (32 * img.height) / img.width;
-  } else {
+  let destWidth = 32,
     destHeight = 32;
-    destWidth = (32 * img.width) / img.height;
+  if (img.width > img.height) {
+    destHeight *= img.height / img.width;
+  } else {
+    destWidth *= img.width / img.height;
   }
   favCtx.drawImage(img, 0, 0, destWidth, destHeight);
 
