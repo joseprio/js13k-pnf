@@ -31,10 +31,9 @@ export function createSprites(targetCanvas) {
       Math.floor(Math.min(targetCanvas.width, targetCanvas.height) / 12)
     )
   );
-  const targetCtx = targetCanvas.getContext("2d");
   const width = targetCanvas.width,
     height = targetCanvas.height;
-  const imageData = targetCtx.getImageData(0, 0, width, height);
+  const imageData = obtainImageData(targetCanvas);
   // Assigning extreme values so we know they'll be overriden
   const sprites = splitPoints.map((p) => ({
     minX: 1e9,
