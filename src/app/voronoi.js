@@ -7,8 +7,10 @@ function createSplitPoints(width, height, targetSize) {
   const yOffset = Math.floor(height / (2 * yPoints));
   for (let currentY = 0; currentY < yPoints; currentY++) {
     const iterationXPoints = currentY % 2 === 0 ? xPoints : xPoints - 1;
+    // We calculate the initial offset so the center points are in a displaced pattern
     const xOffset = Math.floor(width / ((2 - (currentY % 2)) * xPoints));
     for (let currentX = 0; currentX < iterationXPoints; currentX++) {
+      // We add some noise so all pieces look different
       result.push([
         xOffset + ((currentX + (Math.random() - 0.5)) * width) / xPoints,
         yOffset + ((currentY + (Math.random() - 0.5)) * height) / yPoints,
