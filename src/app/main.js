@@ -988,7 +988,7 @@ class Boss {
     this.phase = BOSS_WAITING;
     this.nextPhase = time + 2000;
     // We want to be basically immortal until we start the fight
-    this.health = Number.MAX_SAFE_INTEGER;
+    this.health = 1e9;
     this.lastTime = time;
     this.width = bossShip.width;
     this.height = bossShip.height;
