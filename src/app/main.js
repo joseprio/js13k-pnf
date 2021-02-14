@@ -1302,18 +1302,7 @@ function gameRender(now) {
     nextHitables = [];
   function runEntity(entity) {
     const result = entity.run(hitables, ctx, now - initialTime);
-    if (typeof result === "boolean") {
-      if (result) {
-        if (entity.alwaysOnTop) {
-          alwaysOnTop.push(entity);
-        } else {
-          nextEntities.push(entity);
-        }
-        if (entity.hit) {
-          nextHitables.push(entity);
-        }
-      }
-    } else if (Array.isArray(result)) {
+    if (Array.isArray(result)) {
       result.map((subEntity) => {
         if (entity === subEntity) {
           // The original wants to be persisted, don't rerun it
@@ -1332,6 +1321,15 @@ function gameRender(now) {
           runEntity(subEntity);
         }
       });
+    } else if (result) {
+      if (entity.alwaysOnTop) {
+        alwaysOnTop.push(entity);
+      } else {
+        nextEntities.push(entity);
+      }
+      if (entity.hit) {
+        nextHitables.push(entity);
+      }
     }
   }
   entities.map(runEntity);
