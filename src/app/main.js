@@ -355,10 +355,6 @@ const enemyDefinitions = [
 ];
 //    generateEnemy("KVoA08jfxzGQlU26", "bxfJMJri6hSgr3zD", 220, 80, 0.2),
 
-function increaseDifficulty() {
-  difficulty++;
-}
-
 function render(now) {
   switch (state) {
     case STATE_LOADING:
@@ -1419,8 +1415,8 @@ function gameRender(now) {
     sounds.bullet();
   }
   if (nextDifficulty < now - initialTime && !bossTime) {
-    increaseDifficulty();
-    if (difficulty % 5) {
+    // Increase difficulty and check
+    if (++difficulty % 5) {
       nextDifficulty = now - initialTime + 10000;
     } else {
       bossTime = true;
@@ -1523,7 +1519,6 @@ self.onkeydown = self.onkeyup = (e) => {
 // Let's run the game
 a.width = CANVAS_WIDTH;
 a.height = CANVAS_HEIGHT;
-let c = a.getContext("2d");
 function renderWrapper(now) {
   render(now);
   requestAnimationFrame(renderWrapper);
