@@ -122,11 +122,8 @@ function generateEnemyBulletFrame(colorStop) {
 function generateEnemyBullet() {
   const frames = [];
   for (let c = 0; c < 9; c++) {
+    frames.unshift(generateEnemyBulletFrame(c / 10));
     frames.push(generateEnemyBulletFrame(c / 10));
-  }
-  // Inverse animation, copying by reference
-  for (let d = frames.length - 2; d >= 1; d--) {
-    frames.push(frames[d]);
   }
   return frames;
 }
