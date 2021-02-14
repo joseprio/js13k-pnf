@@ -1,3 +1,5 @@
+import { createCanvas, obtainImageData } from "./utils";
+
 const MAX_ANGLE = 360;
 
 function createSplitPoints(width, height, targetSize) {
@@ -92,11 +94,8 @@ export function createSprites(targetCanvas) {
     if (sprite.minX < 1e9) {
       const shardWidth = sprite.maxX - sprite.minX + 1;
       const shardHeight = sprite.maxY - sprite.minY + 1;
-      const shardCanvas = document.createElement("canvas");
-      shardCanvas.width = shardWidth;
-      shardCanvas.height = shardHeight;
-      const shardCtx = shardCanvas.getContext("2d");
-      const imgData = shardCtx.createImageData(shardWidth, shardHeight);
+      const shardCanvas = createCanvas(shardWidth, shardHeight);
+      const imgData = obtainImageData(shardCanvas);
       sprite.nearest.map((point) => {
         const pos =
           4 *
@@ -106,7 +105,7 @@ export function createSprites(targetCanvas) {
         imgData.data[pos + 2] = point[4];
         imgData.data[pos + 3] = point[5];
       });
-      shardCtx.putImageData(imgData, 0, 0);
+      shardCanvas.getContext("2d").putImageData(imgData, 0, 0);
       result.push({
         center: sprite.center,
         canvas: shardCanvas,
