@@ -108,7 +108,7 @@ function generateBullet() {
 function generateEnemyBulletFrame(colorStop) {
   const canvas = createCanvas(20, 20);
   const ctx = canvas.getContext("2d");
-  var grd = ctx.createRadialGradient(10, 10, 0, 10, 10, 10);
+  const grd = ctx.createRadialGradient(10, 10, 0, 10, 10, 10);
   grd.addColorStop(colorStop, "yellow");
   grd.addColorStop(1, "red");
   ctx.fillStyle = grd;
@@ -134,7 +134,7 @@ function generateEnemyBullet() {
 function generatePowerupCanvas() {
   const canvas = createCanvas(60, 60);
   const ctx = canvas.getContext("2d");
-  var grd = ctx.createRadialGradient(30, 30, 0, 30, 30, 30);
+  const grd = ctx.createRadialGradient(30, 30, 0, 30, 30, 30);
   grd.addColorStop(0.6, "navy");
   grd.addColorStop(1, "blue");
   ctx.fillStyle = grd;
