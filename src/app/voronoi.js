@@ -1,6 +1,6 @@
 const MAX_ANGLE = 360;
 
-function createSplitPoints(width, height, targetSize, noise) {
+function createSplitPoints(width, height, targetSize) {
   const xPoints = Math.floor(width / targetSize);
   const yPoints = Math.floor(height / targetSize);
   const result = [];
@@ -10,10 +10,8 @@ function createSplitPoints(width, height, targetSize, noise) {
     const xOffset = Math.floor(width / ((2 - (currentY % 2)) * xPoints));
     for (let currentX = 0; currentX < iterationXPoints; currentX++) {
       result.push([
-        xOffset +
-          ((currentX + (2 * Math.random() - 1) * noise) * width) / xPoints,
-        yOffset +
-          ((currentY + (2 * Math.random() - 1) * noise) * height) / yPoints,
+        xOffset + ((currentX + (Math.random() - 0.5)) * width) / xPoints,
+        yOffset + ((currentY + (Math.random() - 0.5)) * height) / yPoints,
       ]);
     }
   }
@@ -27,8 +25,7 @@ export function createSprites(targetCanvas) {
     Math.max(
       12,
       Math.floor(Math.min(targetCanvas.width, targetCanvas.height) / 12)
-    ),
-    0.5
+    )
   );
   const targetCtx = targetCanvas.getContext("2d");
   const width = targetCanvas.width,
