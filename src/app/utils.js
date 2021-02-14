@@ -5,6 +5,12 @@ export function createCanvas(width, height) {
   return newCanvas;
 }
 
+export function obtainImageData(canvas) {
+  return canvas
+    .getContext("2d")
+    .getImageData(0, 0, canvas.width, canvas.height);
+}
+
 export function trimCanvas(canvas) {
   const ctx = canvas.getContext("2d");
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);

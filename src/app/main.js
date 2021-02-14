@@ -1,6 +1,11 @@
 import { generateShip, Randomizer } from "starshipwright";
 import { createSprites, calculateSpriteFinalState } from "./voronoi";
-import { trimCanvas, createFavicon, createCanvas } from "./utils";
+import {
+  trimCanvas,
+  createFavicon,
+  createCanvas,
+  obtainImageData,
+} from "./utils";
 import * as sounds from "./sounds";
 
 const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
@@ -9,8 +14,7 @@ function hitEffect(canvas) {
   const width = canvas.width;
   const height = canvas.height;
   const destCanvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
-  const imageData = ctx.getImageData(0, 0, width, height);
+  const imageData = obtainImageData(canvas);
   const data = imageData.data;
   for (let i = 0; i < data.length; i += 4) {
     const r = data[i + 0];
@@ -195,8 +199,7 @@ trimCanvas(ship);
 const destroyedShipSprites = createSprites(ship);
 const shipWidth = ship.width;
 const shipHeight = ship.height;
-const shipMask = ship.getContext("2d").getImageData(0, 0, shipWidth, shipHeight)
-  .data;
+const shipMask = obtainImageData(ship).data;
 
 let shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
 let shipDestroyed;
@@ -215,10 +218,7 @@ const enemyBlueprints = [];
 
 const [bullet, bulletMask] = generateBullet();
 const enemyBulletFrames = generateEnemyBullet();
-const enemyBulletMask = enemyBulletFrames[0]
-  .getContext("2d")
-  .getImageData(0, 0, enemyBulletFrames[0].width, enemyBulletFrames[0].height)
-  .data;
+const enemyBulletMask = obtainImageData(enemyBulletFrames[0]).data;
 
 const [powerupCanvas, powerupMask] = generatePowerupCanvas();
 
@@ -279,9 +279,7 @@ function generateBoss() {
   trimCanvas(bossShip);
   bossHit = hitEffect(bossShip);
   destroyedBossSprites = createSprites(bossShip);
-  bossMask = bossShip
-    .getContext("2d")
-    .getImageData(0, 0, bossShip.width, bossShip.height).data;
+  bossMask = obtainImageData(bossShip).data;
 }
 
 function generateEnemy(faction, seed, size, ...more) {
@@ -294,9 +292,7 @@ function generateEnemy(faction, seed, size, ...more) {
 function generateEnemyAssets(enemyBlueprint) {
   const enemyShip = enemyBlueprint[0];
   trimCanvas(enemyShip);
-  const mask = enemyShip
-    .getContext("2d")
-    .getImageData(0, 0, enemyShip.width, enemyShip.height).data;
+  const mask = obtainImageData(enemyShip).data;
   const hitEnemyShip = hitEffect(enemyShip);
   const destroyedEnemyShipSprites = createSprites(enemyShip);
   enemyBlueprint[1] = mask;
