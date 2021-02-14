@@ -44,12 +44,8 @@ function generateShields() {
       }
     }
     shieldPhaseCtx.globalCompositeOperation = "source-in";
-    if (c > 5) {
-      // Solid cyan
-      shieldPhaseCtx.fillStyle = "cyan";
-    } else {
-      shieldPhaseCtx.fillStyle = "blue";
-    }
+    // Solid cyan
+    shieldPhaseCtx.fillStyle = c > 5 ? "cyan" : "blue";
     shieldPhaseCtx.fillRect(0, 0, shieldPhase.width, shieldPhase.height);
     shieldPhaseCtx.globalCompositeOperation = "source-over";
     shieldPhaseCtx.drawImage(
@@ -106,7 +102,7 @@ function generateBullet() {
   ctx.lineTo(10, 70);
   ctx.stroke();
 
-  return [canvas, ctx.getImageData(0, 0, canvas.width, canvas.height).data];
+  return [canvas, obtainImageData(canvas).data];
 }
 
 function generateEnemyBulletFrame(colorStop) {
@@ -142,7 +138,7 @@ function generatePowerupCanvas() {
   ctx.beginPath();
   ctx.arc(30, 30, 30, 0, 7);
   ctx.fill();
-  return [canvas, ctx.getImageData(0, 0, canvas.width, canvas.height).data];
+  return [canvas, obtainImageData(canvas).data];
 }
 
 function flipCanvas(canvas) {
