@@ -1314,7 +1314,7 @@ function gameRender(now) {
         }
       }
     } else if (Array.isArray(result)) {
-      result.forEach((subEntity) => {
+      result.map((subEntity) => {
         if (entity === subEntity) {
           // The original wants to be persisted, don't rerun it
           if (result) {
@@ -1334,7 +1334,7 @@ function gameRender(now) {
       });
     }
   }
-  entities.forEach(runEntity);
+  entities.map(runEntity);
 
   if (!previousShipDestroyed && shipDestroyed) {
     // Record time
@@ -1351,7 +1351,7 @@ function gameRender(now) {
           now - initialTime
         );
       })
-      .forEach(runEntity);
+      .map(runEntity);
   }
 
   entities = nextEntities.concat(alwaysOnTop);

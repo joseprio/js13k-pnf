@@ -88,7 +88,7 @@ export function createSprites(targetCanvas) {
     }
   }
   const result = [];
-  sprites.forEach((sprite) => {
+  sprites.map((sprite) => {
     if (sprite.minX < 1e9) {
       const shardWidth = sprite.maxX - sprite.minX + 1;
       const shardHeight = sprite.maxY - sprite.minY + 1;
@@ -97,7 +97,7 @@ export function createSprites(targetCanvas) {
       shardCanvas.height = shardHeight;
       const shardCtx = shardCanvas.getContext("2d");
       const imgData = shardCtx.createImageData(shardWidth, shardHeight);
-      sprite.nearest.forEach((point) => {
+      sprite.nearest.map((point) => {
         const pos =
           4 *
           ((point[1] - sprite.minY) * shardWidth + (point[0] - sprite.minX));
