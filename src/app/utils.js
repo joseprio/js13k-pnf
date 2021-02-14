@@ -1,3 +1,10 @@
+export function createCanvas(width, height) {
+  const newCanvas = document.createElement("canvas");
+  newCanvas.width = width;
+  newCanvas.height = height;
+  return newCanvas;
+}
+
 export function trimCanvas(canvas) {
   const ctx = canvas.getContext("2d");
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -26,9 +33,7 @@ export function trimCanvas(canvas) {
 }
 
 export function createFavicon(img) {
-  const favicon = document.createElement("canvas");
-  favicon.width = 32;
-  favicon.height = 32;
+  const favicon = createCanvas(32, 32);
   const favCtx = favicon.getContext("2d");
   let destWidth = 32,
     destHeight = 32;

@@ -1,16 +1,14 @@
 import { generateShip, Randomizer } from "starshipwright";
 import { createSprites, calculateSpriteFinalState } from "./voronoi";
-import { trimCanvas, createFavicon } from "./utils";
+import { trimCanvas, createFavicon, createCanvas } from "./utils";
 import * as sounds from "./sounds";
 
 const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
 
 function hitEffect(canvas) {
-  const destCanvas = document.createElement("canvas");
   const width = canvas.width;
   const height = canvas.height;
-  destCanvas.width = width;
-  destCanvas.height = height;
+  const destCanvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
   const imageData = ctx.getImageData(0, 0, width, height);
   const data = imageData.data;
@@ -29,10 +27,8 @@ function hitEffect(canvas) {
 function generateShields() {
   const phases = [ship];
   for (let c = 0; c < 10; c++) {
-    const shieldPhase = document.createElement("canvas");
+    const shieldPhase = createCanvas(shipWidth * 2, shipHeight * 2);
     const shieldPhaseCtx = shieldPhase.getContext("2d");
-    shieldPhase.width = shipWidth * 2;
-    shieldPhase.height = shipHeight * 2;
 
     for (let offsetY = 0; offsetY < 3; offsetY++) {
       for (let offsetX = 0; offsetX < 3; offsetX++) {
@@ -79,9 +75,7 @@ function generateShields() {
 }
 
 function generateBullet() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 20;
-  canvas.height = 60;
+  const canvas = createCanvas(20, 60);
   const ctx = canvas.getContext("2d");
   // gold filled rect
   ctx.fillStyle = "yellow";
@@ -112,9 +106,7 @@ function generateBullet() {
 }
 
 function generateEnemyBulletFrame(colorStop) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 20;
-  canvas.height = 20;
+  const canvas = createCanvas(20, 20);
   const ctx = canvas.getContext("2d");
   var grd = ctx.createRadialGradient(10, 10, 0, 10, 10, 10);
   grd.addColorStop(colorStop, "yellow");
@@ -140,9 +132,7 @@ function generateEnemyBullet() {
 }
 
 function generatePowerupCanvas() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 60;
-  canvas.height = 60;
+  const canvas = createCanvas(60, 60);
   const ctx = canvas.getContext("2d");
   var grd = ctx.createRadialGradient(30, 30, 0, 30, 30, 30);
   grd.addColorStop(0.6, "navy");
@@ -155,9 +145,7 @@ function generatePowerupCanvas() {
 }
 
 function flipCanvas(canvas) {
-  const flippedCanvas = document.createElement("canvas");
-  flippedCanvas.width = canvas.width;
-  flippedCanvas.height = canvas.height;
+  const flippedCanvas = createCanvas(canvas.width, canvas.height);
   const ctx = flippedCanvas.getContext("2d");
   ctx.scale(1, -1);
   ctx.drawImage(canvas, 0, 0, canvas.width, -canvas.height);
@@ -165,9 +153,7 @@ function flipCanvas(canvas) {
 }
 
 function generateNewTag() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 100;
-  canvas.height = 100;
+  const canvas = createCanvas(100, 100);
   const ctx = canvas.getContext("2d");
   ctx.font = "bold 20px Helvetica";
   ctx.translate(50, 50);
@@ -178,9 +164,7 @@ function generateNewTag() {
   ctx.textBaseline = "middle";
   ctx.fillText("NEW!", 0, 0);
   trimCanvas(canvas);
-  const tagCanvas = document.createElement("canvas");
-  tagCanvas.width = canvas.width + 10;
-  tagCanvas.height = canvas.height + 10;
+  const tagCanvas = createCanvas(canvas.width + 10, canvas.height + 10);
   const tagCtx = tagCanvas.getContext("2d");
   tagCtx.fillStyle = "red";
   tagCtx.fillRect(0, 0, tagCanvas.width, tagCanvas.height);
