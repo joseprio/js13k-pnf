@@ -11,9 +11,9 @@ function createSplitPoints(width, height, targetSize, noise) {
     for (let currentX = 0; currentX < iterationXPoints; currentX++) {
       result.push([
         xOffset +
-          ((currentX + (Math.random() - 0.5) * 2 * noise) * width) / xPoints,
+          ((currentX + (2 * Math.random() - 1) * noise) * width) / xPoints,
         yOffset +
-          ((currentY + (Math.random() - 0.5) * 2 * noise) * height) / yPoints,
+          ((currentY + (2 * Math.random() - 1) * noise) * height) / yPoints,
       ]);
     }
   }
