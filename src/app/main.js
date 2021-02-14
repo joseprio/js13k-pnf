@@ -818,17 +818,18 @@ function fireBullets(amount, x, y, initialAngle, speed, time) {
 
 class Enemy {
   constructor(
-    canvas,
-    mask,
-    hitCanvas,
-    destroyedSprites,
+    [
+      canvas,
+      mask,
+      hitCanvas,
+      destroyedSprites,
+      health,
+      speed,
+      deathBullets,
+      fireSequences,
+    ],
     startX,
-    startY,
-    speed,
-    health,
     points,
-    deathBullets,
-    fireSequences,
     time
   ) {
     this.fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
@@ -839,7 +840,7 @@ class Enemy {
     this.height = canvas.height;
     this.health = health;
     this.x = startX;
-    this.y = startY;
+    this.y = Math.floor(-canvas.height / 2);
     this.lastTime = time;
     this.hitTime = 0;
     this.destroyedSprites = destroyedSprites;
@@ -1448,29 +1449,11 @@ function gameRender(now) {
       Math.min(difficulty, enemyBlueprints.length - 1)
     );
 
-    const [
-      enemyShip,
-      enemyMask,
-      hitEnemyShip,
-      destroyedEnemyShipSprites,
-      health,
-      speed,
-      deathBullets,
-      fireSequences,
-    ] = enemyBlueprints[enemyDifficulty];
     entities.push(
       new Enemy(
-        enemyShip,
-        enemyMask,
-        hitEnemyShip,
-        destroyedEnemyShipSprites,
+        enemyBlueprints[enemyDifficulty],
         enemyRandomizer.si(30, CANVAS_WIDTH - 30),
-        Math.floor(-enemyShip.height / 2),
-        speed,
-        health,
         (enemyDifficulty + 1) * 50,
-        deathBullets,
-        fireSequences,
         now - initialTime
       )
     );
