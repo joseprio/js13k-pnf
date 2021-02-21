@@ -1,3 +1,6 @@
+// THIS FILE HAS BEEN GENERATED WITH zzfx-minifier
+// Keep that in mind when modifying it!
+
 // ZzFX - Zuper Zmall Zound Zynth - Micro Edition
 // MIT License - Copyright 2019 Frank Force
 // https://github.com/KilledByAPixel/ZzFX
@@ -6,6 +9,8 @@
 // You can use zzfxV to set volume.
 // There is a small bit of optional code to improve compatibility.
 // Feel free to minify it further for your own needs!
+
+"use strict";
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -21,30 +26,11 @@
 const zzfxX = new (window.AudioContext || webkitAudioContext)(); // audio context
 const zzfxR = 44100; // sample rate
 const zzfxV = 0.3; // volume
-const zzfx = (
-  // play sound
+const zzfx = ( // play sound
   // parameters
-  volume = 1,
-  randomness = 0.05,
-  frequency = 220,
-  attack = 0,
-  sustain = 0,
-  release = 0.1,
-  shape = 0,
-  shapeCurve = 1,
-  slide = 0,
-  deltaSlide = 0,
-  pitchJump = 0,
-  pitchJumpTime = 0,
-  repeatTime = 0,
-  noise = 0,
-  modulation = 0,
-  bitCrush = 0,
-  delay = 0,
-  sustainVolume = 1,
-  decay = 0,
-  tremolo = 0
+  volume, frequency, sustain, release, sustainVolume, shape = 4, shapeCurve = 0.1, slide = 0, noise = 0, bitCrush = 0, delay = 0, decay = 0.04, attack = 0, modulation = 0, tremolo = 0, deltaSlide = 0, repeatTime = 0, pitchJump = 0, pitchJumpTime = 0
 ) => {
+  const randomness = 0.05;
   // init parameters
   let PI2 = Math.PI * 2,
     sign = (v) => (v > 0 ? 1 : -1),
@@ -156,26 +142,7 @@ const zzfx = (
 export function bullet() {
   zzfx(
     ...[
-      0.04,
-      ,
-      292,
-      0.02,
-      0.01,
-      0.08,
-      3,
-      0.1,
-      -3.9,
-      ,
-      ,
-      ,
-      ,
-      ,
-      ,
-      ,
-      ,
-      0.74,
-      0.04,
-      0.43,
+        0.04, 292, 0.01, 0.08, 0.74, 3, , -3.9, , , , , 0.02, , 0.43
     ]
   );
 }
@@ -183,26 +150,7 @@ export function bullet() {
 export function enemyHit() {
   zzfx(
     ...[
-      0.1,
-      ,
-      467,
-      ,
-      0.06,
-      0.14,
-      4,
-      0.1,
-      ,
-      ,
-      ,
-      ,
-      ,
-      0.5,
-      303,
-      0.4,
-      ,
-      0.58,
-      0.02,
-      0.02,
+        0.1, 467, 0.06, 0.14, 0.58, , , , 0.5, 0.4, , 0.02, , 303, 0.02
     ]
   );
 }
@@ -210,25 +158,7 @@ export function enemyHit() {
 export function explosion(volume) {
   zzfx(
     ...[
-      volume,
-      ,
-      274,
-      ,
-      0.03,
-      0.67,
-      4,
-      1.11,
-      ,
-      ,
-      ,
-      ,
-      0.04,
-      0.8,
-      ,
-      0.5,
-      0.25,
-      0.63,
-      0.02,
+        volume, 274, 0.03, 0.67, 0.63, , 1.11, , 0.8, 0.5, 0.25, 0.02, , , , , 0.04
     ]
   );
 }
@@ -236,25 +166,7 @@ export function explosion(volume) {
 export function shieldHit() {
   zzfx(
     ...[
-      0.9,
-      ,
-      119,
-      ,
-      ,
-      0.44,
-      ,
-      0.09,
-      5.3,
-      -4.2,
-      ,
-      ,
-      ,
-      0.7,
-      -340,
-      0.1,
-      0.01,
-      0.85,
-      0.08,
+        0.9, 119, 0, 0.44, 0.85, 0, 0.09, 5.3, 0.7, 0.1, 0.01, 0.08, , -340, , -4.2
     ]
   );
 }
@@ -262,25 +174,7 @@ export function shieldHit() {
 export function shieldPowerup() {
   zzfx(
     ...[
-      0.5,
-      ,
-      505,
-      0.21,
-      0.12,
-      0.46,
-      2,
-      1.67,
-      ,
-      ,
-      58,
-      0.02,
-      0.28,
-      ,
-      ,
-      ,
-      ,
-      0.69,
-      0.03,
+        0.5, 505, 0.12, 0.46, 0.69, 2, 1.67, , , , , 0.03, 0.21, , , , 0.28, 58, 0.02
     ]
   );
 }
@@ -288,25 +182,7 @@ export function shieldPowerup() {
 export function bossExplosion() {
   zzfx(
     ...[
-      1.1,
-      ,
-      369,
-      ,
-      0.1,
-      1,
-      2,
-      0.05,
-      0.4,
-      ,
-      ,
-      ,
-      ,
-      0.7,
-      -1.3,
-      0.8,
-      0.37,
-      0.77,
-      0.04,
+        1.1, 369, 0.1, 1, 0.77, 2, 0.05, 0.4, 0.7, 0.8, 0.37, , , -1.3
     ]
   );
 }
@@ -314,26 +190,7 @@ export function bossExplosion() {
 export function enemyFire() {
   zzfx(
     ...[
-      0.3,
-      ,
-      279,
-      0.02,
-      0.09,
-      0.09,
-      3,
-      1.2,
-      -4.9,
-      -0.6,
-      ,
-      ,
-      ,
-      ,
-      ,
-      ,
-      0.05,
-      0.89,
-      0.04,
-      0.02,
+        0.3, 279, 0.09, 0.09, 0.89, 3, 1.2, -4.9, , , 0.05, , 0.02, , 0.02, -0.6
     ]
   );
 }

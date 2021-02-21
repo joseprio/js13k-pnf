@@ -4,6 +4,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:closure": "rollup -c --environment CLOSURE_COMPILER",
+    "generate:sounds": "zzfx-minifier -i sounds.json -o src/app/sounds.js",
     "postbuild": "node postbuild.js",
     "start": "rollup -c -w"
   },
@@ -13,7 +14,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "archiver": "^2.1.1",
     "css-loader": "^1.0.0",
-    "ect-bin": "1.1.0",
+    "ect-bin": "1.4.1",
     "html-minifier-terser": "5.1.1",
     "mini-css-extract-plugin": "^0.4.1",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
@@ -22,7 +23,8 @@
     "rollup-plugin-serve": "1.0.4",
     "rollup-plugin-terser": "^7.0.2",
     "style-loader": "^0.22.1",
-    "web-resource-inliner": "5.0.0"
+    "web-resource-inliner": "5.0.0",
+    "zzfx-minifier": "joseprio/zzfx-minifier"
   },
   "dependencies": {
     "starshipwright": "1.0.1"
