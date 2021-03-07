@@ -125,15 +125,13 @@ export function calculateSpriteFinalState(sprite, width, height) {
 
   sprite.translateX =
     (finalDistance - distance) *
-    ((distanceSquare - cy * cy) / distanceSquare) ** 0.5 *
+    (1 - cy ** 2 / distanceSquare) ** 0.5 *
     (cx > 0 ? 1 : -1);
   sprite.translateY =
     (finalDistance - distance) *
-    ((distanceSquare - cx * cx) / distanceSquare) ** 0.5 *
+    (1 - cx ** 2 / distanceSquare) ** 0.5 *
     (cy > 0 ? 1 : -1);
   sprite.angle =
-    ((Math.random() * MAX_ANGLE * 2 - MAX_ANGLE) /
-      ((Math.random() + 2) * sprite.canvas.width)) *
-    10 *
-    (Math.PI / 180);
+    (Math.random() * MAX_ANGLE * 2 - MAX_ANGLE * Math.PI) /
+    ((Math.random() + 2) * sprite.canvas.width * 18);
 }
