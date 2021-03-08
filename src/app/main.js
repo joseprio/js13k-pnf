@@ -439,7 +439,7 @@ function introRender(now) {
         const score = Intl.NumberFormat().format(highscores[c][0]);
         const time = new Date(highscores[c][1]).toLocaleString();
         gameCtx.font = "50px Helvetica";
-        gameCtx.fillText(String(c + 1), 115, 160 + 80 * c);
+        gameCtx.fillText(c + 1, 115, 160 + 80 * c);
         gameCtx.font = "60px Helvetica";
         gameCtx.fillText("{", 145, 150 + 80 * c);
         gameCtx.font = "25px Helvetica";
