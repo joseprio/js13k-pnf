@@ -185,7 +185,8 @@ let move_x = -1,
   keysPressed = [],
   anyKeyPressed = false;
 
-let a = document.getElementById("a");
+const gameCanvas = self.a;
+const gameCtx = gameCanvas.getContext("2d");
 const faction = new Randomizer("piBbgDn4CZqlkqiF");
 const ship = trimCanvas(generateShip(faction, "ie7jMyCFouoUjkVs", 60));
 const destroyedShipSprites = createSprites(ship);
@@ -386,74 +387,77 @@ function newGame() {
 
 function introRender(now) {
   // reset
-  const ctx = a.getContext("2d");
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  gameCtx.fillStyle = "#000";
+  gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   let ellapsed = (now - initialTime) / 3000;
 
   // Intro starfield
-  ctx.save();
+  gameCtx.save();
   for (let j = 200; j--; ) {
-    ctx.fillStyle = STAR_COLORS[j % STAR_COLORS.length];
+    gameCtx.fillStyle = STAR_COLORS[j % STAR_COLORS.length];
     let r = 50 / (6 - ((ellapsed + j / 13) % 6));
-    ctx.globalAlpha = Math.min(r / 100, 1);
-    ctx.beginPath();
-    ctx.arc(
+    gameCtx.globalAlpha = Math.min(r / 100, 1);
+    gameCtx.beginPath();
+    gameCtx.arc(
       Math.cos(j) * r + HALF_CANVAS_WIDTH,
       Math.sin(j * j) * r + HALF_CANVAS_HEIGHT,
       r / 200,
       0,
       7
     );
-    ctx.fill();
+    gameCtx.fill();
   }
 
-  ctx.restore();
-  ctx.fillStyle = "#fff";
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "center";
+  gameCtx.restore();
+  gameCtx.fillStyle = "#fff";
+  gameCtx.textBaseline = "middle";
+  gameCtx.textAlign = "center";
   if (state === STATE_INTRO) {
-    ctx.font =
+    gameCtx.font =
       "italic small-caps 40px Futura-CondensedMedium,sans-serif-condensed,sans-serif";
     if (highscores.length) {
-      ctx.fillText("High Scores", HALF_CANVAS_WIDTH, 100);
+      gameCtx.fillText("High Scores", HALF_CANVAS_WIDTH, 100);
 
-      ctx.save();
-      ctx.textAlign = "start";
-      ctx.textBaseline = "top";
+      gameCtx.save();
+      gameCtx.textAlign = "start";
+      gameCtx.textBaseline = "top";
       for (let c = 0; c < highscores.length; c++) {
         if (c === highlightHighscore) {
-          ctx.save();
-          ctx.translate(90, 185 + 80 * c);
-          ctx.drawImage(
+          gameCtx.save();
+          gameCtx.translate(90, 185 + 80 * c);
+          gameCtx.drawImage(
             newTag,
             -Math.floor(newTag.width / 2),
             -Math.floor(newTag.height / 2)
           );
-          ctx.restore();
-          ctx.fillStyle = "gold";
+          gameCtx.restore();
+          gameCtx.fillStyle = "gold";
         } else {
-          ctx.fillStyle = "#fff";
+          gameCtx.fillStyle = "#fff";
         }
         const score = Intl.NumberFormat().format(highscores[c][0]);
         const time = new Date(highscores[c][1]).toLocaleString();
-        ctx.font = "50px Helvetica";
-        ctx.fillText(String(c + 1), 115, 160 + 80 * c);
-        ctx.font = "60px Helvetica";
-        ctx.fillText("{", 145, 150 + 80 * c);
-        ctx.font = "25px Helvetica";
-        ctx.fillText(score + " points", 170, 160 + 80 * c);
-        ctx.font = "15px Helvetica";
-        ctx.fillText(time, 170, 190 + 80 * c);
+        gameCtx.font = "50px Helvetica";
+        gameCtx.fillText(String(c + 1), 115, 160 + 80 * c);
+        gameCtx.font = "60px Helvetica";
+        gameCtx.fillText("{", 145, 150 + 80 * c);
+        gameCtx.font = "25px Helvetica";
+        gameCtx.fillText(score + " points", 170, 160 + 80 * c);
+        gameCtx.font = "15px Helvetica";
+        gameCtx.fillText(time, 170, 190 + 80 * c);
       }
 
-      ctx.restore();
+      gameCtx.restore();
     } else {
-      ctx.fillText("Planet Not Found", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+      gameCtx.fillText(
+        "Planet Not Found",
+        HALF_CANVAS_WIDTH,
+        HALF_CANVAS_HEIGHT
+      );
     }
-    ctx.font = "20px Helvetica";
-    ctx.fillText(
+    gameCtx.font = "20px Helvetica";
+    gameCtx.fillText(
       "<Press anywhere or any key to play>",
       HALF_CANVAS_WIDTH,
       CANVAS_HEIGHT - 30
@@ -468,8 +472,8 @@ function introRender(now) {
       introInhibitPress = false;
     }
   } else {
-    ctx.font = "italic 30px Helvetica";
-    ctx.fillText("Loading…", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+    gameCtx.font = "italic 30px Helvetica";
+    gameCtx.fillText("Loading…", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     // Generate assets
     if (!bossShip) {
       generateBoss();
@@ -1254,17 +1258,16 @@ function gameRender(now) {
   }
 
   // Reset canvas
-  const ctx = a.getContext("2d");
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  gameCtx.fillStyle = "#000";
+  gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   // Paint background stars
   for (
     let i = 100, s;
     i--;
-    ctx.fillStyle = STAR_COLORS[i % STAR_COLORS.length],
-      ctx.beginPath(),
-      ctx.arc(
+    gameCtx.fillStyle = STAR_COLORS[i % STAR_COLORS.length],
+      gameCtx.beginPath(),
+      gameCtx.arc(
         Math.floor(
           ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
             (100 * (CANVAS_WIDTH - shipWidth))
@@ -1276,7 +1279,7 @@ function gameRender(now) {
         0,
         7
       ),
-      ctx.fill()
+      gameCtx.fill()
   )
     s = 150 / (i * 3 + 200);
 
@@ -1287,7 +1290,7 @@ function gameRender(now) {
     alwaysOnTop = [],
     nextHitables = [];
   function runEntity(entity) {
-    const result = entity.run(hitables, ctx, now - initialTime);
+    const result = entity.run(hitables, gameCtx, now - initialTime);
     if (Array.isArray(result)) {
       result.map((subEntity) => {
         if (entity === subEntity) {
@@ -1342,49 +1345,52 @@ function gameRender(now) {
   hitables = nextHitables;
 
   // Common styles
-  ctx.fillStyle = "#fff";
-  ctx.textAlign = "center";
+  gameCtx.fillStyle = "#fff";
+  gameCtx.textAlign = "center";
 
   if (!shipDestroyed) {
     if (shieldLevel) {
       const shieldCanvas = shields[Math.max(0, shields.length - shieldLevel)];
       // Paint shield
-      ctx.drawImage(
+      gameCtx.drawImage(
         shieldCanvas,
         x - Math.floor(shieldCanvas.width / 2),
         y - Math.floor(shieldCanvas.height / 2)
       );
     }
     // Paint ship
-    ctx.drawImage(
+    gameCtx.drawImage(
       ship,
       x - Math.floor(shipWidth / 2),
       y - Math.floor(shipHeight / 2)
     );
   } else {
     // Paint game over
-    ctx.save();
-    ctx.globalAlpha = Math.min(1, (now - initialTime - gameOverTime) / 2000);
-    ctx.textBaseline = "middle";
-    ctx.font = "40px Helvetica";
-    ctx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+    gameCtx.save();
+    gameCtx.globalAlpha = Math.min(
+      1,
+      (now - initialTime - gameOverTime) / 2000
+    );
+    gameCtx.textBaseline = "middle";
+    gameCtx.font = "40px Helvetica";
+    gameCtx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
 
-    ctx.restore();
+    gameCtx.restore();
   }
 
   // Paint bomb
   if (bombEffect > now - initialTime) {
-    ctx.save();
+    gameCtx.save();
     // Fill style is already white
-    ctx.globalAlpha = (bombEffect - now + initialTime) / BOMB_DURATION;
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    ctx.restore();
+    gameCtx.globalAlpha = (bombEffect - now + initialTime) / BOMB_DURATION;
+    gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    gameCtx.restore();
   }
 
   // Paint HUD
-  ctx.textBaseline = "top";
-  ctx.font = "16px Helvetica";
-  ctx.fillText(scoreText, HALF_CANVAS_WIDTH, 5);
+  gameCtx.textBaseline = "top";
+  gameCtx.font = "16px Helvetica";
+  gameCtx.fillText(scoreText, HALF_CANVAS_WIDTH, 5);
 
   const isFastFire = fastFire > now - initialTime;
   // Should we fire?
@@ -1459,18 +1465,21 @@ function gameRender(now) {
 function handleMouseEvent(e) {
   e.preventDefault();
   let offsetLeft, offsetTop, offsetWidth, offsetHeight;
-  if (a.offsetWidth / a.offsetHeight > CANVAS_WIDTH / CANVAS_HEIGHT) {
+  if (
+    gameCanvas.offsetWidth / gameCanvas.offsetHeight >
+    CANVAS_WIDTH / CANVAS_HEIGHT
+  ) {
     // Wider
     offsetTop = 0;
-    offsetHeight = a.offsetHeight;
+    offsetHeight = gameCanvas.offsetHeight;
     offsetWidth = (offsetHeight * CANVAS_WIDTH) / CANVAS_HEIGHT;
-    offsetLeft = Math.floor(a.offsetWidth - offsetWidth) / 2;
+    offsetLeft = Math.floor(gameCanvas.offsetWidth - offsetWidth) / 2;
   } else {
     // Narrower
     offsetLeft = 0;
-    offsetWidth = a.offsetWidth;
+    offsetWidth = gameCanvas.offsetWidth;
     offsetHeight = (offsetWidth * CANVAS_HEIGHT) / CANVAS_WIDTH;
-    offsetTop = Math.floor(a.offsetHeight - offsetHeight) / 2;
+    offsetTop = Math.floor(gameCanvas.offsetHeight - offsetHeight) / 2;
   }
   let pointer = {};
   if (e.changedTouches) {
@@ -1506,8 +1515,8 @@ self.onkeydown = self.onkeyup = (e) => {
 };
 
 // Let's run the game
-a.width = CANVAS_WIDTH;
-a.height = CANVAS_HEIGHT;
+gameCanvas.width = CANVAS_WIDTH;
+gameCanvas.height = CANVAS_HEIGHT;
 function renderWrapper(now) {
   render(now);
   requestAnimationFrame(renderWrapper);
