@@ -346,14 +346,11 @@ const enemyDefinitions = [
 //    generateEnemy("KVoA08jfxzGQlU26", "bxfJMJri6hSgr3zD", 220, 80, 0.2),
 
 function render(now) {
-  switch (state) {
-    case STATE_LOADING:
-    case STATE_INTRO:
-      introRender(now);
-      break;
-    case STATE_GAME:
-      gameRender(now);
-      break;
+  if (state === STATE_GAME) {
+    gameRender(now);
+  } else {
+    // STATE_LOADING or STATE_INTRO
+    introRender(now);
   }
   // Any key press detection should have been consumed now
   anyKeyPressed = false;
@@ -1092,29 +1089,15 @@ class Boss {
         sounds.enemyFire();
         const bullets = [];
         if (this.bulletCount < 5 * this.difficulty) {
-          let offsetX, offsetY;
-          switch (Math.floor(this.bulletCount / this.difficulty)) {
-            case 0:
-              offsetX = 28;
-              offsetY = 119;
-              break;
-            case 1:
-              offsetX = 42;
-              offsetY = 123;
-              break;
-            case 2:
-              offsetX = 108;
-              offsetY = 94;
-              break;
-            case 3:
-              offsetX = 121;
-              offsetY = 80;
-              break;
-            default:
-              offsetX = 143;
-              offsetY = 50;
-              break;
-          }
+          const [offsetX, offsetY] = [
+            [28, 119],
+            [42, 123],
+            [108, 94],
+            [121, 80],
+            [143, 50],
+            [28, 119],
+          ][Math.floor(this.bulletCount / this.difficulty)];
+
           // Side bullets
           bullets.push(
             new EnemyBullet(
