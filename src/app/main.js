@@ -45,7 +45,7 @@ function generateShields() {
     }
     shieldPhaseCtx.globalCompositeOperation = "source-in";
     // Solid cyan
-    shieldPhaseCtx.fillStyle = c > 5 ? "cyan" : "blue";
+    shieldPhaseCtx.fillStyle = c > 5 ? "#0ff" : "#00f";
     shieldPhaseCtx.fillRect(0, 0, shieldPhase.width, shieldPhase.height);
     shieldPhaseCtx.globalCompositeOperation = "source-over";
     shieldPhaseCtx.drawImage(
@@ -78,7 +78,7 @@ function generateBullet() {
   const canvas = createCanvas(20, 60);
   const ctx = canvas.getContext("2d");
   // gold filled rect
-  ctx.fillStyle = "yellow";
+  ctx.fillStyle = "#ff0";
   ctx.beginPath();
   ctx.moveTo(10, 60);
   ctx.lineTo(20, 10);
@@ -87,8 +87,8 @@ function generateBullet() {
   ctx.fill();
 
   // shadow
-  ctx.strokeStyle = "cyan";
-  ctx.shadowColor = "blue";
+  ctx.strokeStyle = "#0ff";
+  ctx.shadowColor = "#00f";
   // restrict new draw to cover existing pixels
   ctx.globalCompositeOperation = "source-atop";
   // shadowed stroke
@@ -109,8 +109,8 @@ function generateEnemyBulletFrame(colorStop) {
   const canvas = createCanvas(20, 20);
   const ctx = canvas.getContext("2d");
   const grd = ctx.createRadialGradient(10, 10, 0, 10, 10, 10);
-  grd.addColorStop(colorStop, "yellow");
-  grd.addColorStop(1, "red");
+  grd.addColorStop(colorStop, "#ff0");
+  grd.addColorStop(1, "#f00");
   ctx.fillStyle = grd;
   ctx.beginPath();
   ctx.arc(10, 10, 10, 0, 7);
@@ -132,8 +132,8 @@ function generatePowerupCanvas() {
   const canvas = createCanvas(60, 60);
   const ctx = canvas.getContext("2d");
   const grd = ctx.createRadialGradient(30, 30, 0, 30, 30, 30);
-  grd.addColorStop(0.6, "navy");
-  grd.addColorStop(1, "blue");
+  grd.addColorStop(0.6, "#008");
+  grd.addColorStop(1, "#00f");
   ctx.fillStyle = grd;
   ctx.beginPath();
   ctx.arc(30, 30, 30, 0, 7);
@@ -155,7 +155,7 @@ function generateNewTag() {
   ctx.font = "bold 20px Helvetica";
   ctx.translate(50, 50);
   ctx.rotate(-Math.PI / 2);
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "#f00";
   ctx.fillStyle = "#fff";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -163,7 +163,7 @@ function generateNewTag() {
   trimCanvas(canvas);
   const tagCanvas = createCanvas(canvas.width + 10, canvas.height + 10);
   const tagCtx = tagCanvas.getContext("2d");
-  tagCtx.fillStyle = "red";
+  tagCtx.fillStyle = "#f00";
   tagCtx.fillRect(0, 0, tagCanvas.width, tagCanvas.height);
   tagCtx.drawImage(canvas, 5, 5);
   return tagCanvas;
@@ -548,14 +548,14 @@ function hitShip() {
 const powerupDefinitions = [
   [
     "F",
-    "orange",
+    "#fa0",
     (time) => {
       fastFire = time + 6500;
     },
   ],
   [
     "S",
-    "cyan",
+    "#0ff",
     () => {
       sounds.shieldPowerup();
       shieldLevel++;
@@ -563,7 +563,7 @@ const powerupDefinitions = [
   ],
   [
     "B",
-    "red",
+    "#f00",
     (time) => {
       sounds.explosion(1.5);
       // Bomb
