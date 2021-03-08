@@ -36,6 +36,7 @@ export function trimCanvas(canvas) {
   canvas.width = cut.width;
   canvas.height = cut.height;
   ctx.putImageData(cut, 0, 0);
+  return canvas;
 }
 
 export function createFavicon(img) {

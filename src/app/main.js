@@ -53,8 +53,7 @@ function generateShields() {
       Math.floor(shipWidth / 2) - phases.length,
       Math.floor(shipHeight / 2) - phases.length
     );
-    trimCanvas(shieldPhase);
-    phases.unshift(shieldPhase);
+    phases.unshift(trimCanvas(shieldPhase));
   }
   // Remove original ship from processing
   phases.pop();
@@ -188,10 +187,7 @@ let move_x = -1,
 
 let a = document.getElementById("a");
 const faction = new Randomizer("piBbgDn4CZqlkqiF");
-const ship = generateShip(faction, "ie7jMyCFouoUjkVs", 60);
-
-trimCanvas(ship);
-
+const ship = trimCanvas(generateShip(faction, "ie7jMyCFouoUjkVs", 60));
 const destroyedShipSprites = createSprites(ship);
 const shipWidth = ship.width;
 const shipHeight = ship.height;
@@ -263,9 +259,10 @@ let destroyedBossSprites;
 
 function generateBoss() {
   bossShip = flipCanvas(
-    generateShip(new Randomizer("HYj7ADLjQr6icLtO"), "CdiB9N2ZoQWuAxur", 270)
+    trimCanvas(
+      generateShip(new Randomizer("HYj7ADLjQr6icLtO"), "CdiB9N2ZoQWuAxur", 270)
+    )
   );
-  trimCanvas(bossShip);
   bossHit = hitEffect(bossShip);
   destroyedBossSprites = createSprites(bossShip);
   bossMask = obtainImageData(bossShip).data;
@@ -279,8 +276,7 @@ function generateEnemy(faction, seed, size, ...more) {
 }
 
 function generateEnemyAssets(enemyBlueprint) {
-  const enemyShip = enemyBlueprint[0];
-  trimCanvas(enemyShip);
+  const enemyShip = trimCanvas(enemyBlueprint[0]);
   const mask = obtainImageData(enemyShip).data;
   const hitEnemyShip = hitEffect(enemyShip);
   const destroyedEnemyShipSprites = createSprites(enemyShip);
