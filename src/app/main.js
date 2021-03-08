@@ -432,7 +432,7 @@ function introRender(now) {
             -Math.floor(newTag.height / 2)
           );
           gameCtx.restore();
-          gameCtx.fillStyle = "gold";
+          gameCtx.fillStyle = "#fc6";
         } else {
           gameCtx.fillStyle = "#fff";
         }
