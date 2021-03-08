@@ -248,14 +248,7 @@ function updateHighscores() {
     const newScore = [score, Date.now()];
     highscores.push(newScore);
     // Sort by score
-    highscores.sort((a, b) => {
-      const scoreDiff = b[0] - a[0];
-      if (scoreDiff === 0) {
-        // Tie, newer first
-        return b[1] - a[1];
-      }
-      return scoreDiff;
-    });
+    highscores.sort((a, b) => b[0] - a[0] || b[1] - a[1]);
     // Only keep the top 5
     highscores.length = Math.min(highscores.length, 5);
     highlightHighscore = highscores.indexOf(newScore);
@@ -427,9 +420,7 @@ function introRender(now) {
   if (state === STATE_INTRO) {
     ctx.font =
       "italic small-caps 40px Futura-CondensedMedium,sans-serif-condensed,sans-serif";
-    if (highscores.length === 0) {
-      ctx.fillText("Planet Not Found", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
-    } else {
+    if (highscores.length) {
       ctx.fillText("High Scores", HALF_CANVAS_WIDTH, 100);
 
       ctx.save();
@@ -462,6 +453,8 @@ function introRender(now) {
       }
 
       ctx.restore();
+    } else {
+      ctx.fillText("Planet Not Found", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     }
     ctx.font = "20px Helvetica";
     ctx.fillText(

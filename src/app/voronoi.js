@@ -8,7 +8,7 @@ function createSplitPoints(width, height, targetSize) {
   const result = [];
   const yOffset = Math.floor(height / (2 * yPoints));
   for (let currentY = 0; currentY < yPoints; currentY++) {
-    const iterationXPoints = currentY % 2 === 0 ? xPoints : xPoints - 1;
+    const iterationXPoints = currentY % 2 == 0 ? xPoints : xPoints - 1;
     // We calculate the initial offset so the center points are in a displaced pattern
     const xOffset = Math.floor(width / ((2 - (currentY % 2)) * xPoints));
     for (let currentX = 0; currentX < iterationXPoints; currentX++) {
@@ -46,46 +46,45 @@ export function createSprites(targetCanvas) {
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const pos = (y * width + x) * 4;
-      if (imageData.data[pos + 3] === 0) {
-        // Transparent pixel, nothing to do
-        continue;
-      }
-      // With the size of the images we are working, 1,000,000,000 behaves the same as infinity
-      let minDistance = 1e9;
-      let minIndex;
-      for (let i = 0; i < splitPoints.length; i++) {
-        const distance = Math.hypot(
-          splitPoints[i][0] - x,
-          splitPoints[i][1] - y
-        );
-        if (distance < minDistance) {
-          minDistance = distance;
-          minIndex = i;
+      if (imageData.data[pos + 3]) {
+        // Non transparent pixel
+        // With the size of the images we are working, 1,000,000,000 behaves the same as infinity
+        let minDistance = 1e9;
+        let minIndex;
+        for (let i = 0; i < splitPoints.length; i++) {
+          const distance = Math.hypot(
+            splitPoints[i][0] - x,
+            splitPoints[i][1] - y
+          );
+          if (distance < minDistance) {
+            minDistance = distance;
+            minIndex = i;
+          }
         }
-      }
 
-      const targetSprite = sprites[minIndex];
-      if (x < targetSprite.minX) {
-        targetSprite.minX = x;
-      }
-      if (x > targetSprite.maxX) {
-        targetSprite.maxX = x;
-      }
-      if (y < targetSprite.minY) {
-        targetSprite.minY = y;
-      }
-      if (y > targetSprite.maxY) {
-        targetSprite.maxY = y;
-      }
+        const targetSprite = sprites[minIndex];
+        if (x < targetSprite.minX) {
+          targetSprite.minX = x;
+        }
+        if (x > targetSprite.maxX) {
+          targetSprite.maxX = x;
+        }
+        if (y < targetSprite.minY) {
+          targetSprite.minY = y;
+        }
+        if (y > targetSprite.maxY) {
+          targetSprite.maxY = y;
+        }
 
-      targetSprite.nearest.push([
-        x,
-        y,
-        imageData.data[pos],
-        imageData.data[pos + 1],
-        imageData.data[pos + 2],
-        imageData.data[pos + 3],
-      ]);
+        targetSprite.nearest.push([
+          x,
+          y,
+          imageData.data[pos],
+          imageData.data[pos + 1],
+          imageData.data[pos + 2],
+          imageData.data[pos + 3],
+        ]);
+      }
     }
   }
   const result = [];
