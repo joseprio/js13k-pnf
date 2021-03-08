@@ -423,6 +423,7 @@ function introRender(now) {
       gameCtx.textAlign = "start";
       gameCtx.textBaseline = "top";
       for (let c = 0; c < highscores.length; c++) {
+        gameCtx.fillStyle = "#fff";
         if (c === highlightHighscore) {
           gameCtx.save();
           gameCtx.translate(90, 185 + 80 * c);
@@ -433,8 +434,6 @@ function introRender(now) {
           );
           gameCtx.restore();
           gameCtx.fillStyle = "#fc6";
-        } else {
-          gameCtx.fillStyle = "#fff";
         }
         const score = Intl.NumberFormat().format(highscores[c][0]);
         const time = new Date(highscores[c][1]).toLocaleString();
