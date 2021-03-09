@@ -1,5 +1,16 @@
 import { generateShip, Randomizer } from "starshipwright";
-import { createSprites, calculateSpriteFinalState } from "./voronoi";
+import {
+  createSprites,
+  generateSpriteFinalState,
+  SPRITE_CENTER_X,
+  SPRITE_CENTER_Y,
+  SPRITE_OFFSET_X,
+  SPRITE_OFFSET_Y,
+  SPRITE_CANVAS,
+  SPRITE_TRANSLATE_X,
+  SPRITE_TRANSLATE_Y,
+  SPRITE_ANGLE,
+} from "./voronoi";
 import {
   trimCanvas,
   createFavicon,
@@ -688,13 +699,15 @@ class Shard {
     }
     const destX =
       this.shipX +
-      this.sprite.center[0] +
-      (this.sprite.translateX * Math.min(ellapsed, this.explosionDuration)) /
+      this.sprite[SPRITE_CENTER_X] +
+      (this.sprite[SPRITE_TRANSLATE_X] *
+        Math.min(ellapsed, this.explosionDuration)) /
         this.explosionDuration;
     const destY =
       this.shipY +
-      this.sprite.center[1] +
-      (this.sprite.translateY * Math.min(ellapsed, this.explosionDuration)) /
+      this.sprite[SPRITE_CENTER_Y] +
+      (this.sprite[SPRITE_TRANSLATE_Y] *
+        Math.min(ellapsed, this.explosionDuration)) /
         this.explosionDuration;
     ctx.save();
     ctx.globalAlpha =
@@ -703,12 +716,14 @@ class Shard {
         2;
     ctx.translate(destX, destY);
     ctx.rotate(
-      (this.sprite.angle * Math.min(ellapsed, this.explosionDuration)) /
+      (this.sprite[SPRITE_ANGLE] * Math.min(ellapsed, this.explosionDuration)) /
         this.explosionDuration
     );
-    const offsetX = this.sprite.corner[0] - this.sprite.center[0];
-    const offsetY = this.sprite.corner[1] - this.sprite.center[1];
-    ctx.drawImage(this.sprite.canvas, offsetX, offsetY);
+    ctx.drawImage(
+      this.sprite[SPRITE_CANVAS],
+      this.sprite[SPRITE_OFFSET_X],
+      this.sprite[SPRITE_OFFSET_Y]
+    );
     ctx.restore();
 
     return true;
@@ -869,9 +884,8 @@ class Enemy {
 
       return returnEntities.concat(
         this.destroyedSprites.map((sprite) => {
-          calculateSpriteFinalState(sprite, this.width, this.height);
           return new Shard(
-            sprite,
+            generateSpriteFinalState(sprite, this.width, this.height),
             this.x - Math.floor(this.width / 2),
             this.y - Math.floor(this.height / 2),
             ENEMY_EXPLOSION_DURATION,
@@ -1039,9 +1053,8 @@ class Boss {
       nextPowerup = BOSS_EXPLOSION_DURATION + time;
 
       return destroyedBossSprites.map((sprite) => {
-        calculateSpriteFinalState(sprite, this.width, this.height);
         return new Shard(
-          sprite,
+          generateSpriteFinalState(sprite, this.width, this.height),
           this.x - Math.floor(this.width / 2),
           this.y - Math.floor(this.height / 2),
           BOSS_EXPLOSION_DURATION,
@@ -1305,9 +1318,8 @@ function gameRender(now) {
     // add shards
     destroyedShipSprites
       .map((sprite) => {
-        calculateSpriteFinalState(sprite, shipWidth, shipHeight);
         return new Shard(
-          sprite,
+          generateSpriteFinalState(sprite, shipWidth, shipHeight),
           x - Math.floor(shipWidth / 2),
           y - Math.floor(shipHeight / 2),
           PLAYER_EXPLOSION_DURATION,

@@ -22,6 +22,24 @@ function createSplitPoints(width, height, targetSize) {
   return result;
 }
 
+// TODO: TS const enum
+const COLLECTOR_MIN_X = 0;
+const COLLECTOR_MIN_Y = 1;
+const COLLECTOR_MAX_X = 2;
+const COLLECTOR_MAX_Y = 3;
+const COLLECTOR_CENTER_X = 4;
+const COLLECTOR_CENTER_Y = 5;
+const COLLECTOR_NEAREST = 6;
+
+export const SPRITE_CENTER_X = 0;
+export const SPRITE_CENTER_Y = 1;
+export const SPRITE_OFFSET_X = 2;
+export const SPRITE_OFFSET_Y = 3;
+export const SPRITE_CANVAS = 4;
+export const SPRITE_TRANSLATE_X = 5;
+export const SPRITE_TRANSLATE_Y = 6;
+export const SPRITE_ANGLE = 7;
+
 export function createSprites(targetCanvas) {
   const splitPoints = createSplitPoints(
     targetCanvas.width,
@@ -35,14 +53,7 @@ export function createSprites(targetCanvas) {
     height = targetCanvas.height;
   const imageData = obtainImageData(targetCanvas);
   // Assigning extreme values so we know they'll be overriden
-  const sprites = splitPoints.map((p) => ({
-    minX: 1e9,
-    minY: 1e9,
-    maxX: 0,
-    maxY: 0,
-    center: p,
-    nearest: [],
-  }));
+  const collectors = splitPoints.map((p) => [1e9, 1e9, 0, 0, ...p, []]);
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const pos = (y * width + x) * 4;
@@ -62,13 +73,25 @@ export function createSprites(targetCanvas) {
           }
         }
 
-        const targetSprite = sprites[minIndex];
-        targetSprite.minX = Math.min(x, targetSprite.minX);
-        targetSprite.maxX = Math.max(x, targetSprite.maxX);
-        targetSprite.minY = Math.min(y, targetSprite.minY);
-        targetSprite.maxY = Math.max(y, targetSprite.maxY);
+        const targetCollector = collectors[minIndex];
+        targetCollector[COLLECTOR_MIN_X] = Math.min(
+          x,
+          targetCollector[COLLECTOR_MIN_X]
+        );
+        targetCollector[COLLECTOR_MAX_X] = Math.max(
+          x,
+          targetCollector[COLLECTOR_MAX_X]
+        );
+        targetCollector[COLLECTOR_MIN_Y] = Math.min(
+          y,
+          targetCollector[COLLECTOR_MIN_Y]
+        );
+        targetCollector[COLLECTOR_MAX_Y] = Math.max(
+          y,
+          targetCollector[COLLECTOR_MAX_Y]
+        );
 
-        targetSprite.nearest.push([
+        targetCollector[COLLECTOR_NEAREST].push([
           x,
           y,
           imageData.data[pos + 0],
@@ -79,50 +102,55 @@ export function createSprites(targetCanvas) {
       }
     }
   }
-  const result = [];
-  sprites.map((sprite) => {
-    if (sprite.minX < 1e9) {
-      const shardWidth = sprite.maxX - sprite.minX + 1;
-      const shardHeight = sprite.maxY - sprite.minY + 1;
+  const sprites = [];
+  collectors.map((collector) => {
+    if (collector[COLLECTOR_MIN_X] < 1e9) {
+      const shardWidth =
+        collector[COLLECTOR_MAX_X] - collector[COLLECTOR_MIN_X] + 1;
+      const shardHeight =
+        collector[COLLECTOR_MAX_Y] - collector[COLLECTOR_MIN_Y] + 1;
       const shardCanvas = createCanvas(shardWidth, shardHeight);
       const imgData = obtainImageData(shardCanvas);
-      sprite.nearest.map((point) => {
+      collector[COLLECTOR_NEAREST].map((point) => {
         const pos =
           4 *
-          ((point[1] - sprite.minY) * shardWidth + (point[0] - sprite.minX));
+          ((point[1] - collector[COLLECTOR_MIN_Y]) * shardWidth +
+            (point[0] - collector[COLLECTOR_MIN_X]));
         imgData.data[pos + 0] = point[2];
         imgData.data[pos + 1] = point[3];
         imgData.data[pos + 2] = point[4];
         imgData.data[pos + 3] = point[5];
       });
       shardCanvas.getContext("2d").putImageData(imgData, 0, 0);
-      result.push({
-        center: sprite.center,
-        canvas: shardCanvas,
-        corner: [sprite.minX, sprite.minY],
-      });
+      sprites.push([
+        collector[COLLECTOR_CENTER_X],
+        collector[COLLECTOR_CENTER_Y],
+        collector[COLLECTOR_MIN_X] - collector[COLLECTOR_CENTER_X],
+        collector[COLLECTOR_MIN_Y] - collector[COLLECTOR_CENTER_Y],
+        shardCanvas,
+      ]);
     }
   });
-  return result;
+  return sprites;
 }
 
-export function calculateSpriteFinalState(sprite, width, height) {
-  const cx = sprite.center[0] - width / 2;
-  const cy = sprite.center[1] - height / 2;
+export function generateSpriteFinalState(sprite, width, height) {
+  const cx = sprite[SPRITE_CENTER_X] - width / 2;
+  const cy = sprite[SPRITE_CENTER_Y] - height / 2;
   const distance = Math.hypot(cx, cy);
   const distanceSquare = distance * distance;
   const radiusFactor = 1.5 + 1.5 * Math.random();
   const finalDistance = distance * radiusFactor;
 
-  sprite.translateX =
+  return [
+    ...sprite,
     (finalDistance - distance) *
-    (1 - cy ** 2 / distanceSquare) ** 0.5 *
-    (cx > 0 ? 1 : -1);
-  sprite.translateY =
+      (1 - cy ** 2 / distanceSquare) ** 0.5 *
+      (cx > 0 ? 1 : -1),
     (finalDistance - distance) *
-    (1 - cx ** 2 / distanceSquare) ** 0.5 *
-    (cy > 0 ? 1 : -1);
-  sprite.angle =
+      (1 - cx ** 2 / distanceSquare) ** 0.5 *
+      (cy > 0 ? 1 : -1),
     (Math.random() * MAX_ANGLE * 2 - MAX_ANGLE * Math.PI) /
-    ((Math.random() + 2) * sprite.canvas.width * 18);
+      ((Math.random() + 2) * sprite[SPRITE_CANVAS].width * 18),
+  ];
 }
