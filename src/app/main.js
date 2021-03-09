@@ -288,12 +288,9 @@ function generateEnemy(faction, seed, size, ...more) {
 
 function generateEnemyAssets(enemyBlueprint) {
   const enemyShip = trimCanvas(enemyBlueprint[0]);
-  const mask = obtainImageData(enemyShip).data;
-  const hitEnemyShip = hitEffect(enemyShip);
-  const destroyedEnemyShipSprites = createSprites(enemyShip);
-  enemyBlueprint[1] = mask;
-  enemyBlueprint[2] = hitEnemyShip;
-  enemyBlueprint[3] = destroyedEnemyShipSprites;
+  enemyBlueprint[1] = obtainImageData(enemyShip).data;
+  enemyBlueprint[2] = hitEffect(enemyShip);
+  enemyBlueprint[3] = createSprites(enemyShip);
 }
 
 const enemyDefinitions = [
