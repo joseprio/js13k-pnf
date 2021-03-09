@@ -63,18 +63,10 @@ export function createSprites(targetCanvas) {
         }
 
         const targetSprite = sprites[minIndex];
-        if (x < targetSprite.minX) {
-          targetSprite.minX = x;
-        }
-        if (x > targetSprite.maxX) {
-          targetSprite.maxX = x;
-        }
-        if (y < targetSprite.minY) {
-          targetSprite.minY = y;
-        }
-        if (y > targetSprite.maxY) {
-          targetSprite.maxY = y;
-        }
+        targetSprite.minX = Math.min(x, targetSprite.minX);
+        targetSprite.maxX = Math.max(x, targetSprite.maxX);
+        targetSprite.minY = Math.min(y, targetSprite.minY);
+        targetSprite.maxY = Math.max(y, targetSprite.maxY);
 
         targetSprite.nearest.push([
           x,
