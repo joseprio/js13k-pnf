@@ -692,33 +692,24 @@ class Shard {
   }
 
   run(hitables, ctx, time) {
-    const ellapsed = time - this.time;
-    if (ellapsed > this.explosionDuration) {
+    const progress =
+      Math.min(time - this.time, this.explosionDuration) /
+      this.explosionDuration;
+    if (progress > 1) {
       // Explosion is over
       return false;
     }
-    const destX =
-      this.shipX +
-      this.sprite[SPRITE_CENTER_X] +
-      (this.sprite[SPRITE_TRANSLATE_X] *
-        Math.min(ellapsed, this.explosionDuration)) /
-        this.explosionDuration;
-    const destY =
-      this.shipY +
-      this.sprite[SPRITE_CENTER_Y] +
-      (this.sprite[SPRITE_TRANSLATE_Y] *
-        Math.min(ellapsed, this.explosionDuration)) /
-        this.explosionDuration;
     ctx.save();
-    ctx.globalAlpha =
-      1 -
-      (Math.min(ellapsed, this.explosionDuration) / this.explosionDuration) **
-        2;
-    ctx.translate(destX, destY);
-    ctx.rotate(
-      (this.sprite[SPRITE_ANGLE] * Math.min(ellapsed, this.explosionDuration)) /
-        this.explosionDuration
+    ctx.globalAlpha = 1 - progress ** 2;
+    ctx.translate(
+      this.shipX +
+        this.sprite[SPRITE_CENTER_X] +
+        this.sprite[SPRITE_TRANSLATE_X] * progress,
+      this.shipY +
+        this.sprite[SPRITE_CENTER_Y] +
+        this.sprite[SPRITE_TRANSLATE_Y] * progress
     );
+    ctx.rotate(this.sprite[SPRITE_ANGLE] * progress);
     ctx.drawImage(
       this.sprite[SPRITE_CANVAS],
       this.sprite[SPRITE_OFFSET_X],
