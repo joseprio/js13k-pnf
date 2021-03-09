@@ -674,12 +674,7 @@ const PLAYER_EXPLOSION_DURATION = 1500;
 class Shard {
   constructor(sprite, shipX, shipY, duration, time) {
     this.time = time;
-    this.center = sprite.center;
-    this.canvas = sprite.canvas;
-    this.corner = sprite.corner;
-    this.translateX = sprite.translateX;
-    this.translateY = sprite.translateY;
-    this.angle = sprite.angle;
+    this.sprite = sprite;
     this.shipX = shipX;
     this.shipY = shipY;
     this.explosionDuration = duration;
@@ -693,13 +688,13 @@ class Shard {
     }
     const destX =
       this.shipX +
-      this.center[0] +
-      (this.translateX * Math.min(ellapsed, this.explosionDuration)) /
+      this.sprite.center[0] +
+      (this.sprite.translateX * Math.min(ellapsed, this.explosionDuration)) /
         this.explosionDuration;
     const destY =
       this.shipY +
-      this.center[1] +
-      (this.translateY * Math.min(ellapsed, this.explosionDuration)) /
+      this.sprite.center[1] +
+      (this.sprite.translateY * Math.min(ellapsed, this.explosionDuration)) /
         this.explosionDuration;
     ctx.save();
     ctx.globalAlpha =
@@ -708,12 +703,12 @@ class Shard {
         2;
     ctx.translate(destX, destY);
     ctx.rotate(
-      (this.angle * Math.min(ellapsed, this.explosionDuration)) /
+      (this.sprite.angle * Math.min(ellapsed, this.explosionDuration)) /
         this.explosionDuration
     );
-    const offsetX = this.corner[0] - this.center[0];
-    const offsetY = this.corner[1] - this.center[1];
-    ctx.drawImage(this.canvas, offsetX, offsetY);
+    const offsetX = this.sprite.corner[0] - this.sprite.center[0];
+    const offsetY = this.sprite.corner[1] - this.sprite.center[1];
+    ctx.drawImage(this.sprite.canvas, offsetX, offsetY);
     ctx.restore();
 
     return true;
