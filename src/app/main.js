@@ -175,16 +175,6 @@ const HALF_CANVAS_HEIGHT = Math.floor(CANVAS_HEIGHT / 2);
 const SHIP_SPEED = 0.6;
 const STARS_WIDTH = 540;
 
-let pointer_down = false;
-let introInhibitPress = false;
-
-let move_x = -1,
-  move_y = -1,
-  x,
-  y,
-  keysPressed = [],
-  anyKeyPressed = false;
-
 const gameCanvas = self.a;
 const gameCtx = gameCanvas.getContext("2d");
 const faction = new Randomizer("piBbgDn4CZqlkqiF");
@@ -194,17 +184,7 @@ const shipWidth = ship.width;
 const shipHeight = ship.height;
 const shipMask = obtainImageData(ship).data;
 
-let shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
-let shipDestroyed;
-let gameOverTime;
-let fastFire;
 const BOMB_DURATION = 1000;
-let bombEffect;
-let shieldLevel;
-
-// Create favicon
-createFavicon(ship);
-
 const shields = generateShields();
 
 const enemyBlueprints = [];
@@ -215,20 +195,39 @@ const enemyBulletMask = obtainImageData(enemyBulletFrames[0]).data;
 
 const [powerupCanvas, powerupMask] = generatePowerupCanvas();
 
-let initialTime = performance.now();
-
 const STATE_LOADING = 0,
   STATE_INTRO = 1,
   STATE_GAME = 2;
+const highscores = JSON.parse(self.localStorage["pnf_highscores"] || 0) || [];
+const newTag = generateNewTag();
 
+let pointer_down = false;
+let introInhibitPress = false;
+
+let move_x = -1,
+  move_y = -1,
+  x,
+  y,
+  keysPressed = [],
+  anyKeyPressed = false;
+
+let shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
+let shipDestroyed;
+let gameOverTime;
+let fastFire;
+let bombEffect;
+let shieldLevel;
+
+let initialTime = performance.now();
 let difficulty;
 let score;
 let scoreText;
 let state = STATE_LOADING;
 
-const highscores = JSON.parse(self.localStorage["pnf_highscores"] || 0) || [];
 let highlightHighscore = -1;
-const newTag = generateNewTag();
+
+// Create favicon
+createFavicon(ship);
 
 function addScore(points) {
   score += points;
