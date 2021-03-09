@@ -79,7 +79,7 @@ export function createSprites(targetCanvas) {
         targetSprite.nearest.push([
           x,
           y,
-          imageData.data[pos],
+          imageData.data[pos + 0],
           imageData.data[pos + 1],
           imageData.data[pos + 2],
           imageData.data[pos + 3],
@@ -98,7 +98,7 @@ export function createSprites(targetCanvas) {
         const pos =
           4 *
           ((point[1] - sprite.minY) * shardWidth + (point[0] - sprite.minX));
-        imgData.data[pos] = point[2];
+        imgData.data[pos + 0] = point[2];
         imgData.data[pos + 1] = point[3];
         imgData.data[pos + 2] = point[4];
         imgData.data[pos + 3] = point[5];
@@ -115,11 +115,11 @@ export function createSprites(targetCanvas) {
 }
 
 export function calculateSpriteFinalState(sprite, width, height) {
-  const radiusFactor = 1.5 + 1.5 * Math.random();
   const cx = sprite.center[0] - width / 2;
   const cy = sprite.center[1] - height / 2;
   const distance = Math.hypot(cx, cy);
   const distanceSquare = distance * distance;
+  const radiusFactor = 1.5 + 1.5 * Math.random();
   const finalDistance = distance * radiusFactor;
 
   sprite.translateX =
