@@ -675,8 +675,8 @@ const BOSS_EXPLOSION_DURATION = 500;
 const PLAYER_EXPLOSION_DURATION = 1500;
 
 class Shard {
-  constructor(sprite, shipX, shipY, duration, time) {
-    this.time = time;
+  constructor(sprite, shipX, shipY, duration, creation) {
+    this.creation = creation;
     this.sprite = sprite;
     this.shipX = shipX;
     this.shipY = shipY;
@@ -684,7 +684,7 @@ class Shard {
   }
 
   run(time) {
-    const progress = (time - this.time) / this.explosionDuration;
+    const progress = (time - this.creation) / this.explosionDuration;
     if (progress > 1) {
       // Explosion is over
       return false;
