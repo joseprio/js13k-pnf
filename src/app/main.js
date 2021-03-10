@@ -733,7 +733,6 @@ class EnemyBullet {
     this.speed = speed;
     this.frameIndex = 0;
     this.alwaysOnTop = true;
-    this.updateHitBox();
   }
 
   run(hitables, ctx, time) {
@@ -744,10 +743,17 @@ class EnemyBullet {
     const ellapsed = time - this.lastTime;
     this.y += ellapsed * this.speed * this.yFactor;
     this.x += ellapsed * this.speed * this.xFactor;
-    this.updateHitBox();
 
     // Check collision to ship
-    if (collide(shipHitBox, this.hitBox)) {
+    if (
+      collide(shipHitBox, [
+        this.x,
+        this.y,
+        this.width,
+        this.height,
+        enemyBulletMask,
+      ])
+    ) {
       hitShip();
       if (!shipDestroyed) {
         return false;
@@ -770,15 +776,9 @@ class EnemyBullet {
     ctx.drawImage(
       enemyBulletFrames[this.frameIndex],
       this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2),
-      this.width,
-      this.height
+      this.y - Math.floor(this.height / 2)
     );
     return true;
-  }
-
-  updateHitBox() {
-    this.hitBox = [this.x, this.y, this.width, this.height, enemyBulletMask];
   }
 }
 
@@ -901,18 +901,14 @@ class Enemy {
     ctx.drawImage(
       this.canvas,
       this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2),
-      this.width,
-      this.height
+      this.y - Math.floor(this.height / 2)
     );
     if (hitTint > 0) {
       ctx.globalAlpha = hitTint;
       ctx.drawImage(
         this.hitCanvas,
         this.x - Math.floor(this.width / 2),
-        this.y - Math.floor(this.height / 2),
-        this.width,
-        this.height
+        this.y - Math.floor(this.height / 2)
       );
     }
     ctx.restore();
@@ -1064,18 +1060,14 @@ class Boss {
     ctx.drawImage(
       bossShip,
       this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2),
-      this.width,
-      this.height
+      this.y - Math.floor(this.height / 2)
     );
     if (hitTint > 0) {
       ctx.globalAlpha = hitTint;
       ctx.drawImage(
         bossHit,
         this.x - Math.floor(this.width / 2),
-        this.y - Math.floor(this.height / 2),
-        this.width,
-        this.height
+        this.y - Math.floor(this.height / 2)
       );
     }
     ctx.restore();
