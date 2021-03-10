@@ -584,13 +584,11 @@ class Powerup {
     this.y = y;
     this.type = typeIndex;
     this.lastTime = time;
-    this.frameIndex = 0;
     this.alwaysOnTop = true;
   }
 
   run(hitables, ctx, time) {
     this.y += (5 * (time - this.lastTime)) / 32;
-    this.frameIndex = (this.frameIndex + 1) % 50;
 
     const hitBox = [
       this.x,
@@ -599,6 +597,7 @@ class Powerup {
       powerupCanvas.height,
       powerupMask,
     ];
+    const textScale = 1.5 + Math.sin(time / 200) / 2;
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
@@ -619,13 +618,7 @@ class Powerup {
     );
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
-    let size = 65;
-    if (this.frameIndex < 25) {
-      size += this.frameIndex;
-    } else {
-      size += 50 - this.frameIndex;
-    }
-    ctx.font = "700 " + Math.floor(size / 2) + "px Helvetica";
+    ctx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
     const measure = ctx.measureText(powerupDefinitions[this.type][0]);
     const textHeight =
       measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
