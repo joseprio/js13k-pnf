@@ -400,14 +400,14 @@ function introRender(now) {
 
   // Intro starfield
   gameCtx.save();
-  for (let j = 200; j--; ) {
-    gameCtx.fillStyle = STAR_COLORS[j % STAR_COLORS.length];
-    const r = 50 / (6 - ((ellapsed + j / 13) % 6));
+  for (let c = 200; c--; ) {
+    gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
+    const r = 50 / (6 - ((ellapsed + c / 13) % 6));
     gameCtx.globalAlpha = Math.min(r / 100, 1);
     gameCtx.beginPath();
     gameCtx.arc(
-      Math.cos(j) * r + HALF_CANVAS_WIDTH,
-      Math.sin(j * j) * r + HALF_CANVAS_HEIGHT,
+      Math.cos(c) * r + HALF_CANVAS_WIDTH,
+      Math.sin(c * c) * r + HALF_CANVAS_HEIGHT,
       r / 200,
       0,
       7
@@ -502,30 +502,30 @@ function introRender(now) {
 }
 
 function collide(o1, o2) {
-  const xs = o1[0] - o1[2] / 2 < o2[0] - o2[2] / 2 ? [o1, o2] : [o2, o1];
-  const ys = o1[1] - o1[3] / 2 < o2[1] - o2[3] / 2 ? [o1, o2] : [o2, o1];
-
+  const o1Left = Math.round(o1[0] - o1[2] / 2);
+  const o1Top = Math.round(o1[1] - o1[3] / 2);
+  const o2Left = Math.round(o2[0] - o2[2] / 2);
+  const o2Top = Math.round(o2[1] - o2[3] / 2);
   // Do bounding boxes collide
   if (
-    xs[0][0] + xs[0][2] / 2 > xs[1][0] - xs[1][2] / 2 &&
-    ys[0][1] + ys[0][3] / 2 > ys[1][1] - ys[1][3] / 2
+    o1Left < o2Left + o2[2] &&
+    o1Left + o1[2] > o2Left &&
+    o1Top < o2Top + o2[3] &&
+    o1Top + o1[3] > o2Top
   ) {
     // Create the collision bounding box
-    const cBoundingX = Math.floor(xs[1][0] - xs[1][2] / 2);
-    const cBoundingY = Math.floor(ys[1][1] - ys[1][3] / 2);
-    const cBoundingWidth =
-      Math.floor(Math.min(xs[0][0] + xs[0][2] / 2, xs[1][0] + xs[1][2] / 2)) -
-      cBoundingX;
-    const cBoundingHeight =
-      Math.floor(Math.min(ys[0][1] + ys[0][3] / 2, ys[1][1] + ys[1][3] / 2)) -
-      cBoundingY;
-
-    const o1StartX = cBoundingX - Math.floor(o1[0] - o1[2] / 2);
-    const o1StartY = cBoundingY - Math.floor(o1[1] - o1[3] / 2);
-    const o2StartX = cBoundingX - Math.floor(o2[0] - o2[2] / 2);
-    const o2StartY = cBoundingY - Math.floor(o2[1] - o2[3] / 2);
-    for (let c = 0; c < cBoundingHeight; c++) {
-      for (let d = 0; d < cBoundingWidth; d++) {
+    const collisionEndX = Math.min(o1Left + o1[2], o2Left + o2[2]);
+    const collisionEndY = Math.min(o1Top + o1[3], o2Top + o2[3]);
+    const [o1StartX, o2StartX, collisionWidth] =
+      o1Left > o2Left
+        ? [0, o1Left - o2Left, collisionEndX - o1Left]
+        : [o2Left - o1Left, 0, collisionEndX - o2Left];
+    const [o1StartY, o2StartY, collisionHeight] =
+      o1Top > o2Top
+        ? [0, o1Top - o2Top, collisionEndY - o1Top]
+        : [o2Top - o1Top, 0, collisionEndY - o2Top];
+    for (let c = 0; c < collisionHeight; c++) {
+      for (let d = 0; d < collisionWidth; d++) {
         if (
           o1[4][((o1StartY + c) * o1[2] + o1StartX + d) * 4 + 3] > 0 &&
           o2[4][((o2StartY + c) * o2[2] + o2StartX + d) * 4 + 3] > 0
