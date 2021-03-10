@@ -691,9 +691,7 @@ class Shard {
   }
 
   run(hitables, ctx, time) {
-    const progress =
-      Math.min(time - this.time, this.explosionDuration) /
-      this.explosionDuration;
+    const progress = (time - this.time) / this.explosionDuration;
     if (progress > 1) {
       // Explosion is over
       return false;
