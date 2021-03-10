@@ -587,7 +587,7 @@ class Powerup {
     this.alwaysOnTop = true;
   }
 
-  run(hitables, ctx, time) {
+  run(hitables, time) {
     this.y += (5 * (time - this.lastTime)) / 32;
 
     const hitBox = [
@@ -609,26 +609,26 @@ class Powerup {
       return false;
     }
     this.lastTime = time;
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.drawImage(
+    gameCtx.save();
+    gameCtx.translate(this.x, this.y);
+    gameCtx.drawImage(
       powerupCanvas,
       -powerupCanvas.width / 2,
       -powerupCanvas.height / 2
     );
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
-    const measure = ctx.measureText(powerupDefinitions[this.type][0]);
+    gameCtx.textAlign = "center";
+    gameCtx.textBaseline = "top";
+    gameCtx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
+    const measure = gameCtx.measureText(powerupDefinitions[this.type][0]);
     const textHeight =
       measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
-    ctx.fillStyle = powerupDefinitions[this.type][1];
-    ctx.fillText(
+    gameCtx.fillStyle = powerupDefinitions[this.type][1];
+    gameCtx.fillText(
       powerupDefinitions[this.type][0],
       0,
       -Math.floor(textHeight / 2)
     );
-    ctx.restore();
+    gameCtx.restore();
     return true;
   }
 }
@@ -643,7 +643,7 @@ class Bullet {
     this.power = 10;
   }
 
-  run(hitables, ctx, time) {
+  run(hitables, time) {
     this.y -= (BULLET_SPEED * (time - this.lastTime)) / 32;
 
     const hitBox = [this.x, this.y, bullet.width, bullet.height, bulletMask];
@@ -657,11 +657,11 @@ class Bullet {
       }
     }
 
-    if (this.y + Math.floor(bullet.height / 2) < 0) {
+    if (this.y + bullet.height / 2 < 0) {
       return false;
     }
     this.lastTime = time;
-    ctx.drawImage(
+    gameCtx.drawImage(
       bullet,
       this.x - bullet.width / 2,
       this.y - bullet.height / 2
@@ -683,15 +683,15 @@ class Shard {
     this.explosionDuration = duration;
   }
 
-  run(hitables, ctx, time) {
+  run(hitables, time) {
     const progress = (time - this.time) / this.explosionDuration;
     if (progress > 1) {
       // Explosion is over
       return false;
     }
-    ctx.save();
-    ctx.globalAlpha = 1 - progress ** 2;
-    ctx.translate(
+    gameCtx.save();
+    gameCtx.globalAlpha = 1 - progress ** 2;
+    gameCtx.translate(
       this.shipX +
         this.sprite[SPRITE_CENTER_X] +
         this.sprite[SPRITE_TRANSLATE_X] * progress,
@@ -699,13 +699,13 @@ class Shard {
         this.sprite[SPRITE_CENTER_Y] +
         this.sprite[SPRITE_TRANSLATE_Y] * progress
     );
-    ctx.rotate(this.sprite[SPRITE_ANGLE] * progress);
-    ctx.drawImage(
+    gameCtx.rotate(this.sprite[SPRITE_ANGLE] * progress);
+    gameCtx.drawImage(
       this.sprite[SPRITE_CANVAS],
       this.sprite[SPRITE_OFFSET_X],
       this.sprite[SPRITE_OFFSET_Y]
     );
-    ctx.restore();
+    gameCtx.restore();
 
     return true;
   }
@@ -726,7 +726,7 @@ class EnemyBullet {
     this.alwaysOnTop = true;
   }
 
-  run(hitables, ctx, time) {
+  run(hitables, time) {
     // Destroy bullets if bomb time
     if (bombEffect > time) {
       return false;
@@ -764,7 +764,7 @@ class EnemyBullet {
     this.lastTime = time;
 
     this.frameIndex = (this.frameIndex + 1) % enemyBulletFrames.length;
-    ctx.drawImage(
+    gameCtx.drawImage(
       enemyBulletFrames[this.frameIndex],
       this.x - this.width / 2,
       this.y - this.height / 2
@@ -826,7 +826,7 @@ class Enemy {
     this.updateHitBox();
   }
 
-  run(hitables, ctx, time) {
+  run(hitables, time) {
     const originalY = this.y;
     let isDead = false;
     // Destroy enemies if no health or bomb time
@@ -888,21 +888,21 @@ class Enemy {
     if (hitTimeEllapsed < 400) {
       hitTint = (400 - hitTimeEllapsed) / 400;
     }
-    ctx.save();
-    ctx.drawImage(
+    gameCtx.save();
+    gameCtx.drawImage(
       this.canvas,
       this.x - this.width / 2,
       this.y - this.height / 2
     );
     if (hitTint > 0) {
-      ctx.globalAlpha = hitTint;
-      ctx.drawImage(
+      gameCtx.globalAlpha = hitTint;
+      gameCtx.drawImage(
         this.hitCanvas,
         this.x - this.width / 2,
         this.y - this.height / 2
       );
     }
-    ctx.restore();
+    gameCtx.restore();
 
     if (!shipDestroyed) {
       for (let c = 0; c < this.fireSequences.length; c++) {
@@ -971,7 +971,7 @@ class Boss {
     this.updateHitBox();
   }
 
-  run(hitables, ctx, time) {
+  run(hitables, time) {
     const originalY = this.y;
     let isDead = false;
     // Destroy enemies if no health or bomb time
@@ -1047,13 +1047,21 @@ class Boss {
     if (hitTimeEllapsed < 400) {
       hitTint = (400 - hitTimeEllapsed) / 400;
     }
-    ctx.save();
-    ctx.drawImage(bossShip, this.x - this.width / 2, this.y - this.height / 2);
+    gameCtx.save();
+    gameCtx.drawImage(
+      bossShip,
+      this.x - this.width / 2,
+      this.y - this.height / 2
+    );
     if (hitTint > 0) {
-      ctx.globalAlpha = hitTint;
-      ctx.drawImage(bossHit, this.x - this.width / 2, this.y - this.height / 2);
+      gameCtx.globalAlpha = hitTint;
+      gameCtx.drawImage(
+        bossHit,
+        this.x - this.width / 2,
+        this.y - this.height / 2
+      );
     }
-    ctx.restore();
+    gameCtx.restore();
 
     if (!shipDestroyed && this.phase === BOSS_FIGHT) {
       // Fire bullets if needed
@@ -1242,7 +1250,7 @@ function gameRender(now) {
     alwaysOnTop = [],
     nextHitables = [];
   function runEntity(entity) {
-    const result = entity.run(hitables, gameCtx, now - initialTime);
+    const result = entity.run(hitables, now - initialTime);
     if (Array.isArray(result)) {
       result.map((subEntity) => {
         if (entity === subEntity) {
