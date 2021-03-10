@@ -46,6 +46,7 @@ inliner(
       // used and the number of iterations of deflate compression per block is set to # % 10000. If # % 10000 is 9 or below, this number
       // specifies the level.
       // For instance, "-100500" saved 3 bytes
+      // Running advzip saved 2 bytes: npx advzip-bin -z -4 -i 5000 build.zip
       const result = execFileSync(ect, ["-9", "-strip", "-zip", ZIP_FILE]);
       console.log(result.toString("utf8"));
 
