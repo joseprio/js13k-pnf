@@ -614,8 +614,8 @@ class Powerup {
     ctx.translate(this.x, this.y);
     ctx.drawImage(
       powerupCanvas,
-      -Math.floor(powerupCanvas.width / 2),
-      -Math.floor(powerupCanvas.height / 2)
+      -powerupCanvas.width / 2,
+      -powerupCanvas.height / 2
     );
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
@@ -670,8 +670,8 @@ class Bullet {
     this.lastTime = time;
     ctx.drawImage(
       bullet,
-      this.x - Math.floor(bullet.width / 2),
-      this.y - Math.floor(bullet.height / 2)
+      this.x - bullet.width / 2,
+      this.y - bullet.height / 2
     );
     return true;
   }
@@ -760,10 +760,10 @@ class EnemyBullet {
 
     // Make it disappear after it leaves the screen
     if (
-      this.y - Math.floor(this.height / 2) > CANVAS_HEIGHT ||
-      this.y + Math.floor(this.height / 2) < 0 ||
-      this.x - Math.floor(this.width / 2) > CANVAS_WIDTH ||
-      this.x + Math.floor(this.width / 2) < 0
+      this.y - this.height / 2 > CANVAS_HEIGHT ||
+      this.y + this.height / 2 < 0 ||
+      this.x - this.width / 2 > CANVAS_WIDTH ||
+      this.x + this.width / 2 < 0
     ) {
       return false;
     }
@@ -773,8 +773,8 @@ class EnemyBullet {
     this.frameIndex = (this.frameIndex + 1) % enemyBulletFrames.length;
     ctx.drawImage(
       enemyBulletFrames[this.frameIndex],
-      this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2)
+      this.x - this.width / 2,
+      this.y - this.height / 2
     );
     return true;
   }
@@ -788,8 +788,8 @@ function fireBullets(amount, x, y, initialAngle, speed, time) {
       new EnemyBullet(
         x,
         y,
-        x + Math.round(100 * Math.cos(angle)),
-        y + Math.round(100 * Math.sin(angle)),
+        x + 100 * Math.cos(angle),
+        y + 100 * Math.sin(angle),
         speed,
         time
       )
@@ -822,7 +822,7 @@ class Enemy {
     this.height = canvas.height;
     this.health = health;
     this.x = startX;
-    this.y = Math.floor(-canvas.height / 2);
+    this.y = -canvas.height / 2;
     this.lastTime = time;
     this.hitTime = 0;
     this.destroyedSprites = destroyedSprites;
@@ -863,7 +863,7 @@ class Enemy {
           ? fireBullets(
               this.deathBullets,
               this.x,
-              this.y + Math.round(17 * this.speed),
+              this.y + 17 * this.speed,
               this.fireAngle,
               0.45,
               time
@@ -874,8 +874,8 @@ class Enemy {
         this.destroyedSprites.map((sprite) => {
           return new Shard(
             generateSpriteFinalState(sprite, this.width, this.height),
-            this.x - Math.floor(this.width / 2),
-            this.y - Math.floor(this.height / 2),
+            this.x - this.width / 2,
+            this.y - this.height / 2,
             ENEMY_EXPLOSION_DURATION,
             time
           );
@@ -884,7 +884,7 @@ class Enemy {
     }
 
     // Make it disappear after it leaves the screen
-    if (this.y - Math.floor(this.height / 2) > CANVAS_HEIGHT) {
+    if (this.y - this.height / 2 > CANVAS_HEIGHT) {
       return false;
     }
 
@@ -898,15 +898,15 @@ class Enemy {
     ctx.save();
     ctx.drawImage(
       this.canvas,
-      this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2)
+      this.x - this.width / 2,
+      this.y - this.height / 2
     );
     if (hitTint > 0) {
       ctx.globalAlpha = hitTint;
       ctx.drawImage(
         this.hitCanvas,
-        this.x - Math.floor(this.width / 2),
-        this.y - Math.floor(this.height / 2)
+        this.x - this.width / 2,
+        this.y - this.height / 2
       );
     }
     ctx.restore();
@@ -917,7 +917,7 @@ class Enemy {
         if (originalY < fireY && this.y > fireY) {
           sounds.enemyFire();
           const bulletAmount = this.fireSequences[c][1];
-          const fromY = this.y + Math.round(17 * this.speed);
+          const fromY = this.y + 17 * this.speed;
           if (bulletAmount) {
             // Fire bullet spread, a bit forward as it looks better
             return [
@@ -1004,14 +1004,14 @@ class Boss {
         // Update X
         if (this.direction === DIRECTION_RIGHT) {
           this.x += ellapsed * 0.1;
-          if (this.x + Math.floor(this.width / 2) > CANVAS_WIDTH) {
-            this.x = CANVAS_WIDTH - Math.floor(this.width / 2);
+          if (this.x + this.width / 2 > CANVAS_WIDTH) {
+            this.x = CANVAS_WIDTH - this.width / 2;
             this.direction = DIRECTION_LEFT;
           }
         } else {
           this.x -= ellapsed * 0.1;
-          if (this.x - Math.floor(this.width / 2) < 0) {
-            this.x = Math.floor(this.width / 2);
+          if (this.x - this.width / 2 < 0) {
+            this.x = this.width / 2;
             this.direction = DIRECTION_RIGHT;
           }
         }
@@ -1039,8 +1039,8 @@ class Boss {
       return destroyedBossSprites.map((sprite) => {
         return new Shard(
           generateSpriteFinalState(sprite, this.width, this.height),
-          this.x - Math.floor(this.width / 2),
-          this.y - Math.floor(this.height / 2),
+          this.x - this.width / 2,
+          this.y - this.height / 2,
           BOSS_EXPLOSION_DURATION,
           time
         );
@@ -1055,18 +1055,10 @@ class Boss {
       hitTint = (400 - hitTimeEllapsed) / 400;
     }
     ctx.save();
-    ctx.drawImage(
-      bossShip,
-      this.x - Math.floor(this.width / 2),
-      this.y - Math.floor(this.height / 2)
-    );
+    ctx.drawImage(bossShip, this.x - this.width / 2, this.y - this.height / 2);
     if (hitTint > 0) {
       ctx.globalAlpha = hitTint;
-      ctx.drawImage(
-        bossHit,
-        this.x - Math.floor(this.width / 2),
-        this.y - Math.floor(this.height / 2)
-      );
+      ctx.drawImage(bossHit, this.x - this.width / 2, this.y - this.height / 2);
     }
     ctx.restore();
 
@@ -1320,8 +1312,8 @@ function gameRender(now) {
       // Paint shield
       gameCtx.drawImage(
         shieldCanvas,
-        x - Math.floor(shieldCanvas.width / 2),
-        y - Math.floor(shieldCanvas.height / 2)
+        x - shieldCanvas.width / 2,
+        y - shieldCanvas.height / 2
       );
     }
     // Paint ship
