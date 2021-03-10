@@ -724,7 +724,6 @@ class EnemyBullet {
     this.yFactor = (destinationY - startY) / magnitude;
     this.lastTime = time;
     this.s = speed;
-    this.frameIndex = 0;
     this.alwaysOnTop = true;
   }
 
@@ -759,9 +758,8 @@ class EnemyBullet {
 
     this.lastTime = time;
 
-    this.frameIndex = (this.frameIndex + 1) % enemyBulletFrames.length;
     gameCtx.drawImage(
-      enemyBulletFrames[this.frameIndex],
+      enemyBulletFrames[time % enemyBulletFrames.length | 0],
       this.x - this.w / 2,
       this.y - this.h / 2
     );
