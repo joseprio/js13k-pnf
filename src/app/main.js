@@ -1096,9 +1096,7 @@ class Boss {
               this.y + offsetY + 100,
               0.5,
               time
-            )
-          );
-          bullets.push(
+            ),
             new EnemyBullet(
               this.x + offsetX,
               this.y + offsetY,
