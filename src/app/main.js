@@ -587,7 +587,7 @@ class Powerup {
     this.alwaysOnTop = true;
   }
 
-  run(hitables, time) {
+  run(time) {
     this.y += (5 * (time - this.lastTime)) / 32;
 
     const hitBox = [
@@ -643,7 +643,7 @@ class Bullet {
     this.power = 10;
   }
 
-  run(hitables, time) {
+  run(time) {
     this.y -= (BULLET_SPEED * (time - this.lastTime)) / 32;
 
     const hitBox = [this.x, this.y, bullet.width, bullet.height, bulletMask];
@@ -683,7 +683,7 @@ class Shard {
     this.explosionDuration = duration;
   }
 
-  run(hitables, time) {
+  run(time) {
     const progress = (time - this.time) / this.explosionDuration;
     if (progress > 1) {
       // Explosion is over
@@ -726,7 +726,7 @@ class EnemyBullet {
     this.alwaysOnTop = true;
   }
 
-  run(hitables, time) {
+  run(time) {
     // Destroy bullets if bomb time
     if (bombEffect > time) {
       return false;
@@ -826,7 +826,7 @@ class Enemy {
     this.updateHitBox();
   }
 
-  run(hitables, time) {
+  run(time) {
     const originalY = this.y;
     let isDead = false;
     // Destroy enemies if no health or bomb time
@@ -971,7 +971,7 @@ class Boss {
     this.updateHitBox();
   }
 
-  run(hitables, time) {
+  run(time) {
     const originalY = this.y;
     let isDead = false;
     // Destroy enemies if no health or bomb time
@@ -1250,7 +1250,7 @@ function gameRender(now) {
     alwaysOnTop = [],
     nextHitables = [];
   function runEntity(entity) {
-    const result = entity.run(hitables, now - initialTime);
+    const result = entity.run(now - initialTime);
     if (Array.isArray(result)) {
       result.map((subEntity) => {
         if (entity === subEntity) {
