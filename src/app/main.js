@@ -49,8 +49,8 @@ function generateShields() {
       for (let offsetX = 0; offsetX < 3; offsetX++) {
         shieldPhaseCtx.drawImage(
           phases[0],
-          Math.floor(shipWidth / 2) - phases.length - 1 + offsetX,
-          Math.floor(shipHeight / 2) - phases.length - 1 + offsetY
+          halfShipWidth - phases.length - 1 + offsetX,
+          halfShipHeight - phases.length - 1 + offsetY
         );
       }
     }
@@ -61,8 +61,8 @@ function generateShields() {
     shieldPhaseCtx.globalCompositeOperation = "source-over";
     shieldPhaseCtx.drawImage(
       phases[0],
-      Math.floor(shipWidth / 2) - phases.length,
-      Math.floor(shipHeight / 2) - phases.length
+      halfShipWidth - phases.length,
+      halfShipHeight - phases.length
     );
     phases.unshift(trimCanvas(shieldPhase));
   }
@@ -193,6 +193,8 @@ const ship = trimCanvas(generateShip(faction, "ie7jMyCFouoUjkVs", 60));
 const destroyedShipSprites = createSprites(ship);
 const shipWidth = ship.width;
 const shipHeight = ship.height;
+const halfShipWidth = Math.floor(shipWidth / 2);
+const halfShipHeight = Math.floor(shipHeight / 2);
 const shipMask = obtainImageData(ship).data;
 
 const BOMB_DURATION = 1000;
@@ -1221,15 +1223,15 @@ function gameRender(now) {
         y += (vy / distance) * toTravel;
       }
     }
-    if (x < Math.floor(shipWidth / 2)) {
-      x = Math.floor(shipWidth / 2);
-    } else if (x > CANVAS_WIDTH - Math.floor(shipWidth / 2)) {
-      x = CANVAS_WIDTH - Math.floor(shipWidth / 2);
+    if (x < halfShipWidth) {
+      x = halfShipWidth;
+    } else if (x > CANVAS_WIDTH - halfShipWidth) {
+      x = CANVAS_WIDTH - halfShipWidth;
     }
-    if (y < Math.floor(shipHeight / 2)) {
-      y = Math.floor(shipHeight / 2);
-    } else if (y > CANVAS_HEIGHT - Math.floor(shipHeight / 2)) {
-      y = CANVAS_HEIGHT - Math.floor(shipHeight / 2);
+    if (y < halfShipHeight) {
+      y = halfShipHeight;
+    } else if (y > CANVAS_HEIGHT - halfShipHeight) {
+      y = CANVAS_HEIGHT - halfShipHeight;
     }
     shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
   }
@@ -1246,7 +1248,7 @@ function gameRender(now) {
       gameCtx.beginPath(),
       gameCtx.arc(
         Math.floor(
-          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - shipWidth / 2)) /
+          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - halfShipWidth)) /
             (100 * (CANVAS_WIDTH - shipWidth))
         ) +
           ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
@@ -1308,8 +1310,8 @@ function gameRender(now) {
       .map((sprite) => {
         return new Shard(
           generateSpriteFinalState(sprite, shipWidth, shipHeight),
-          x - Math.floor(shipWidth / 2),
-          y - Math.floor(shipHeight / 2),
+          x - halfShipWidth,
+          y - halfShipHeight,
           PLAYER_EXPLOSION_DURATION,
           now - initialTime
         );
@@ -1335,11 +1337,7 @@ function gameRender(now) {
       );
     }
     // Paint ship
-    gameCtx.drawImage(
-      ship,
-      x - Math.floor(shipWidth / 2),
-      y - Math.floor(shipHeight / 2)
-    );
+    gameCtx.drawImage(ship, x - halfShipWidth, y - halfShipHeight);
   } else {
     // Paint game over
     gameCtx.save();
