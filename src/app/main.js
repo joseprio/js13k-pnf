@@ -582,7 +582,7 @@ class Powerup {
   constructor(x, y, typeIndex, time) {
     this.x = x;
     this.y = y;
-    this.type = typeIndex;
+    this.powerupType = typeIndex;
     this.lastTime = time;
     this.alwaysOnTop = true;
   }
@@ -601,7 +601,7 @@ class Powerup {
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
-      powerupDefinitions[this.type][2](time);
+      powerupDefinitions[this.powerupType][2](time);
       return false;
     }
 
@@ -619,12 +619,14 @@ class Powerup {
     gameCtx.textAlign = "center";
     gameCtx.textBaseline = "top";
     gameCtx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
-    const measure = gameCtx.measureText(powerupDefinitions[this.type][0]);
+    const measure = gameCtx.measureText(
+      powerupDefinitions[this.powerupType][0]
+    );
     const textHeight =
       measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
-    gameCtx.fillStyle = powerupDefinitions[this.type][1];
+    gameCtx.fillStyle = powerupDefinitions[this.powerupType][1];
     gameCtx.fillText(
-      powerupDefinitions[this.type][0],
+      powerupDefinitions[this.powerupType][0],
       0,
       -Math.floor(textHeight / 2)
     );
@@ -713,8 +715,8 @@ class Shard {
 
 class EnemyBullet {
   constructor(startX, startY, destinationX, destinationY, speed, time) {
-    this.width = enemyBulletFrames[0].width;
-    this.height = enemyBulletFrames[0].height;
+    this.w = enemyBulletFrames[0].width;
+    this.h = enemyBulletFrames[0].height;
     this.x = startX;
     this.y = startY;
     const magnitude = Math.hypot(destinationX - startX, destinationY - startY);
@@ -737,13 +739,7 @@ class EnemyBullet {
 
     // Check collision to ship
     if (
-      collide(shipHitBox, [
-        this.x,
-        this.y,
-        this.width,
-        this.height,
-        enemyBulletMask,
-      ])
+      collide(shipHitBox, [this.x, this.y, this.w, this.h, enemyBulletMask])
     ) {
       hitShip();
       if (!shipDestroyed) {
@@ -753,10 +749,10 @@ class EnemyBullet {
 
     // Make it disappear after it leaves the screen
     if (
-      this.y - this.height / 2 > CANVAS_HEIGHT ||
-      this.y + this.height / 2 < 0 ||
-      this.x - this.width / 2 > CANVAS_WIDTH ||
-      this.x + this.width / 2 < 0
+      this.y - this.h / 2 > CANVAS_HEIGHT ||
+      this.y + this.h / 2 < 0 ||
+      this.x - this.w / 2 > CANVAS_WIDTH ||
+      this.x + this.w / 2 < 0
     ) {
       return false;
     }
@@ -766,8 +762,8 @@ class EnemyBullet {
     this.frameIndex = (this.frameIndex + 1) % enemyBulletFrames.length;
     gameCtx.drawImage(
       enemyBulletFrames[this.frameIndex],
-      this.x - this.width / 2,
-      this.y - this.height / 2
+      this.x - this.w / 2,
+      this.y - this.h / 2
     );
     return true;
   }
@@ -811,8 +807,8 @@ class Enemy {
     this.canvas = canvas;
     this.enemyMask = mask;
     this.hitCanvas = hitCanvas;
-    this.width = canvas.width;
-    this.height = canvas.height;
+    this.w = canvas.width;
+    this.h = canvas.height;
     this.health = health;
     this.x = startX;
     this.y = -canvas.height / 2;
@@ -847,7 +843,7 @@ class Enemy {
     }
 
     if (isDead) {
-      sounds.explosion(this.width / 275);
+      sounds.explosion(this.w / 275);
       // Add score
       addScore(this.killPoints);
       // Return array with pieces
@@ -866,9 +862,9 @@ class Enemy {
       return returnEntities.concat(
         this.destroyedSprites.map((sprite) => {
           return new Shard(
-            generateSpriteFinalState(sprite, this.width, this.height),
-            this.x - this.width / 2,
-            this.y - this.height / 2,
+            generateSpriteFinalState(sprite, this.w, this.h),
+            this.x - this.w / 2,
+            this.y - this.h / 2,
             ENEMY_EXPLOSION_DURATION,
             time
           );
@@ -877,25 +873,21 @@ class Enemy {
     }
 
     // Make it disappear after it leaves the screen
-    if (this.y - this.height / 2 > CANVAS_HEIGHT) {
+    if (this.y - this.h / 2 > CANVAS_HEIGHT) {
       return false;
     }
 
     this.lastTime = time;
 
     gameCtx.save();
-    gameCtx.drawImage(
-      this.canvas,
-      this.x - this.width / 2,
-      this.y - this.height / 2
-    );
+    gameCtx.drawImage(this.canvas, this.x - this.w / 2, this.y - this.h / 2);
     const hitTint = 400 - time + this.hitTime;
     if (hitTint > 0) {
       gameCtx.globalAlpha = hitTint / 400;
       gameCtx.drawImage(
         this.hitCanvas,
-        this.x - this.width / 2,
-        this.y - this.height / 2
+        this.x - this.w / 2,
+        this.y - this.h / 2
       );
     }
     gameCtx.restore();
@@ -932,7 +924,7 @@ class Enemy {
   }
 
   updateHitBox() {
-    this.hitBox = [this.x, this.y, this.width, this.height, this.enemyMask];
+    this.hitBox = [this.x, this.y, this.w, this.h, this.enemyMask];
   }
 
   hit(power, now) {
@@ -957,11 +949,11 @@ class Boss {
     // We want to be basically immortal until we start the fight
     this.health = 1e9;
     this.lastTime = time;
-    this.width = bossShip.width;
-    this.height = bossShip.height;
+    this.w = bossShip.width;
+    this.h = bossShip.height;
     this.x = HALF_CANVAS_WIDTH;
-    this.y = -this.height / 2;
-    this.direction = DIRECTION_RIGHT;
+    this.y = -this.h / 2;
+    this.moveDirection = DIRECTION_RIGHT;
     this.hitTime = 0;
     this.difficulty = difficulty;
     this.updateHitBox();
@@ -991,17 +983,17 @@ class Boss {
         }
       } else {
         // Update X
-        if (this.direction === DIRECTION_RIGHT) {
+        if (this.moveDirection === DIRECTION_RIGHT) {
           this.x += ellapsed * 0.1;
-          if (this.x + this.width / 2 > CANVAS_WIDTH) {
-            this.x = CANVAS_WIDTH - this.width / 2;
-            this.direction = DIRECTION_LEFT;
+          if (this.x + this.w / 2 > CANVAS_WIDTH) {
+            this.x = CANVAS_WIDTH - this.w / 2;
+            this.moveDirection = DIRECTION_LEFT;
           }
         } else {
           this.x -= ellapsed * 0.1;
-          if (this.x - this.width / 2 < 0) {
-            this.x = this.width / 2;
-            this.direction = DIRECTION_RIGHT;
+          if (this.x - this.w / 2 < 0) {
+            this.x = this.w / 2;
+            this.moveDirection = DIRECTION_RIGHT;
           }
         }
       }
@@ -1027,9 +1019,9 @@ class Boss {
 
       return destroyedBossSprites.map((sprite) => {
         return new Shard(
-          generateSpriteFinalState(sprite, this.width, this.height),
-          this.x - this.width / 2,
-          this.y - this.height / 2,
+          generateSpriteFinalState(sprite, this.w, this.h),
+          this.x - this.w / 2,
+          this.y - this.h / 2,
           BOSS_EXPLOSION_DURATION,
           time
         );
@@ -1039,19 +1031,11 @@ class Boss {
     this.lastTime = time;
 
     gameCtx.save();
-    gameCtx.drawImage(
-      bossShip,
-      this.x - this.width / 2,
-      this.y - this.height / 2
-    );
+    gameCtx.drawImage(bossShip, this.x - this.w / 2, this.y - this.h / 2);
     const hitTint = 400 - time + this.hitTime;
     if (hitTint > 0) {
       gameCtx.globalAlpha = hitTint / 400;
-      gameCtx.drawImage(
-        bossHit,
-        this.x - this.width / 2,
-        this.y - this.height / 2
-      );
+      gameCtx.drawImage(bossHit, this.x - this.w / 2, this.y - this.h / 2);
     }
     gameCtx.restore();
 
@@ -1117,7 +1101,7 @@ class Boss {
   }
 
   updateHitBox() {
-    this.hitBox = [this.x, this.y, this.width, this.height, bossMask];
+    this.hitBox = [this.x, this.y, this.w, this.h, bossMask];
   }
 
   hit(power, now) {
