@@ -883,19 +883,15 @@ class Enemy {
 
     this.lastTime = time;
 
-    const hitTimeEllapsed = time - this.hitTime;
-    let hitTint = 0;
-    if (hitTimeEllapsed < 400) {
-      hitTint = (400 - hitTimeEllapsed) / 400;
-    }
     gameCtx.save();
     gameCtx.drawImage(
       this.canvas,
       this.x - this.width / 2,
       this.y - this.height / 2
     );
+    const hitTint = 400 - time + this.hitTime;
     if (hitTint > 0) {
-      gameCtx.globalAlpha = hitTint;
+      gameCtx.globalAlpha = hitTint / 400;
       gameCtx.drawImage(
         this.hitCanvas,
         this.x - this.width / 2,
@@ -1042,19 +1038,15 @@ class Boss {
 
     this.lastTime = time;
 
-    const hitTimeEllapsed = time - this.hitTime;
-    let hitTint = 0;
-    if (hitTimeEllapsed < 400) {
-      hitTint = (400 - hitTimeEllapsed) / 400;
-    }
     gameCtx.save();
     gameCtx.drawImage(
       bossShip,
       this.x - this.width / 2,
       this.y - this.height / 2
     );
+    const hitTint = 400 - time + this.hitTime;
     if (hitTint > 0) {
-      gameCtx.globalAlpha = hitTint;
+      gameCtx.globalAlpha = hitTint / 400;
       gameCtx.drawImage(
         bossHit,
         this.x - this.width / 2,
