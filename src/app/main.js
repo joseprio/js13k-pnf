@@ -723,7 +723,7 @@ class EnemyBullet {
     this.xFactor = (destinationX - startX) / magnitude;
     this.yFactor = (destinationY - startY) / magnitude;
     this.lastTime = time;
-    this.speed = speed;
+    this.s = speed;
     this.frameIndex = 0;
     this.alwaysOnTop = true;
   }
@@ -734,8 +734,8 @@ class EnemyBullet {
       return false;
     }
     const ellapsed = time - this.lastTime;
-    this.y += ellapsed * this.speed * this.yFactor;
-    this.x += ellapsed * this.speed * this.xFactor;
+    this.y += ellapsed * this.s * this.yFactor;
+    this.x += ellapsed * this.s * this.xFactor;
 
     // Check collision to ship
     if (
@@ -815,7 +815,7 @@ class Enemy {
     this.lastTime = time;
     this.hitTime = 0;
     this.destroyedSprites = destroyedSprites;
-    this.speed = speed;
+    this.s = speed;
     this.killPoints = points;
     this.deathBullets = deathBullets;
     this.fireSequences = fireSequences;
@@ -830,7 +830,7 @@ class Enemy {
       isDead = true;
     } else {
       const ellapsed = time - this.lastTime;
-      this.y += ellapsed * this.speed;
+      this.y += ellapsed * this.s;
       this.updateHitBox();
 
       // Check collision to ship
@@ -852,7 +852,7 @@ class Enemy {
           ? fireBullets(
               this.deathBullets,
               this.x,
-              this.y + 17 * this.speed,
+              this.y + 17 * this.s,
               this.fireAngle,
               0.45,
               time
@@ -898,7 +898,7 @@ class Enemy {
         if (originalY < fireY && this.y > fireY) {
           sounds.enemyFire();
           const bulletAmount = this.fireSequences[c][1];
-          const fromY = this.y + 17 * this.speed;
+          const fromY = this.y + 17 * this.s;
           if (bulletAmount) {
             // Fire bullet spread, a bit forward as it looks better
             return [
