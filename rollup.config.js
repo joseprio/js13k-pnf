@@ -40,6 +40,8 @@ export default {
           unsafe_math: true,
           unsafe_methods: true,
           unsafe_symbols: true,
+          toplevel: true,
+          booleans_as_integers: true,
         },
         // This is dangerous, and just brings a 200 byte benefit
         mangle: {
