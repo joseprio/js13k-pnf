@@ -14,7 +14,6 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "archiver": "^2.1.1",
     "ect-bin": "1.4.1",
-    "html-minifier-terser": "5.1.1",
     "rollup": "^2.35.1",
     "rollup-plugin-html2": "2.0.0",
     "rollup-plugin-serve": "1.0.4",

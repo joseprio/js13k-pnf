@@ -21,6 +21,16 @@ export default {
   plugins: [
     html2({
       template: "src/index.html",
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeOptionalTags: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: false,
+        minifyCSS: true,
+      },
     }),
     resolve(), // tells Rollup how to find date-fns in node_modules
     commonjs(), // converts date-fns to ES modules

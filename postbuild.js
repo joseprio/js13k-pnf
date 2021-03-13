@@ -4,7 +4,6 @@ const { execFileSync } = require("child_process");
 const ect = require("ect-bin");
 const path = require("path");
 const inliner = require("web-resource-inliner").html;
-const minify = require("html-minifier-terser").minify;
 const BUNDLE_FILE = "./dist/bundle.html";
 
 // Create final html
@@ -18,16 +17,7 @@ inliner(
       throw new Error("Failed to inline");
     }
 
-    const minified = minify(result, {
-      collapseWhitespace: true,
-      removeComments: true,
-      removeRedundantAttributes: true,
-      removeScriptTypeAttributes: true,
-      removeStyleLinkTypeAttributes: true,
-      useShortDoctype: true,
-      minifyCSS: true,
-    });
-    fs.writeFileSync(BUNDLE_FILE, minified);
+    fs.writeFileSync(BUNDLE_FILE, result);
 
     const ZIP_FILE = path.resolve("./dist/build.zip");
 
