@@ -186,7 +186,7 @@ const HALF_CANVAS_HEIGHT = Math.floor(CANVAS_HEIGHT / 2);
 const SHIP_SPEED = 0.6;
 const STARS_WIDTH = 540;
 
-const gameCanvas = self.a;
+const gameCanvas = g;
 const gameCtx = gameCanvas.getContext("2d");
 const faction = new Randomizer("piBbgDn4CZqlkqiF");
 const ship = trimCanvas(generateShip(faction, "ie7jMyCFouoUjkVs", 60));
@@ -480,7 +480,7 @@ function introRender(now) {
     }
   } else {
     gameCtx.font = "italic 30px Helvetica";
-    gameCtx.fillText("Loading…", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+    gameCtx.fillText("Loading\u2026", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     // Generate assets
     if (!bossShip) {
       generateBoss();
