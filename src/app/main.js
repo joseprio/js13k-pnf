@@ -1395,27 +1395,25 @@ function gameRender(now) {
 
 function processPointerEvent(e) {
   e.preventDefault();
-  let offsetLeft, offsetTop, offsetWidth, offsetHeight;
-  if (
-    gameCanvas.offsetWidth / gameCanvas.offsetHeight >
-    CANVAS_WIDTH / CANVAS_HEIGHT
-  ) {
-    // Wider
-    offsetTop = 0;
-    offsetHeight = gameCanvas.offsetHeight;
-    offsetWidth = (offsetHeight * CANVAS_WIDTH) / CANVAS_HEIGHT;
-    offsetLeft = Math.floor(gameCanvas.offsetWidth - offsetWidth) / 2;
-  } else {
-    // Narrower
-    offsetLeft = 0;
-    offsetWidth = gameCanvas.offsetWidth;
-    offsetHeight = (offsetWidth * CANVAS_HEIGHT) / CANVAS_WIDTH;
-    offsetTop = Math.floor(gameCanvas.offsetHeight - offsetHeight) / 2;
-  }
-  const pointer = e.changedTouches ? e.changedTouches[0] : e;
+  const ratio = CANVAS_WIDTH / CANVAS_HEIGHT;
+  const [actualOffsetWidth, actualOffsetHeight] =
+    gameCanvas.offsetWidth / gameCanvas.offsetHeight > ratio
+      ? // Wider
+        [gameCanvas.offsetHeight * ratio, gameCanvas.offsetHeight]
+      : // Narrower
+        [gameCanvas.offsetWidth, gameCanvas.offsetWidth / ratio];
+  const pointer = e.changedTouches?.[0] || e;
   return [
-    Math.floor(((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth),
-    Math.floor(((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight),
+    Math.floor(
+      ((pointer.pageX - (gameCanvas.offsetWidth - actualOffsetWidth) / 2) *
+        CANVAS_WIDTH) /
+        actualOffsetWidth
+    ),
+    Math.floor(
+      ((pointer.pageY - (gameCanvas.offsetHeight - actualOffsetHeight) / 2) *
+        CANVAS_HEIGHT) /
+        actualOffsetHeight
+    ),
   ];
 }
 
