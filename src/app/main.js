@@ -1402,7 +1402,7 @@ function processPointerEvent(e) {
         [gameCanvas.offsetHeight * ratio, gameCanvas.offsetHeight]
       : // Narrower
         [gameCanvas.offsetWidth, gameCanvas.offsetWidth / ratio];
-  const pointer = e.changedTouches?.[0] || e;
+  const [pointer] = e.changedTouches || [e];
   return [
     Math.floor(
       ((pointer.pageX - (gameCanvas.offsetWidth - actualOffsetWidth) / 2) *
