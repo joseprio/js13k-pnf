@@ -1410,12 +1410,7 @@ function handleMouseEvent(e) {
     offsetHeight = (offsetWidth * CANVAS_HEIGHT) / CANVAS_WIDTH;
     offsetTop = Math.floor(gameCanvas.offsetHeight - offsetHeight) / 2;
   }
-  let pointer = {};
-  if (e.changedTouches) {
-    pointer = e.changedTouches[0];
-  } else {
-    pointer = e;
-  }
+  const pointer = e.changedTouches ? e.changedTouches[0] : e;
   move_x = Math.floor(
     ((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth
   );
