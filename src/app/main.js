@@ -217,8 +217,10 @@ const newTag = generateNewTag();
 let pointer_down = false;
 let introInhibitPress = false;
 
-let move_x = -1,
-  move_y = -1,
+let touch_previous_x,
+  touch_previous_y,
+  move_x,
+  move_y,
   x,
   y,
   keysPressed = [],
@@ -382,8 +384,8 @@ function newGame() {
   score = 0;
   addScore(0);
   shipDestroyed = false;
-  x = HALF_CANVAS_WIDTH;
-  y = Math.floor(CANVAS_HEIGHT * 0.9);
+  move_x = x = HALF_CANVAS_WIDTH;
+  move_y = y = Math.floor(CANVAS_HEIGHT * 0.9);
   fastFire = 0;
   bombEffect = 0;
   shieldLevel = 1;
@@ -1391,7 +1393,7 @@ function gameRender(now) {
 
 /* Compute mouse / touch coordinates on the canvas */
 
-function handleMouseEvent(e) {
+function processPointerEvent(e) {
   e.preventDefault();
   let offsetLeft, offsetTop, offsetWidth, offsetHeight;
   if (
@@ -1411,26 +1413,40 @@ function handleMouseEvent(e) {
     offsetTop = Math.floor(gameCanvas.offsetHeight - offsetHeight) / 2;
   }
   const pointer = e.changedTouches ? e.changedTouches[0] : e;
-  move_x = Math.floor(
-    ((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth
-  );
-  move_y = Math.floor(
-    ((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight
-  );
+  return [
+    Math.floor(((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth),
+    (move_y = Math.floor(
+      ((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight
+    )),
+  ];
 }
 
 /* Down */
-self.ontouchstart = self.onpointerdown = (e) => {
+self.onmousedown = (e) => {
   pointer_down = true;
-  handleMouseEvent(e);
+};
+
+self.ontouchstart = (e) => {
+  pointer_down = true;
+  [touch_previous_x, touch_previous_y] = processPointerEvent(e);
 };
 
 /* Move */
-self.ontouchmove = self.onpointermove = handleMouseEvent;
+self.onmousemove = (e) => {
+  [move_x, move_y] = processPointerEvent(e);
+};
+
+self.ontouchmove = (e) => {
+  const [current_x, current_y] = processPointerEvent(e);
+  move_x += current_x - touch_previous_x;
+  move_y += current_y - touch_previous_y;
+  touch_previous_x = current_x;
+  touch_previous_y = current_y;
+};
 
 /* Up */
-self.ontouchend = self.onpointerup = (e) => {
-  e.preventDefault();
+self.ontouchend = self.onmouseup = (e) => {
+  processPointerEvent(e);
   pointer_down = false;
 };
 
