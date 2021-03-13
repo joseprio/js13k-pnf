@@ -22,9 +22,7 @@ import * as sounds from "./sounds";
 const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
 
 function hitEffect(canvas) {
-  const width = canvas.width;
-  const height = canvas.height;
-  const destCanvas = createCanvas(width, height);
+  const destCanvas = createCanvas(canvas.width, canvas.height);
   const imageData = obtainImageData(canvas);
   const data = imageData.data;
   for (let i = 0; i < data.length; i += 4) {
