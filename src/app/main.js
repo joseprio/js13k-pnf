@@ -1415,9 +1415,7 @@ function processPointerEvent(e) {
   const pointer = e.changedTouches ? e.changedTouches[0] : e;
   return [
     Math.floor(((pointer.pageX - offsetLeft) * CANVAS_WIDTH) / offsetWidth),
-    (move_y = Math.floor(
-      ((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight
-    )),
+    Math.floor(((pointer.pageY - offsetTop) * CANVAS_HEIGHT) / offsetHeight),
   ];
 }
 
