@@ -1421,6 +1421,7 @@ function processPointerEvent(e) {
 
 /* Down */
 self.onmousedown = (e) => {
+  processPointerEvent(e);
   pointer_down = true;
 };
 
