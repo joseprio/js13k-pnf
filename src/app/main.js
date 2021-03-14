@@ -815,7 +815,6 @@ class Enemy {
     this.killPoints = points;
     this.deathBullets = deathBullets;
     this.fireSequences = fireSequences;
-    this.updateHitBox();
   }
 
   run(time) {
@@ -827,7 +826,8 @@ class Enemy {
     } else {
       const ellapsed = time - this.lastTime;
       this.y += ellapsed * this.s;
-      this.updateHitBox();
+      // Update hit box
+      this.hitBox = [this.x, this.y, this.w, this.h, this.enemyMask];
 
       // Check collision to ship
       if (collide(shipHitBox, this.hitBox)) {
@@ -919,10 +919,6 @@ class Enemy {
     return true;
   }
 
-  updateHitBox() {
-    this.hitBox = [this.x, this.y, this.w, this.h, this.enemyMask];
-  }
-
   hit(power, now) {
     this.hitTime = now;
     this.health -= power;
@@ -952,7 +948,6 @@ class Boss {
     this.moveDirection = DIRECTION_RIGHT;
     this.hitTime = 0;
     this.difficulty = difficulty;
-    this.updateHitBox();
   }
 
   run(time) {
@@ -994,7 +989,8 @@ class Boss {
         }
       }
 
-      this.updateHitBox();
+      // Update hit box
+      this.hitBox = [this.x, this.y, this.w, this.h, bossMask];
 
       // Check collision to ship
       if (collide(shipHitBox, this.hitBox)) {
@@ -1094,10 +1090,6 @@ class Boss {
     }
 
     return true;
-  }
-
-  updateHitBox() {
-    this.hitBox = [this.x, this.y, this.w, this.h, bossMask];
   }
 
   hit(power, now) {
