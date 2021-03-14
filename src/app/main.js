@@ -393,7 +393,7 @@ function newGame() {
 
 function introRender(now) {
   // reset
-  gameCtx.fillStyle = "#000";
+  gameCtx.fillStyle = "#002";
   gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   const ellapsed = (now - initialTime) / 3000;
@@ -1192,7 +1192,7 @@ function gameRender(now) {
   }
 
   // Reset canvas
-  gameCtx.fillStyle = "#000";
+  gameCtx.fillStyle = "#002";
   gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   // Paint background stars
