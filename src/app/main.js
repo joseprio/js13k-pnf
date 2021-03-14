@@ -163,7 +163,6 @@ function generateNewTag() {
   ctx.font = "bold 20px Helvetica";
   ctx.translate(50, 50);
   ctx.rotate(-Math.PI / 2);
-  ctx.fillStyle = "#f00";
   ctx.fillStyle = "#fff";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
