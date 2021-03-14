@@ -165,7 +165,6 @@ function generateNewTag() {
   ctx.rotate(-Math.PI / 2);
   ctx.fillStyle = "#fff";
   ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
   ctx.fillText("NEW!", 0, 0);
   trimCanvas(canvas);
   const tagCanvas = createCanvas(canvas.width + 10, canvas.height + 10);
