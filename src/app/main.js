@@ -944,7 +944,6 @@ class Boss {
   }
 
   run(time, newEntities) {
-    const originalY = this.y;
     let isDead = false;
     // Destroy enemies if no health or bomb time
     if (this.health <= 0) {
