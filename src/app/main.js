@@ -810,12 +810,12 @@ class Enemy {
 
   run(time, newEntities) {
     const originalY = this.y;
+    const ellapsed = time - this.lastTime;
     let isDead = false;
     // Destroy enemies if no health or bomb time
     if (this.health <= 0 || bombEffect > time) {
       isDead = true;
     } else {
-      const ellapsed = time - this.lastTime;
       this.y += ellapsed * this.s;
       // Update hit box
       this.hitBox = [this.x, this.y, this.w, this.h, this.enemyMask];
@@ -904,7 +904,6 @@ class Enemy {
             // Fire single bullet targeted to the user
             newEntities.push(new EnemyBullet(this.x, fromY, x, y, 0.3, time));
           }
-          return true;
         }
       }
     }
