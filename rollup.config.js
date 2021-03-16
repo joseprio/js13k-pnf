@@ -1,5 +1,4 @@
 import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
 import html2 from "rollup-plugin-html2";
 import serve from "rollup-plugin-serve";
@@ -32,8 +31,7 @@ export default {
         minifyCSS: true,
       },
     }),
-    resolve(), // tells Rollup how to find date-fns in node_modules
-    commonjs(), // converts date-fns to ES modules
+    resolve(),
     production &&
       !useClosureCompiler &&
       terser({

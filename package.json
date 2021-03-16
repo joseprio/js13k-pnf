@@ -10,7 +10,6 @@
   },
   "devDependencies": {
     "@ampproject/rollup-plugin-closure-compiler": "0.26.0",
-    "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "archiver": "^2.1.1",
     "ect-bin": "1.4.1",
@@ -18,7 +17,6 @@
     "rollup-plugin-html2": "2.0.0",
     "rollup-plugin-serve": "1.0.4",
     "rollup-plugin-terser": "^7.0.2",
-    "style-loader": "^0.22.1",
     "web-resource-inliner": "5.0.0",
     "zzfx-minifier": "joseprio/zzfx-minifier"
   },
