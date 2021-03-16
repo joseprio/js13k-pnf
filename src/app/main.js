@@ -979,14 +979,6 @@ class Boss {
           }
         }
       }
-
-      // Update hit box
-      this.hitBox = [this.x, this.y, this.w, this.h, bossMask];
-
-      // Check collision to ship
-      if (collide(shipHitBox, this.hitBox)) {
-        shipDestroyed = true;
-      }
     }
 
     if (isDead) {
@@ -1012,6 +1004,14 @@ class Boss {
         )
       );
       return false;
+    }
+
+    // Update hit box
+    this.hitBox = [this.x, this.y, this.w, this.h, bossMask];
+
+    // Check collision to ship
+    if (collide(shipHitBox, this.hitBox)) {
+      shipDestroyed = true;
     }
 
     this.lastTime = time;
