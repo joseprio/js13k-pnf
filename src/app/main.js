@@ -90,8 +90,8 @@ function generateBullet() {
   ctx.fillStyle = "#ff0";
   ctx.beginPath();
   ctx.moveTo(10, 60);
-  ctx.lineTo(20, 10);
-  ctx.arc(10, 10, 10, 0, Math.PI, true);
+  ctx.lineTo(0, 10);
+  ctx.arc(10, 10, 10, Math.PI, 0);
   ctx.lineTo(10, 60);
   ctx.fill();
 
@@ -106,8 +106,8 @@ function generateBullet() {
   ctx.lineWidth = 10;
   ctx.beginPath();
   ctx.moveTo(10, 70);
-  ctx.lineTo(23, 10);
-  ctx.arc(10, 10, 13, 0, Math.PI, true);
+  ctx.lineTo(-3, 10);
+  ctx.arc(10, 10, 13, Math.PI, 0);
   ctx.lineTo(10, 70);
   ctx.stroke();
 
