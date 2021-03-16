@@ -394,13 +394,11 @@ function introRender(now) {
   gameCtx.fillStyle = "#002";
   gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  const ellapsed = (now - initialTime) / 3000;
-
   // Intro starfield
   gameCtx.save();
   for (let c = 200; c--; ) {
     gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
-    const r = 50 / (6 - ((ellapsed + c / 13) % 6));
+    const r = 50 / (6 - (((now - initialTime) / 3000 + c / 13) % 6));
     gameCtx.globalAlpha = Math.min(r / 100, 1);
     gameCtx.beginPath();
     gameCtx.arc(
