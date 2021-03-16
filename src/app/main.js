@@ -369,25 +369,21 @@ function render(now) {
 
 function newGame() {
   state = STATE_GAME;
-  difficulty = 0;
   enemyRandomizer = new Randomizer("enemy");
   powerupRandomizer = new Randomizer("powerup");
   nextEnemy = 1000;
   nextDifficulty = 5000;
   nextPowerup = POWERUP_INTERVAL;
-  powerupIndex = 0;
-  lastBullet = 0;
   entities = [];
   hitables = [];
   initialTime = performance.now();
   lastTime = performance.now();
-  score = 0;
-  addScore(0);
+  addScore(
+    (difficulty = powerupIndex = lastBullet = bombEffect = fastFire = score = 0)
+  );
   shipDestroyed = false;
   move_x = x = HALF_CANVAS_WIDTH;
   move_y = y = Math.floor(CANVAS_HEIGHT * 0.9);
-  fastFire = 0;
-  bombEffect = 0;
   shieldLevel = 1;
   bossTime = false;
   highlightHighscore = -1;
