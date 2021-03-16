@@ -61,7 +61,7 @@ export function createSprites(targetCanvas) {
         // Non transparent pixel
         // With the size of the images we are working, 1,000,000,000 behaves the same as infinity
         let minDistance = 1e9;
-        let minIndex;
+        let minCollector;
         for (let i = 0; i < splitPoints.length; i++) {
           const distance = Math.hypot(
             splitPoints[i][0] - x,
@@ -69,29 +69,28 @@ export function createSprites(targetCanvas) {
           );
           if (distance < minDistance) {
             minDistance = distance;
-            minIndex = i;
+            minCollector = collectors[i];
           }
         }
 
-        const targetCollector = collectors[minIndex];
-        targetCollector[COLLECTOR_MIN_X] = Math.min(
+        minCollector[COLLECTOR_MIN_X] = Math.min(
           x,
-          targetCollector[COLLECTOR_MIN_X]
+          minCollector[COLLECTOR_MIN_X]
         );
-        targetCollector[COLLECTOR_MAX_X] = Math.max(
+        minCollector[COLLECTOR_MAX_X] = Math.max(
           x,
-          targetCollector[COLLECTOR_MAX_X]
+          minCollector[COLLECTOR_MAX_X]
         );
-        targetCollector[COLLECTOR_MIN_Y] = Math.min(
+        minCollector[COLLECTOR_MIN_Y] = Math.min(
           y,
-          targetCollector[COLLECTOR_MIN_Y]
+          minCollector[COLLECTOR_MIN_Y]
         );
-        targetCollector[COLLECTOR_MAX_Y] = Math.max(
+        minCollector[COLLECTOR_MAX_Y] = Math.max(
           y,
-          targetCollector[COLLECTOR_MAX_Y]
+          minCollector[COLLECTOR_MAX_Y]
         );
 
-        targetCollector[COLLECTOR_NEAREST].push([
+        minCollector[COLLECTOR_NEAREST].push([
           x,
           y,
           imageData.data[pos + 0],
