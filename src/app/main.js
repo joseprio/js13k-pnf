@@ -16,6 +16,7 @@ import {
   createFavicon,
   createCanvas,
   obtainImageData,
+  fillCircle,
 } from "./utils";
 import * as sounds from "./sounds";
 
@@ -120,9 +121,7 @@ function generateEnemyBulletFrame(colorStop) {
   grd.addColorStop(colorStop, "#ff0");
   grd.addColorStop(1, "#f00");
   ctx.fillStyle = grd;
-  ctx.beginPath();
-  ctx.arc(10, 10, 10, 0, 7);
-  ctx.fill();
+  fillCircle(ctx, 10, 10, 10);
 
   return canvas;
 }
@@ -143,9 +142,7 @@ function generatePowerupCanvas() {
   grd.addColorStop(0.6, "#008");
   grd.addColorStop(1, "#00f");
   ctx.fillStyle = grd;
-  ctx.beginPath();
-  ctx.arc(30, 30, 30, 0, 7);
-  ctx.fill();
+  fillCircle(ctx, 30, 30, 30);
   return [canvas, obtainImageData(canvas).data];
 }
 
@@ -400,15 +397,12 @@ function introRender(now) {
     gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
     const r = 50 / (6 - (((now - initialTime) / 3000 + c / 13) % 6));
     gameCtx.globalAlpha = Math.min(r / 100, 1);
-    gameCtx.beginPath();
-    gameCtx.arc(
+    fillCircle(
+      gameCtx,
       Math.cos(c) * r + HALF_CANVAS_WIDTH,
       Math.sin(c * c) * r + HALF_CANVAS_HEIGHT,
-      r / 200,
-      0,
-      7
+      r / 200
     );
-    gameCtx.fill();
   }
 
   gameCtx.restore();
@@ -1188,8 +1182,8 @@ function gameRender(now) {
     let i = 100, s;
     i--;
     gameCtx.fillStyle = STAR_COLORS[i % STAR_COLORS.length],
-      gameCtx.beginPath(),
-      gameCtx.arc(
+      fillCircle(
+        gameCtx,
         Math.floor(
           ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - halfShipWidth)) /
             (100 * (CANVAS_WIDTH - shipWidth))
@@ -1197,11 +1191,8 @@ function gameRender(now) {
           ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
         (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
           CANVAS_HEIGHT,
-        (s - 0.3) * 3.3,
-        0,
-        7
-      ),
-      gameCtx.fill()
+        (s - 0.3) * 3.3
+      )
   )
     s = 150 / (i * 3 + 200);
 

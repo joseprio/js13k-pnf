@@ -1,8 +1,16 @@
+// TODO: add to starshipwright
 export function createCanvas(width, height) {
   const newCanvas = document.createElement("canvas");
   newCanvas.width = width;
   newCanvas.height = height;
   return newCanvas;
+}
+
+// TODO: add to starshipwright
+export function fillCircle(ctx, x, y, r) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 7);
+  ctx.fill();
 }
 
 export function obtainImageData(canvas) {
