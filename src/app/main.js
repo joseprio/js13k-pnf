@@ -22,6 +22,12 @@ import * as sounds from "./sounds";
 
 const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
 
+function gameCtxWrap(run) {
+  gameCtx.save();
+  run();
+  gameCtx.restore();
+}
+
 function hitEffect(canvas) {
   const destCanvas = createCanvas(canvas.width, canvas.height);
   const imageData = obtainImageData(canvas);
@@ -393,20 +399,20 @@ function introRender(now) {
   gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   // Intro starfield
-  gameCtx.save();
-  for (let c = 200; c--; ) {
-    gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
-    const r = 50 / (6 - ((now / 3000 + c / 13) % 6));
-    gameCtx.globalAlpha = Math.min(r / 100, 1);
-    fillCircle(
-      gameCtx,
-      Math.cos(c) * r + HALF_CANVAS_WIDTH,
-      Math.sin(c * c) * r + HALF_CANVAS_HEIGHT,
-      r / 200
-    );
-  }
+  gameCtxWrap(() => {
+    for (let c = 200; c--; ) {
+      gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
+      const r = 50 / (6 - ((now / 3000 + c / 13) % 6));
+      gameCtx.globalAlpha = Math.min(r / 100, 1);
+      fillCircle(
+        gameCtx,
+        Math.cos(c) * r + HALF_CANVAS_WIDTH,
+        Math.sin(c * c) * r + HALF_CANVAS_HEIGHT,
+        r / 200
+      );
+    }
+  });
 
-  gameCtx.restore();
   gameCtx.fillStyle = "#fff";
   gameCtx.textBaseline = "middle";
   gameCtx.textAlign = "center";
@@ -416,35 +422,31 @@ function introRender(now) {
     if (highscores.length) {
       gameCtx.fillText("High Scores", HALF_CANVAS_WIDTH, 100);
 
-      gameCtx.save();
-      gameCtx.textAlign = "start";
-      gameCtx.textBaseline = "top";
-      for (let c = 0; c < highscores.length; c++) {
-        gameCtx.fillStyle = "#fff";
-        if (c === highlightHighscore) {
-          gameCtx.save();
-          gameCtx.translate(90, 185 + 80 * c);
-          gameCtx.drawImage(
-            newTag,
-            -Math.floor(newTag.width / 2),
-            -Math.floor(newTag.height / 2)
-          );
-          gameCtx.restore();
-          gameCtx.fillStyle = "#fc6";
+      gameCtxWrap(() => {
+        gameCtx.textAlign = "start";
+        gameCtx.textBaseline = "top";
+        for (let c = 0; c < highscores.length; c++) {
+          gameCtx.fillStyle = "#fff";
+          if (c === highlightHighscore) {
+            gameCtx.drawImage(
+              newTag,
+              90 - Math.floor(newTag.width / 2),
+              185 + 80 * c - Math.floor(newTag.height / 2)
+            );
+            gameCtx.fillStyle = "#fc6";
+          }
+          const score = Intl.NumberFormat().format(highscores[c][0]);
+          const time = new Date(highscores[c][1]).toLocaleString();
+          gameCtx.font = "50px Helvetica";
+          gameCtx.fillText(c + 1, 115, 160 + 80 * c);
+          gameCtx.font = "60px Helvetica";
+          gameCtx.fillText("{", 145, 150 + 80 * c);
+          gameCtx.font = "25px Helvetica";
+          gameCtx.fillText(score + " points", 170, 160 + 80 * c);
+          gameCtx.font = "15px Helvetica";
+          gameCtx.fillText(time, 170, 190 + 80 * c);
         }
-        const score = Intl.NumberFormat().format(highscores[c][0]);
-        const time = new Date(highscores[c][1]).toLocaleString();
-        gameCtx.font = "50px Helvetica";
-        gameCtx.fillText(c + 1, 115, 160 + 80 * c);
-        gameCtx.font = "60px Helvetica";
-        gameCtx.fillText("{", 145, 150 + 80 * c);
-        gameCtx.font = "25px Helvetica";
-        gameCtx.fillText(score + " points", 170, 160 + 80 * c);
-        gameCtx.font = "15px Helvetica";
-        gameCtx.fillText(time, 170, 190 + 80 * c);
-      }
-
-      gameCtx.restore();
+      });
     } else {
       gameCtx.fillText(
         "Planet Not Found",
@@ -600,28 +602,28 @@ class Powerup {
       return false;
     }
     this.lastTime = time;
-    gameCtx.save();
-    gameCtx.translate(this.x, this.y);
-    gameCtx.drawImage(
-      powerupCanvas,
-      -powerupCanvas.width / 2,
-      -powerupCanvas.height / 2
-    );
-    gameCtx.textAlign = "center";
-    gameCtx.textBaseline = "top";
-    gameCtx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
-    const measure = gameCtx.measureText(
-      powerupDefinitions[this.powerupType][0]
-    );
-    const textHeight =
-      measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
-    gameCtx.fillStyle = powerupDefinitions[this.powerupType][1];
-    gameCtx.fillText(
-      powerupDefinitions[this.powerupType][0],
-      0,
-      -Math.floor(textHeight / 2)
-    );
-    gameCtx.restore();
+    gameCtxWrap(() => {
+      gameCtx.translate(this.x, this.y);
+      gameCtx.drawImage(
+        powerupCanvas,
+        -powerupCanvas.width / 2,
+        -powerupCanvas.height / 2
+      );
+      gameCtx.textAlign = "center";
+      gameCtx.textBaseline = "top";
+      gameCtx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
+      const measure = gameCtx.measureText(
+        powerupDefinitions[this.powerupType][0]
+      );
+      const textHeight =
+        measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
+      gameCtx.fillStyle = powerupDefinitions[this.powerupType][1];
+      gameCtx.fillText(
+        powerupDefinitions[this.powerupType][0],
+        0,
+        -Math.floor(textHeight / 2)
+      );
+    });
     return true;
   }
 }
@@ -682,23 +684,23 @@ class Shard {
       // Explosion is over
       return false;
     }
-    gameCtx.save();
-    gameCtx.globalAlpha = 1 - progress ** 2;
-    gameCtx.translate(
-      this.shipX +
-        this.sprite[SPRITE_CENTER_X] +
-        this.sprite[SPRITE_TRANSLATE_X] * progress,
-      this.shipY +
-        this.sprite[SPRITE_CENTER_Y] +
-        this.sprite[SPRITE_TRANSLATE_Y] * progress
-    );
-    gameCtx.rotate(this.sprite[SPRITE_ANGLE] * progress);
-    gameCtx.drawImage(
-      this.sprite[SPRITE_CANVAS],
-      this.sprite[SPRITE_OFFSET_X],
-      this.sprite[SPRITE_OFFSET_Y]
-    );
-    gameCtx.restore();
+    gameCtxWrap(() => {
+      gameCtx.globalAlpha = 1 - progress ** 2;
+      gameCtx.translate(
+        this.shipX +
+          this.sprite[SPRITE_CENTER_X] +
+          this.sprite[SPRITE_TRANSLATE_X] * progress,
+        this.shipY +
+          this.sprite[SPRITE_CENTER_Y] +
+          this.sprite[SPRITE_TRANSLATE_Y] * progress
+      );
+      gameCtx.rotate(this.sprite[SPRITE_ANGLE] * progress);
+      gameCtx.drawImage(
+        this.sprite[SPRITE_CANVAS],
+        this.sprite[SPRITE_OFFSET_X],
+        this.sprite[SPRITE_OFFSET_Y]
+      );
+    });
 
     return true;
   }
@@ -868,18 +870,18 @@ class Enemy {
 
     this.lastTime = time;
 
-    gameCtx.save();
     gameCtx.drawImage(this.canvas, this.x - this.w / 2, this.y - this.h / 2);
     const hitTint = 400 - time + this.hitTime;
     if (hitTint > 0) {
-      gameCtx.globalAlpha = hitTint / 400;
-      gameCtx.drawImage(
-        this.hitCanvas,
-        this.x - this.w / 2,
-        this.y - this.h / 2
-      );
+      gameCtxWrap(() => {
+        gameCtx.globalAlpha = hitTint / 400;
+        gameCtx.drawImage(
+          this.hitCanvas,
+          this.x - this.w / 2,
+          this.y - this.h / 2
+        );
+      });
     }
-    gameCtx.restore();
 
     if (!shipDestroyed) {
       for (let c = 0; c < this.fireSequences.length; c++) {
@@ -1015,14 +1017,14 @@ class Boss {
 
     this.lastTime = time;
 
-    gameCtx.save();
     gameCtx.drawImage(bossShip, this.x - this.w / 2, this.y - this.h / 2);
     const hitTint = 400 - time + this.hitTime;
     if (hitTint > 0) {
-      gameCtx.globalAlpha = hitTint / 400;
-      gameCtx.drawImage(bossHit, this.x - this.w / 2, this.y - this.h / 2);
+      gameCtxWrap(() => {
+        gameCtx.globalAlpha = hitTint / 400;
+        gameCtx.drawImage(bossHit, this.x - this.w / 2, this.y - this.h / 2);
+      });
     }
-    gameCtx.restore();
 
     if (!shipDestroyed && this.phase === BOSS_FIGHT) {
       // Fire bullets if needed
@@ -1276,22 +1278,21 @@ function gameRender(now) {
     gameCtx.drawImage(ship, x - halfShipWidth, y - halfShipHeight);
   } else {
     // Paint game over
-    gameCtx.save();
-    gameCtx.globalAlpha = Math.min(1, (gameEllapsed - gameOverTime) / 2000);
-    gameCtx.textBaseline = "middle";
-    gameCtx.font = "40px Helvetica";
-    gameCtx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
-
-    gameCtx.restore();
+    gameCtxWrap(() => {
+      gameCtx.globalAlpha = Math.min(1, (gameEllapsed - gameOverTime) / 2000);
+      gameCtx.textBaseline = "middle";
+      gameCtx.font = "40px Helvetica";
+      gameCtx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
+    });
   }
 
   // Paint bomb
   if (bombEffect > gameEllapsed) {
-    gameCtx.save();
-    // Fill style is already white
-    gameCtx.globalAlpha = (bombEffect - gameEllapsed) / BOMB_DURATION;
-    gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    gameCtx.restore();
+    gameCtxWrap(() => {
+      // Fill style is already white
+      gameCtx.globalAlpha = (bombEffect - gameEllapsed) / BOMB_DURATION;
+      gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    });
   }
 
   // Paint HUD
