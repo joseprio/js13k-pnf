@@ -395,7 +395,7 @@ function introRender(now) {
   gameCtx.save();
   for (let c = 200; c--; ) {
     gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
-    const r = 50 / (6 - (((now - initialTime) / 3000 + c / 13) % 6));
+    const r = 50 / (6 - ((now / 3000 + c / 13) % 6));
     gameCtx.globalAlpha = Math.min(r / 100, 1);
     fillCircle(
       gameCtx,
@@ -1110,24 +1110,25 @@ const POWERUP_INTERVAL = 9000;
 
 let lastTime;
 function gameRender(now) {
-  const ellapsed = now - lastTime;
+  const tickEllapsed = now - lastTime;
   lastTime = now;
-  if (ellapsed > 160) {
+  if (tickEllapsed > 160) {
     // First frame or detecting a pause
-    initialTime += ellapsed;
+    initialTime += tickEllapsed;
     // We don't want the controls to get stuck
     keysPressed = [];
-    return;
   }
+  const gameEllapsed = now - initialTime;
 
   if (!shipDestroyed) {
     // Check pressed keys
-    const toTravel = SHIP_SPEED * ellapsed,
+    const toTravel = SHIP_SPEED * tickEllapsed,
       keyUp = keysPressed[38] || keysPressed[90],
       keyDown = keysPressed[40] || keysPressed[83],
       keyLeft = keysPressed[37] || keysPressed[65],
       keyRight = keysPressed[39] || keysPressed[68];
 
+    // Digital input
     if (keyUp || keyDown || keyLeft || keyRight) {
       const distance =
         toTravel / ((keyUp || keyDown) && (keyLeft || keyRight) ? 2 ** 0.5 : 1);
@@ -1189,7 +1190,7 @@ function gameRender(now) {
             (100 * (CANVAS_WIDTH - shipWidth))
         ) +
           ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
-        (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * (now - initialTime)) / 3000)) %
+        (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * gameEllapsed) / 3000)) %
           CANVAS_HEIGHT,
         (s - 0.3) * 3.3
       )
@@ -1203,7 +1204,7 @@ function gameRender(now) {
     alwaysOnTop = [],
     nextHitables = [];
   function runEntity(entity) {
-    const result = entity.run(now - initialTime);
+    const result = entity.run(gameEllapsed);
     if (Array.isArray(result)) {
       result.map((subEntity) => {
         if (entity === subEntity) {
@@ -1238,7 +1239,7 @@ function gameRender(now) {
 
   if (!previousShipDestroyed && shipDestroyed) {
     // Record time
-    gameOverTime = now - initialTime;
+    gameOverTime = gameEllapsed;
     // add shards
     destroyedShipSprites
       .map((sprite) => {
@@ -1247,7 +1248,7 @@ function gameRender(now) {
           x - halfShipWidth,
           y - halfShipHeight,
           PLAYER_EXPLOSION_DURATION,
-          now - initialTime
+          gameEllapsed
         );
       })
       .map(runEntity);
@@ -1275,10 +1276,7 @@ function gameRender(now) {
   } else {
     // Paint game over
     gameCtx.save();
-    gameCtx.globalAlpha = Math.min(
-      1,
-      (now - initialTime - gameOverTime) / 2000
-    );
+    gameCtx.globalAlpha = Math.min(1, (gameEllapsed - gameOverTime) / 2000);
     gameCtx.textBaseline = "middle";
     gameCtx.font = "40px Helvetica";
     gameCtx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
@@ -1287,10 +1285,10 @@ function gameRender(now) {
   }
 
   // Paint bomb
-  if (bombEffect > now - initialTime) {
+  if (bombEffect > gameEllapsed) {
     gameCtx.save();
     // Fill style is already white
-    gameCtx.globalAlpha = (bombEffect - now + initialTime) / BOMB_DURATION;
+    gameCtx.globalAlpha = (bombEffect - gameEllapsed) / BOMB_DURATION;
     gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     gameCtx.restore();
   }
@@ -1300,50 +1298,47 @@ function gameRender(now) {
   gameCtx.font = "16px Helvetica";
   gameCtx.fillText(scoreText, HALF_CANVAS_WIDTH, 5);
 
-  const isFastFire = fastFire > now - initialTime;
+  const isFastFire = fastFire > gameEllapsed;
   // Should we fire?
-  if (
-    !shipDestroyed &&
-    lastBullet + (isFastFire ? 100 : 200) < now - initialTime
-  ) {
+  if (!shipDestroyed && lastBullet + (isFastFire ? 100 : 200) < gameEllapsed) {
     bulletOffset = -bulletOffset;
     entities.push(
       new Bullet(
         x + (isFastFire ? bulletOffset : 0),
         y - Math.floor(shipHeight / 2),
-        now - initialTime
+        gameEllapsed
       )
     );
-    lastBullet = Math.max(now - initialTime);
+    lastBullet = Math.max(gameEllapsed);
     sounds.bullet();
   }
-  if (nextDifficulty < now - initialTime && !bossTime) {
+  if (nextDifficulty < gameEllapsed && !bossTime) {
     // Increase difficulty and check
     if (++difficulty % 5) {
-      nextDifficulty = now - initialTime + 10000;
+      nextDifficulty = gameEllapsed + 10000;
     } else {
       bossTime = true;
-      entities.push(new Boss(Math.floor(difficulty / 5), now - initialTime));
+      entities.push(new Boss(Math.floor(difficulty / 5), gameEllapsed));
     }
   }
 
   // Should we spawn powerup
-  if (nextPowerup < now - initialTime && !bossTime) {
+  if (nextPowerup < gameEllapsed && !bossTime) {
     entities.push(
       new Powerup(
         powerupRandomizer.si(30, CANVAS_WIDTH - 30),
         Math.floor(-powerupCanvas.height / 2),
         // Increasing it here to optimize for size
         powerupIndex++,
-        now - initialTime
+        gameEllapsed
       )
     );
     powerupIndex %= powerupDefinitions.length;
-    nextPowerup = now - initialTime + POWERUP_INTERVAL;
+    nextPowerup = gameEllapsed + POWERUP_INTERVAL;
   }
 
   // Should we spawn enemy
-  if (nextEnemy < now - initialTime && !bossTime) {
+  if (nextEnemy < gameEllapsed && !bossTime) {
     const enemyDifficulty = enemyRandomizer.si(
       Math.min(Math.max(difficulty - 2, 0), enemyBlueprints.length - 3),
       Math.min(difficulty, enemyBlueprints.length - 1)
@@ -1354,13 +1349,13 @@ function gameRender(now) {
         enemyBlueprints[enemyDifficulty],
         enemyRandomizer.si(30, CANVAS_WIDTH - 30),
         (enemyDifficulty + 1) * 50,
-        now - initialTime
+        gameEllapsed
       )
     );
     updateNextEnemy();
   }
 
-  if (shipDestroyed && gameOverTime + 3500 < now - initialTime) {
+  if (shipDestroyed && gameOverTime + 3500 < gameEllapsed) {
     // Update highscores if needed
     updateHighscores();
 
