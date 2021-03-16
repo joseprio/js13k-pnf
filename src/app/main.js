@@ -22,9 +22,9 @@ import * as sounds from "./sounds";
 
 const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
 
-function gameCtxWrap(run) {
+function gameCtxWrap(wrappedFunc) {
   gameCtx.save();
-  run();
+  wrappedFunc();
   gameCtx.restore();
 }
 
@@ -808,7 +808,7 @@ class Enemy {
     this.fireSequences = fireSequences;
   }
 
-  run(time) {
+  run(time, newEntities) {
     const originalY = this.y;
     let isDead = false;
     // Destroy enemies if no health or bomb time
@@ -834,29 +834,31 @@ class Enemy {
       // Add score
       addScore(this.killPoints);
       // Return array with pieces
-      const returnEntities =
-        this.deathBullets > 0
-          ? fireBullets(
-              this.deathBullets,
-              this.x,
-              this.y + 17 * this.s,
-              this.fireAngle,
-              0.45,
-              time
-            )
-          : [];
+      if (this.deathBullets > 0) {
+        newEntities.push(
+          ...fireBullets(
+            this.deathBullets,
+            this.x,
+            this.y + 17 * this.s,
+            this.fireAngle,
+            0.45,
+            time
+          )
+        );
+      }
 
-      return returnEntities.concat(
-        this.destroyedSprites.map((sprite) => {
-          return new Shard(
+      this.destroyedSprites.map((sprite) =>
+        newEntities.push(
+          new Shard(
             generateSpriteFinalState(sprite, this.w, this.h),
             this.x - this.w / 2,
             this.y - this.h / 2,
             ENEMY_EXPLOSION_DURATION,
             time
-          );
-        })
+          )
+        )
       );
+      return false;
     }
 
     // Make it disappear after it leaves the screen
@@ -888,8 +890,7 @@ class Enemy {
           const fromY = this.y + 17 * this.s;
           if (bulletAmount) {
             // Fire bullet spread, a bit forward as it looks better
-            return [
-              this,
+            newEntities.push(
               ...fireBullets(
                 bulletAmount,
                 this.x,
@@ -897,12 +898,13 @@ class Enemy {
                 this.fireAngle,
                 0.3,
                 time
-              ),
-            ];
+              )
+            );
           } else {
             // Fire single bullet targeted to the user
-            return [this, new EnemyBullet(this.x, fromY, x, y, 0.3, time)];
+            newEntities.push(new EnemyBullet(this.x, fromY, x, y, 0.3, time));
           }
+          return true;
         }
       }
     }
@@ -941,7 +943,7 @@ class Boss {
     this.difficulty = difficulty;
   }
 
-  run(time) {
+  run(time, newEntities) {
     const originalY = this.y;
     let isDead = false;
     // Destroy enemies if no health or bomb time
@@ -1000,15 +1002,18 @@ class Boss {
       updateNextEnemy();
       nextPowerup = BOSS_EXPLOSION_DURATION + time;
 
-      return destroyedBossSprites.map((sprite) => {
-        return new Shard(
-          generateSpriteFinalState(sprite, this.w, this.h),
-          this.x - this.w / 2,
-          this.y - this.h / 2,
-          BOSS_EXPLOSION_DURATION,
-          time
-        );
-      });
+      destroyedBossSprites.map((sprite) =>
+        newEntities.push(
+          new Shard(
+            generateSpriteFinalState(sprite, this.w, this.h),
+            this.x - this.w / 2,
+            this.y - this.h / 2,
+            BOSS_EXPLOSION_DURATION,
+            time
+          )
+        )
+      );
+      return false;
     }
 
     this.lastTime = time;
@@ -1026,7 +1031,6 @@ class Boss {
       // Fire bullets if needed
       if (this.nextBullet < time) {
         sounds.enemyFire();
-        const bullets = [];
         if (this.bulletCount < 5 * this.difficulty) {
           const [offsetX, offsetY] = [
             [28, 119],
@@ -1038,7 +1042,7 @@ class Boss {
           ][Math.floor(this.bulletCount / this.difficulty)];
 
           // Side bullets
-          bullets.push(
+          newEntities.push(
             new EnemyBullet(
               this.x - offsetX,
               this.y + offsetY,
@@ -1058,7 +1062,9 @@ class Boss {
           );
         } else {
           // Targeted bullets
-          bullets.push(new EnemyBullet(this.x, this.y + 125, x, y, 0.3, time));
+          newEntities.push(
+            new EnemyBullet(this.x, this.y + 125, x, y, 0.3, time)
+          );
         }
         this.bulletCount++;
         if (this.bulletCount >= 10 * this.difficulty) {
@@ -1076,7 +1082,7 @@ class Boss {
             this.nextBullet = time + 500;
           }
         }
-        return [this, ...bullets];
+        return true;
       }
     }
 
@@ -1203,27 +1209,9 @@ function gameRender(now) {
     alwaysOnTop = [],
     nextHitables = [];
   function runEntity(entity) {
-    const result = entity.run(gameEllapsed);
-    if (Array.isArray(result)) {
-      result.map((subEntity) => {
-        if (entity === subEntity) {
-          // The original wants to be persisted, don't rerun it
-          if (result) {
-            if (entity.alwaysOnTop) {
-              alwaysOnTop.push(entity);
-            } else {
-              nextEntities.push(entity);
-            }
-            if (entity.hit) {
-              nextHitables.push(entity);
-            }
-          }
-        } else {
-          // New subentity, run it
-          runEntity(subEntity);
-        }
-      });
-    } else if (result) {
+    const newEntities = [];
+    const result = entity.run(gameEllapsed, newEntities);
+    if (result) {
       if (entity.alwaysOnTop) {
         alwaysOnTop.push(entity);
       } else {
@@ -1233,6 +1221,7 @@ function gameRender(now) {
         nextHitables.push(entity);
       }
     }
+    newEntities.map(runEntity);
   }
   entities.map(runEntity);
 
