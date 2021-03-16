@@ -1333,11 +1333,12 @@ function gameRender(now) {
       new Powerup(
         powerupRandomizer.si(30, CANVAS_WIDTH - 30),
         Math.floor(-powerupCanvas.height / 2),
-        powerupIndex,
+        // Increasing it here to optimize for size
+        powerupIndex++,
         now - initialTime
       )
     );
-    powerupIndex = (powerupIndex + 1) % powerupDefinitions.length;
+    powerupIndex %= powerupDefinitions.length;
     nextPowerup = now - initialTime + POWERUP_INTERVAL;
   }
 
@@ -1401,8 +1402,8 @@ self.onmousedown = (e) => {
 };
 
 self.ontouchstart = (e) => {
-  pointer_down = true;
   [touch_previous_x, touch_previous_y] = processPointerEvent(e);
+  pointer_down = true;
 };
 
 /* Move */
