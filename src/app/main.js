@@ -358,6 +358,7 @@ function render(now) {
   }
   // Any key press detection should have been consumed now
   anyKeyPressed = false;
+  requestAnimationFrame(render);
 }
 
 function newGame() {
@@ -1390,6 +1391,8 @@ function processPointerEvent(e) {
   ];
 }
 
+// Self isn't needed for the keys and mouse events, but it's necessary for touch
+// Keeping it all the same helps with zipping
 /* Down */
 self.onmousedown = (e) => {
   processPointerEvent(e);
@@ -1427,8 +1430,5 @@ self.onkeydown = self.onkeyup = (e) => {
 // Let's run the game
 gameCanvas.width = CANVAS_WIDTH;
 gameCanvas.height = CANVAS_HEIGHT;
-function renderWrapper(now) {
-  render(now);
-  requestAnimationFrame(renderWrapper);
-}
-requestAnimationFrame(renderWrapper);
+
+render(initialTime);
