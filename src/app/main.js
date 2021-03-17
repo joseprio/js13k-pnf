@@ -791,7 +791,7 @@ class Enemy {
     time
   ) {
     this.fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
-    this.canvas = canvas;
+    this.enemyCanvas = canvas;
     this.enemyMask = mask;
     this.hitCanvas = hitCanvas;
     this.w = canvas.width;
@@ -868,7 +868,7 @@ class Enemy {
 
     this.lastTime = time;
 
-    gameCtx.drawImage(this.canvas, this.x - this.w / 2, this.y - this.h / 2);
+    gameCtx.drawImage(this.enemyCanvas, this.x - this.w / 2, this.y - this.h / 2);
     const hitTint = 400 - time + this.hitTime;
     if (hitTint > 0) {
       gameCtxWrap(() => {
