@@ -220,12 +220,12 @@ let touch_previous_x,
   touch_previous_y,
   move_x,
   move_y,
-  x,
-  y,
+  shipX,
+  shipY,
   keysPressed = [],
   anyKeyPressed = false;
 
-let shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
+let shipHitBox = [shipX, shipY, shipWidth, shipHeight, shipMask];
 let shipDestroyed;
 let gameOverTime;
 let fastFire;
@@ -382,8 +382,8 @@ function newGame() {
     (difficulty = powerupIndex = lastBullet = bombEffect = fastFire = score = 0)
   );
   shipDestroyed = false;
-  move_x = x = HALF_CANVAS_WIDTH;
-  move_y = y = Math.floor(CANVAS_HEIGHT * 0.9);
+  move_x = shipX = HALF_CANVAS_WIDTH;
+  move_y = shipY = Math.floor(CANVAS_HEIGHT * 0.9);
   shieldLevel = 1;
   bossTime = false;
   highlightHighscore = -1;
@@ -567,21 +567,13 @@ const powerupDefinitions = [
   ],
 ];
 
-class Powerup {
-  constructor(x, y, typeIndex, time) {
-    this.x = x;
-    this.y = y;
-    this.powerupType = typeIndex;
-    this.lastTime = time;
-    this.alwaysOnTop = true;
-  }
-
-  run(time) {
-    this.y += (5 * (time - this.lastTime)) / 32;
+function Powerup(x, y, powerupType, lastTime) {
+  return function (time) {
+    y += (5 * (time - lastTime)) / 32;
 
     const hitBox = [
-      this.x,
-      this.y,
+      x,
+      y,
       powerupCanvas.width,
       powerupCanvas.height,
       powerupMask,
@@ -590,16 +582,16 @@ class Powerup {
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
-      powerupDefinitions[this.powerupType][2](time);
+      powerupDefinitions[powerupType][2](time);
       return false;
     }
 
-    if (this.y - Math.floor(powerupCanvas.height / 2) > CANVAS_HEIGHT) {
+    if (y - Math.floor(powerupCanvas.height / 2) > CANVAS_HEIGHT) {
       return false;
     }
-    this.lastTime = time;
+    lastTime = time;
     gameCtxWrap(() => {
-      gameCtx.translate(this.x, this.y);
+      gameCtx.translate(x, y);
       gameCtx.drawImage(
         powerupCanvas,
         -powerupCanvas.width / 2,
@@ -608,74 +600,53 @@ class Powerup {
       gameCtx.textAlign = "center";
       gameCtx.textBaseline = "top";
       gameCtx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
-      const measure = gameCtx.measureText(
-        powerupDefinitions[this.powerupType][0]
-      );
+      const measure = gameCtx.measureText(powerupDefinitions[powerupType][0]);
       const textHeight =
         measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
-      gameCtx.fillStyle = powerupDefinitions[this.powerupType][1];
+      gameCtx.fillStyle = powerupDefinitions[powerupType][1];
       gameCtx.fillText(
-        powerupDefinitions[this.powerupType][0],
+        powerupDefinitions[powerupType][0],
         0,
         -Math.floor(textHeight / 2)
       );
     });
-    return true;
-  }
+    // Return 2 for always on top
+    return 2;
+  };
 }
 
 const BULLET_SPEED = 20;
+const BULLET_POWER = 10;
 
-class Bullet {
-  constructor(x, y, time) {
-    this.x = x;
-    this.y = y;
-    this.lastTime = time;
-    this.power = 10;
-  }
+function Bullet(x, y, lastTime) {
+  return function (time) {
+    y -= (BULLET_SPEED * (time - lastTime)) / 32;
 
-  run(time) {
-    this.y -= (BULLET_SPEED * (time - this.lastTime)) / 32;
-
-    const hitBox = [this.x, this.y, bullet.width, bullet.height, bulletMask];
+    const hitBox = [x, y, bullet.width, bullet.height, bulletMask];
     // Check collision with hitables
     for (let c = 0; c < hitables.length; c++) {
-      const hitable = hitables[c];
-      if (collide(hitBox, hitable.hitBox)) {
-        hitable.hit(this.power, time);
+      if (hitables[c](hitBox, BULLET_POWER, time)) {
         // We're done, get rid of bullet
         return false;
       }
     }
 
-    if (this.y + bullet.height / 2 < 0) {
+    if (y + bullet.height / 2 < 0) {
       return false;
     }
-    this.lastTime = time;
-    gameCtx.drawImage(
-      bullet,
-      this.x - bullet.width / 2,
-      this.y - bullet.height / 2
-    );
+    lastTime = time;
+    gameCtx.drawImage(bullet, x - bullet.width / 2, y - bullet.height / 2);
     return true;
-  }
+  };
 }
 
 const ENEMY_EXPLOSION_DURATION = 500;
 const BOSS_EXPLOSION_DURATION = 500;
 const PLAYER_EXPLOSION_DURATION = 1500;
 
-class Shard {
-  constructor(sprite, shipX, shipY, duration, creation) {
-    this.creation = creation;
-    this.sprite = sprite;
-    this.shipX = shipX;
-    this.shipY = shipY;
-    this.explosionDuration = duration;
-  }
-
-  run(time) {
-    const progress = (time - this.creation) / this.explosionDuration;
+function Shard(sprite, shipX, shipY, explosionDuration, creation) {
+  return function (time) {
+    const progress = (time - creation) / explosionDuration;
     if (progress > 1) {
       // Explosion is over
       return false;
@@ -683,52 +654,39 @@ class Shard {
     gameCtxWrap(() => {
       gameCtx.globalAlpha = 1 - progress ** 2;
       gameCtx.translate(
-        this.shipX +
-          this.sprite[SPRITE_CENTER_X] +
-          this.sprite[SPRITE_TRANSLATE_X] * progress,
-        this.shipY +
-          this.sprite[SPRITE_CENTER_Y] +
-          this.sprite[SPRITE_TRANSLATE_Y] * progress
+        shipX + sprite[SPRITE_CENTER_X] + sprite[SPRITE_TRANSLATE_X] * progress,
+        shipY + sprite[SPRITE_CENTER_Y] + sprite[SPRITE_TRANSLATE_Y] * progress
       );
-      gameCtx.rotate(this.sprite[SPRITE_ANGLE] * progress);
+      gameCtx.rotate(sprite[SPRITE_ANGLE] * progress);
       gameCtx.drawImage(
-        this.sprite[SPRITE_CANVAS],
-        this.sprite[SPRITE_OFFSET_X],
-        this.sprite[SPRITE_OFFSET_Y]
+        sprite[SPRITE_CANVAS],
+        sprite[SPRITE_OFFSET_X],
+        sprite[SPRITE_OFFSET_Y]
       );
     });
 
     return true;
-  }
+  };
 }
 
-class EnemyBullet {
-  constructor(startX, startY, destinationX, destinationY, speed, time) {
-    this.w = enemyBulletFrames[0].width;
-    this.h = enemyBulletFrames[0].height;
-    this.x = startX;
-    this.y = startY;
-    const magnitude = Math.hypot(destinationX - startX, destinationY - startY);
-    this.xFactor = (destinationX - startX) / magnitude;
-    this.yFactor = (destinationY - startY) / magnitude;
-    this.lastTime = time;
-    this.s = speed;
-    this.alwaysOnTop = true;
-  }
+function EnemyBullet(x, y, destinationX, destinationY, s, lastTime) {
+  const w = enemyBulletFrames[0].width;
+  const h = enemyBulletFrames[0].height;
+  const magnitude = Math.hypot(destinationX - x, destinationY - y);
+  const xFactor = (destinationX - x) / magnitude;
+  const yFactor = (destinationY - y) / magnitude;
 
-  run(time) {
+  return function (time) {
     // Destroy bullets if bomb time
     if (bombEffect > time) {
       return false;
     }
-    const ellapsed = time - this.lastTime;
-    this.y += ellapsed * this.s * this.yFactor;
-    this.x += ellapsed * this.s * this.xFactor;
+    const ellapsed = time - lastTime;
+    y += ellapsed * s * yFactor;
+    x += ellapsed * s * xFactor;
 
     // Check collision to ship
-    if (
-      collide(shipHitBox, [this.x, this.y, this.w, this.h, enemyBulletMask])
-    ) {
+    if (collide(shipHitBox, [x, y, w, h, enemyBulletMask])) {
       hitShip();
       if (!shipDestroyed) {
         return false;
@@ -737,23 +695,23 @@ class EnemyBullet {
 
     // Make it disappear after it leaves the screen
     if (
-      this.y - this.h / 2 > CANVAS_HEIGHT ||
-      this.y + this.h / 2 < 0 ||
-      this.x - this.w / 2 > CANVAS_WIDTH ||
-      this.x + this.w / 2 < 0
+      y - h / 2 > CANVAS_HEIGHT ||
+      y + h / 2 < 0 ||
+      x - w / 2 > CANVAS_WIDTH ||
+      x + w / 2 < 0
     ) {
       return false;
     }
 
-    this.lastTime = time;
+    lastTime = time;
 
     gameCtx.drawImage(
       enemyBulletFrames[time % enemyBulletFrames.length | 0],
-      this.x - this.w / 2,
-      this.y - this.h / 2
+      x - w / 2,
+      y - h / 2
     );
-    return true;
-  }
+    return 2;
+  };
 }
 
 function fireBullets(amount, x, y, initialAngle, speed, time) {
@@ -761,7 +719,7 @@ function fireBullets(amount, x, y, initialAngle, speed, time) {
   for (let c = 0; c < amount; c++) {
     const angle = initialAngle + (2 * c * Math.PI) / amount;
     bullets.push(
-      new EnemyBullet(
+      EnemyBullet(
         x,
         y,
         x + 100 * Math.cos(angle),
@@ -774,54 +732,53 @@ function fireBullets(amount, x, y, initialAngle, speed, time) {
   return bullets;
 }
 
-class Enemy {
-  constructor(
-    [
-      canvas,
-      mask,
-      hitCanvas,
-      destroyedSprites,
-      health,
-      speed,
-      deathBullets,
-      fireSequences,
-    ],
-    startX,
-    points,
-    time
-  ) {
-    this.fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
-    this.enemyCanvas = canvas;
-    this.enemyMask = mask;
-    this.hitCanvas = hitCanvas;
-    this.w = canvas.width;
-    this.h = canvas.height;
-    this.health = health;
-    this.x = startX;
-    this.y = -canvas.height / 2;
-    this.lastTime = time;
-    this.hitTime = 0;
-    this.destroyedSprites = destroyedSprites;
-    this.s = speed;
-    this.killPoints = points;
-    this.deathBullets = deathBullets;
-    this.fireSequences = fireSequences;
+function Enemy(
+  [
+    canvas,
+    mask,
+    hitCanvas,
+    destroyedSprites,
+    health,
+    speed,
+    deathBullets,
+    fireSequences,
+  ],
+  x,
+  killPoints,
+  lastTime
+) {
+  const fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
+  const w = canvas.width;
+  const h = canvas.height;
+  let y = -canvas.height / 2;
+  let hitTime = 0;
+  let hitBox;
+
+  function checkHit(otherHitBox, power, now) {
+    if (collide(otherHitBox, hitBox)) {
+      hitTime = now;
+      health -= power;
+      if (health > 0) {
+        sounds.enemyHit();
+      }
+      return true;
+    }
   }
 
-  run(time, newEntities) {
-    const originalY = this.y;
-    const ellapsed = time - this.lastTime;
+  return function (time, newEntities) {
+    const originalY = y;
+    const ellapsed = time - lastTime;
     let isDead = false;
     // Destroy enemies if no health or bomb time
-    if (this.health <= 0 || bombEffect > time) {
+    if (health <= 0 || bombEffect > time) {
       isDead = true;
     } else {
-      this.y += ellapsed * this.s;
+      y += ellapsed * speed;
       // Update hit box
-      this.hitBox = [this.x, this.y, this.w, this.h, this.enemyMask];
+      hitBox = [x, y, w, h, mask];
 
       // Check collision to ship
-      if (collide(shipHitBox, this.hitBox)) {
+      if (collide(shipHitBox, hitBox)) {
         hitShip();
         if (!shipDestroyed) {
           isDead = true;
@@ -830,29 +787,22 @@ class Enemy {
     }
 
     if (isDead) {
-      sounds.explosion(this.w / 275);
+      sounds.explosion(w / 275);
       // Add score
-      addScore(this.killPoints);
+      addScore(killPoints);
       // Return array with pieces
-      if (this.deathBullets > 0) {
+      if (deathBullets > 0) {
         newEntities.push(
-          ...fireBullets(
-            this.deathBullets,
-            this.x,
-            this.y + 17 * this.s,
-            this.fireAngle,
-            0.45,
-            time
-          )
+          ...fireBullets(deathBullets, x, y + 17 * speed, fireAngle, 0.45, time)
         );
       }
 
-      this.destroyedSprites.map((sprite) =>
+      destroyedSprites.map((sprite) =>
         newEntities.push(
-          new Shard(
-            generateSpriteFinalState(sprite, this.w, this.h),
-            this.x - this.w / 2,
-            this.y - this.h / 2,
+          Shard(
+            generateSpriteFinalState(sprite, w, h),
+            x - w / 2,
+            y - h / 2,
             ENEMY_EXPLOSION_DURATION,
             time
           )
@@ -862,62 +812,43 @@ class Enemy {
     }
 
     // Make it disappear after it leaves the screen
-    if (this.y - this.h / 2 > CANVAS_HEIGHT) {
+    if (y - h / 2 > CANVAS_HEIGHT) {
       return false;
     }
 
-    this.lastTime = time;
+    lastTime = time;
 
-    gameCtx.drawImage(this.enemyCanvas, this.x - this.w / 2, this.y - this.h / 2);
-    const hitTint = 400 - time + this.hitTime;
+    gameCtx.drawImage(canvas, x - w / 2, y - h / 2);
+    const hitTint = 400 - time + hitTime;
     if (hitTint > 0) {
       gameCtxWrap(() => {
         gameCtx.globalAlpha = hitTint / 400;
-        gameCtx.drawImage(
-          this.hitCanvas,
-          this.x - this.w / 2,
-          this.y - this.h / 2
-        );
+        gameCtx.drawImage(hitCanvas, x - w / 2, y - h / 2);
       });
     }
 
     if (!shipDestroyed) {
-      for (let c = 0; c < this.fireSequences.length; c++) {
-        const fireY = this.fireSequences[c][0];
-        if (originalY < fireY && this.y > fireY) {
+      for (let c = 0; c < fireSequences.length; c++) {
+        const fireY = fireSequences[c][0];
+        if (originalY < fireY && y > fireY) {
           sounds.enemyFire();
-          const bulletAmount = this.fireSequences[c][1];
-          const fromY = this.y + 17 * this.s;
+          const bulletAmount = fireSequences[c][1];
+          const fromY = y + 17 * speed;
           if (bulletAmount) {
             // Fire bullet spread, a bit forward as it looks better
             newEntities.push(
-              ...fireBullets(
-                bulletAmount,
-                this.x,
-                fromY,
-                this.fireAngle,
-                0.3,
-                time
-              )
+              ...fireBullets(bulletAmount, x, fromY, fireAngle, 0.3, time)
             );
           } else {
             // Fire single bullet targeted to the user
-            newEntities.push(new EnemyBullet(this.x, fromY, x, y, 0.3, time));
+            newEntities.push(EnemyBullet(x, fromY, shipX, shipY, 0.3, time));
           }
         }
       }
     }
 
-    return true;
-  }
-
-  hit(power, now) {
-    this.hitTime = now;
-    this.health -= power;
-    if (this.health > 0) {
-      sounds.enemyHit();
-    }
-  }
+    return checkHit;
+  };
 }
 
 const BOSS_WAITING = 0;
@@ -926,56 +857,66 @@ const BOSS_FIGHT = 2;
 const DIRECTION_RIGHT = 0;
 const DIRECTION_LEFT = 1;
 
-class Boss {
-  constructor(difficulty, time) {
-    this.phase = BOSS_WAITING;
-    this.nextPhase = time + 2000;
-    // We want to be basically immortal until we start the fight
-    this.health = 1e9;
-    this.lastTime = time;
-    this.w = bossShip.width;
-    this.h = bossShip.height;
-    this.x = HALF_CANVAS_WIDTH;
-    this.y = -this.h / 2;
-    this.moveDirection = DIRECTION_RIGHT;
-    this.hitTime = 0;
-    this.difficulty = difficulty;
+function Boss(difficulty, time) {
+  const w = bossShip.width;
+  const h = bossShip.height;
+  let phase = BOSS_WAITING;
+  let nextPhase = time + 2000;
+  // We want to be basically immortal until we start the fight
+  let health = 1e9;
+  let lastTime = time;
+  let x = HALF_CANVAS_WIDTH;
+  let y = -h / 2;
+  let moveDirection = DIRECTION_RIGHT;
+  let hitTime = 0;
+  let hitBox;
+  let bulletCount = 0;
+  let nextBullet;
+
+  function checkHit(otherHitBox, power, now) {
+    if (collide(otherHitBox, hitBox)) {
+      hitTime = now;
+      health -= power;
+      if (health > 0) {
+        sounds.enemyHit();
+      }
+      return true;
+    }
   }
 
-  run(time, newEntities) {
+  return function (time, newEntities) {
     let isDead = false;
     // Destroy enemies if no health or bomb time
-    if (this.health <= 0) {
+    if (health <= 0) {
       isDead = true;
     } else {
-      const ellapsed = time - this.lastTime;
-      if (this.phase === BOSS_WAITING) {
-        if (time > this.nextPhase) {
-          this.phase = BOSS_COMING;
+      const ellapsed = time - lastTime;
+      if (phase === BOSS_WAITING) {
+        if (time > nextPhase) {
+          phase = BOSS_COMING;
         }
-      } else if (this.phase === BOSS_COMING) {
-        this.y += ellapsed * 0.15;
-        if (this.y > 150) {
-          this.y = 150;
+      } else if (phase === BOSS_COMING) {
+        y += ellapsed * 0.15;
+        if (y > 150) {
+          y = 150;
           // Give it normal health
-          this.health = 100 + 250 * this.difficulty;
-          this.phase = BOSS_FIGHT;
-          this.nextBullet = time;
-          this.bulletCount = 0;
+          health = 100 + 250 * difficulty;
+          phase = BOSS_FIGHT;
+          nextBullet = time;
         }
       } else {
         // Update X
-        if (this.moveDirection === DIRECTION_RIGHT) {
-          this.x += ellapsed * 0.1;
-          if (this.x + this.w / 2 > CANVAS_WIDTH) {
-            this.x = CANVAS_WIDTH - this.w / 2;
-            this.moveDirection = DIRECTION_LEFT;
+        if (moveDirection === DIRECTION_RIGHT) {
+          x += ellapsed * 0.1;
+          if (x + w / 2 > CANVAS_WIDTH) {
+            x = CANVAS_WIDTH - w / 2;
+            moveDirection = DIRECTION_LEFT;
           }
         } else {
-          this.x -= ellapsed * 0.1;
-          if (this.x - this.w / 2 < 0) {
-            this.x = this.w / 2;
-            this.moveDirection = DIRECTION_RIGHT;
+          x -= ellapsed * 0.1;
+          if (x - w / 2 < 0) {
+            x = w / 2;
+            moveDirection = DIRECTION_RIGHT;
           }
         }
       }
@@ -994,10 +935,10 @@ class Boss {
 
       destroyedBossSprites.map((sprite) =>
         newEntities.push(
-          new Shard(
-            generateSpriteFinalState(sprite, this.w, this.h),
-            this.x - this.w / 2,
-            this.y - this.h / 2,
+          Shard(
+            generateSpriteFinalState(sprite, w, h),
+            x - w / 2,
+            y - h / 2,
             BOSS_EXPLOSION_DURATION,
             time
           )
@@ -1007,29 +948,29 @@ class Boss {
     }
 
     // Update hit box
-    this.hitBox = [this.x, this.y, this.w, this.h, bossMask];
+    hitBox = [x, y, w, h, bossMask];
 
     // Check collision to ship
-    if (collide(shipHitBox, this.hitBox)) {
+    if (collide(shipHitBox, hitBox)) {
       shipDestroyed = true;
     }
 
-    this.lastTime = time;
+    lastTime = time;
 
-    gameCtx.drawImage(bossShip, this.x - this.w / 2, this.y - this.h / 2);
-    const hitTint = 400 - time + this.hitTime;
+    gameCtx.drawImage(bossShip, x - w / 2, y - h / 2);
+    const hitTint = 400 - time + hitTime;
     if (hitTint > 0) {
       gameCtxWrap(() => {
         gameCtx.globalAlpha = hitTint / 400;
-        gameCtx.drawImage(bossHit, this.x - this.w / 2, this.y - this.h / 2);
+        gameCtx.drawImage(bossHit, x - w / 2, y - h / 2);
       });
     }
 
-    if (!shipDestroyed && this.phase === BOSS_FIGHT) {
+    if (!shipDestroyed && phase === BOSS_FIGHT) {
       // Fire bullets if needed
-      if (this.nextBullet < time) {
+      if (nextBullet < time) {
         sounds.enemyFire();
-        if (this.bulletCount < 5 * this.difficulty) {
+        if (bulletCount < 5 * difficulty) {
           const [offsetX, offsetY] = [
             [28, 119],
             [42, 123],
@@ -1037,63 +978,52 @@ class Boss {
             [121, 80],
             [143, 50],
             [28, 119],
-          ][Math.floor(this.bulletCount / this.difficulty)];
+          ][Math.floor(bulletCount / difficulty)];
 
           // Side bullets
           newEntities.push(
-            new EnemyBullet(
-              this.x - offsetX,
-              this.y + offsetY,
-              this.x - offsetX,
-              this.y + offsetY + 100,
+            EnemyBullet(
+              x - offsetX,
+              y + offsetY,
+              x - offsetX,
+              y + offsetY + 100,
               0.5,
               time
             ),
-            new EnemyBullet(
-              this.x + offsetX,
-              this.y + offsetY,
-              this.x + offsetX,
-              this.y + offsetY + 100,
+            EnemyBullet(
+              x + offsetX,
+              y + offsetY,
+              x + offsetX,
+              y + offsetY + 100,
               0.5,
               time
             )
           );
         } else {
           // Targeted bullets
-          newEntities.push(
-            new EnemyBullet(this.x, this.y + 125, x, y, 0.3, time)
-          );
+          newEntities.push(EnemyBullet(x, y + 125, shipX, shipY, 0.3, time));
         }
-        this.bulletCount++;
-        if (this.bulletCount >= 10 * this.difficulty) {
-          this.bulletCount = 0;
-          this.nextBullet = time + 800;
-        } else if (this.bulletCount > 5 * this.difficulty) {
-          this.nextBullet = time + 200;
-        } else if (this.bulletCount === 5 * this.difficulty) {
-          this.nextBullet = time + 800;
+        bulletCount++;
+        if (bulletCount >= 10 * difficulty) {
+          bulletCount = 0;
+          nextBullet = time + 800;
+        } else if (bulletCount > 5 * difficulty) {
+          nextBullet = time + 200;
+        } else if (bulletCount === 5 * difficulty) {
+          nextBullet = time + 800;
         } else {
           // this.bulletCount < 5 * this.level
-          if (this.bulletCount % this.difficulty) {
-            this.nextBullet = time + 180;
+          if (bulletCount % difficulty) {
+            nextBullet = time + 180;
           } else {
-            this.nextBullet = time + 500;
+            nextBullet = time + 500;
           }
         }
-        return true;
       }
     }
 
-    return true;
-  }
-
-  hit(power, now) {
-    this.hitTime = now;
-    this.health -= power;
-    if (this.health > 0) {
-      sounds.enemyHit();
-    }
-  }
+    return checkHit;
+  };
 }
 
 let entities;
@@ -1136,45 +1066,45 @@ function gameRender(now) {
       const distance =
         toTravel / ((keyUp || keyDown) && (keyLeft || keyRight) ? 2 ** 0.5 : 1);
       if (keyUp) {
-        y -= distance;
+        shipY -= distance;
       }
       if (keyDown) {
-        y += distance;
+        shipY += distance;
       }
       if (keyLeft) {
-        x -= distance;
+        shipX -= distance;
       }
       if (keyRight) {
-        x += distance;
+        shipX += distance;
       }
       // We don't want to move to the pointer position unless it's updated
-      move_x = x;
-      move_y = y;
+      move_x = shipX;
+      move_y = shipY;
     } else {
       // Move ship with pointer
-      const vx = move_x - x,
-        vy = move_y - y;
+      const vx = move_x - shipX,
+        vy = move_y - shipY;
       const distance = Math.hypot(vx, vy);
 
       if (distance < toTravel) {
-        x = move_x;
-        y = move_y;
+        shipX = move_x;
+        shipY = move_y;
       } else {
-        x += (vx / distance) * toTravel;
-        y += (vy / distance) * toTravel;
+        shipX += (vx / distance) * toTravel;
+        shipY += (vy / distance) * toTravel;
       }
     }
-    if (x < halfShipWidth) {
-      x = halfShipWidth;
-    } else if (x > CANVAS_WIDTH - halfShipWidth) {
-      x = CANVAS_WIDTH - halfShipWidth;
+    if (shipX < halfShipWidth) {
+      shipX = halfShipWidth;
+    } else if (shipX > CANVAS_WIDTH - halfShipWidth) {
+      shipX = CANVAS_WIDTH - halfShipWidth;
     }
-    if (y < halfShipHeight) {
-      y = halfShipHeight;
-    } else if (y > CANVAS_HEIGHT - halfShipHeight) {
-      y = CANVAS_HEIGHT - halfShipHeight;
+    if (shipY < halfShipHeight) {
+      shipY = halfShipHeight;
+    } else if (shipY > CANVAS_HEIGHT - halfShipHeight) {
+      shipY = CANVAS_HEIGHT - halfShipHeight;
     }
-    shipHitBox = [x, y, shipWidth, shipHeight, shipMask];
+    shipHitBox = [shipX, shipY, shipWidth, shipHeight, shipMask];
   }
 
   // Reset canvas
@@ -1189,7 +1119,7 @@ function gameRender(now) {
       fillCircle(
         gameCtx,
         Math.floor(
-          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (x - halfShipWidth)) /
+          ((100 - i) * (CANVAS_WIDTH - STARS_WIDTH) * (shipX - halfShipWidth)) /
             (100 * (CANVAS_WIDTH - shipWidth))
         ) +
           ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
@@ -1208,15 +1138,15 @@ function gameRender(now) {
     nextHitables = [];
   function runEntity(entity) {
     const newEntities = [];
-    const result = entity.run(gameEllapsed, newEntities);
+    const result = entity(gameEllapsed, newEntities);
     if (result) {
-      if (entity.alwaysOnTop) {
-        alwaysOnTop.push(entity);
-      } else {
+      if (result - 2) {
         nextEntities.push(entity);
+      } else {
+        alwaysOnTop.push(entity);
       }
-      if (entity.hit) {
-        nextHitables.push(entity);
+      if (result.call) {
+        nextHitables.push(result);
       }
     }
     newEntities.map(runEntity);
@@ -1228,15 +1158,15 @@ function gameRender(now) {
     gameOverTime = gameEllapsed;
     // add shards
     destroyedShipSprites
-      .map((sprite) => {
-        return new Shard(
+      .map((sprite) =>
+        Shard(
           generateSpriteFinalState(sprite, shipWidth, shipHeight),
-          x - halfShipWidth,
-          y - halfShipHeight,
+          shipX - halfShipWidth,
+          shipY - halfShipHeight,
           PLAYER_EXPLOSION_DURATION,
           gameEllapsed
-        );
-      })
+        )
+      )
       .map(runEntity);
   }
 
@@ -1253,12 +1183,12 @@ function gameRender(now) {
       // Paint shield
       gameCtx.drawImage(
         shieldCanvas,
-        x - shieldCanvas.width / 2,
-        y - shieldCanvas.height / 2
+        shipX - shieldCanvas.width / 2,
+        shipY - shieldCanvas.height / 2
       );
     }
     // Paint ship
-    gameCtx.drawImage(ship, x - halfShipWidth, y - halfShipHeight);
+    gameCtx.drawImage(ship, shipX - halfShipWidth, shipY - halfShipHeight);
   } else {
     // Paint game over
     gameCtxWrap(() => {
@@ -1288,9 +1218,9 @@ function gameRender(now) {
   if (!shipDestroyed && lastBullet + (isFastFire ? 100 : 200) < gameEllapsed) {
     bulletOffset = -bulletOffset;
     entities.push(
-      new Bullet(
-        x + (isFastFire ? bulletOffset : 0),
-        y - Math.floor(shipHeight / 2),
+      Bullet(
+        shipX + (isFastFire ? bulletOffset : 0),
+        shipY - Math.floor(shipHeight / 2),
         gameEllapsed
       )
     );
@@ -1303,14 +1233,14 @@ function gameRender(now) {
       nextDifficulty = gameEllapsed + 10000;
     } else {
       bossTime = true;
-      entities.push(new Boss(Math.floor(difficulty / 5), gameEllapsed));
+      entities.push(Boss(Math.floor(difficulty / 5), gameEllapsed));
     }
   }
 
   // Should we spawn powerup
   if (nextPowerup < gameEllapsed && !bossTime) {
     entities.push(
-      new Powerup(
+      Powerup(
         powerupRandomizer.si(30, CANVAS_WIDTH - 30),
         Math.floor(-powerupCanvas.height / 2),
         // Increasing it here to optimize for size
@@ -1330,7 +1260,7 @@ function gameRender(now) {
     );
 
     entities.push(
-      new Enemy(
+      Enemy(
         enemyBlueprints[enemyDifficulty],
         enemyRandomizer.si(30, CANVAS_WIDTH - 30),
         (enemyDifficulty + 1) * 50,
