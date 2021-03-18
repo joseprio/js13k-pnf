@@ -20,8 +20,6 @@ import {
 } from "./utils";
 import * as sounds from "./sounds";
 
-const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
-
 function gameCtxWrap(wrappedFunc) {
   gameCtx.save();
   wrappedFunc();
@@ -184,6 +182,12 @@ const HALF_CANVAS_WIDTH = Math.floor(CANVAS_WIDTH / 2);
 const HALF_CANVAS_HEIGHT = Math.floor(CANVAS_HEIGHT / 2);
 const SHIP_SPEED = 0.6;
 const STARS_WIDTH = 540;
+const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
+const ENEMY_EXPLOSION_DURATION = 500;
+const BOSS_EXPLOSION_DURATION = 500;
+const PLAYER_EXPLOSION_DURATION = 1500;
+const BULLET_SPEED = 20;
+const BULLET_POWER = 10;
 
 const gameCanvas = g;
 const gameCtx = gameCanvas.getContext("2d");
@@ -286,7 +290,7 @@ function generateEnemy(faction, seed, size, ...more) {
   const enemyShip = flipCanvas(
     generateShip(new Randomizer(faction), seed, size)
   );
-  return [enemyShip, undefined, undefined, undefined, ...more];
+  return [enemyShip, 0, 0, 0, ...more];
 }
 
 function generateEnemyAssets(enemyBlueprint) {
@@ -615,9 +619,6 @@ function Powerup(x, y, powerupType, lastTime) {
   };
 }
 
-const BULLET_SPEED = 20;
-const BULLET_POWER = 10;
-
 function Bullet(x, y, lastTime) {
   return function (time) {
     y -= (BULLET_SPEED * (time - lastTime)) / 32;
@@ -639,10 +640,6 @@ function Bullet(x, y, lastTime) {
     return true;
   };
 }
-
-const ENEMY_EXPLOSION_DURATION = 500;
-const BOSS_EXPLOSION_DURATION = 500;
-const PLAYER_EXPLOSION_DURATION = 1500;
 
 function Shard(sprite, shipX, shipY, explosionDuration, creation) {
   return function (time) {
