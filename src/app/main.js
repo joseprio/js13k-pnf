@@ -479,16 +479,14 @@ function introRender(now) {
         generateEnemy(enemyDefinitions[enemyBlueprints.length])
       );
     } else {
-      let generatedAllAssets = true;
-      for (let c = 0; generatedAllAssets && c < enemyBlueprints.length; c++) {
+      for (let c = 0; c < enemyBlueprints.length; c++) {
         if (!enemyBlueprints[c][1]) {
-          generatedAllAssets = false;
           generateEnemyAssets(enemyBlueprints[c]);
+          // This is quite hacky and fragile, but efficient for size
+          return;
         }
       }
-      if (generatedAllAssets) {
-        state = STATE_INTRO;
-      }
+      state = STATE_INTRO;
     }
   }
 }
