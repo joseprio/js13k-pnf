@@ -286,7 +286,7 @@ function generateBoss() {
   bossMask = obtainImageData(bossShip).data;
 }
 
-function generateEnemy(faction, seed, size, ...more) {
+function generateEnemy([faction, seed, size, ...more]) {
   const enemyShip = flipCanvas(
     generateShip(new Randomizer(faction), seed, size)
   );
@@ -476,7 +476,7 @@ function introRender(now) {
       generateBoss();
     } else if (enemyBlueprints.length < enemyDefinitions.length) {
       enemyBlueprints.push(
-        generateEnemy(...enemyDefinitions[enemyBlueprints.length])
+        generateEnemy(enemyDefinitions[enemyBlueprints.length])
       );
     } else {
       let generatedAllAssets = true;
