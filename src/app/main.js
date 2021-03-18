@@ -242,7 +242,7 @@ let score;
 let scoreText;
 let state = STATE_LOADING;
 
-let highlightHighscore = -1;
+let highlightHighscore;
 
 // Create favicon
 createFavicon(ship);
@@ -258,16 +258,16 @@ function updateNextEnemy() {
 }
 
 function updateHighscores() {
+  const newScore = [score, Date.now()];
   if (score) {
-    const newScore = [score, Date.now()];
     highscores.push(newScore);
     // Sort by score
     highscores.sort((a, b) => b[0] - a[0] || b[1] - a[1]);
     // Only keep the top 5
     highscores.length = Math.min(highscores.length, 5);
-    highlightHighscore = highscores.indexOf(newScore);
     self.localStorage["pnf_highscores"] = JSON.stringify(highscores);
   }
+  highlightHighscore = highscores.indexOf(newScore);
 }
 
 let bossShip;
