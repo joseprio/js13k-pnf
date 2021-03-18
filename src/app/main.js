@@ -390,7 +390,6 @@ function newGame() {
   move_y = shipY = Math.floor(CANVAS_HEIGHT * 0.9);
   shieldLevel = 1;
   bossTime = false;
-  highlightHighscore = -1;
 }
 
 function introRender(now) {
