@@ -229,7 +229,7 @@ let touch_previous_x,
   keysPressed = [],
   anyKeyPressed = false;
 
-let shipHitBox = [shipX, shipY, shipWidth, shipHeight, shipMask];
+let shipHitBox;
 let shipDestroyed;
 let gameOverTime;
 let fastFire;
