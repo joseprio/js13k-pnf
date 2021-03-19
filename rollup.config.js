@@ -20,16 +20,6 @@ export default {
   plugins: [
     html2({
       template: "src/index.html",
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-        removeOptionalTags: true,
-        removeRedundantAttributes: true,
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        useShortDoctype: false,
-        minifyCSS: true,
-      },
     }),
     resolve(),
     production &&
