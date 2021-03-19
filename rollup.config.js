@@ -13,7 +13,7 @@ export default {
   input: "src/index.js",
   output: {
     file: "dist/bundle.js",
-    format: "iife", // immediately-invoked function expression — suitable for <script> tags
+    format: "cjs",
     preferConst: true,
     sourcemap: false,
   },
