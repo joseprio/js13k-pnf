@@ -214,7 +214,7 @@ const [powerupCanvas, powerupMask] = generatePowerupCanvas();
 const STATE_LOADING = 0,
   STATE_INTRO = 1,
   STATE_GAME = 2;
-const highscores = JSON.parse(self.localStorage["pnf_highscores"] || 0) || [];
+const highscores = JSON.parse(localStorage["pnf_highscores"] || 0) || [];
 const newTag = generateNewTag();
 
 let pointer_down = false;
@@ -265,7 +265,7 @@ function updateHighscores() {
     highscores.sort((a, b) => b[0] - a[0] || b[1] - a[1]);
     // Only keep the top 5
     highscores.length = Math.min(highscores.length, 5);
-    self.localStorage["pnf_highscores"] = JSON.stringify(highscores);
+    localStorage["pnf_highscores"] = JSON.stringify(highscores);
   }
   highlightHighscore = highscores.indexOf(newScore);
 }
