@@ -380,8 +380,7 @@ function newGame() {
   nextPowerup = POWERUP_INTERVAL;
   entities = [];
   hitables = [];
-  initialTime = performance.now();
-  lastTime = performance.now();
+  lastTime = initialTime = performance.now();
   addScore(
     (difficulty = powerupIndex = lastBullet = bombEffect = fastFire = score = 0)
   );
