@@ -525,8 +525,7 @@ function collide(o1, o2) {
       }
     }
   }
-
-  return false;
+  // Implicitly returns undefined, which is falsy
 }
 
 function hitShip() {
