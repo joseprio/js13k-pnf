@@ -582,11 +582,13 @@ function Powerup(x, y, powerupType, lastTime) {
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
       powerupDefinitions[powerupType][2](time);
-      return false;
+      // Returning undefined is falsy
+      return;
     }
 
     if (y - Math.floor(powerupCanvas.height / 2) > CANVAS_HEIGHT) {
-      return false;
+      // Returning undefined is falsy
+      return;
     }
     lastTime = time;
     gameCtxWrap(() => {
@@ -623,12 +625,14 @@ function Bullet(x, y, lastTime) {
     for (let c = 0; c < hitables.length; c++) {
       if (hitables[c](hitBox, BULLET_POWER, time)) {
         // We're done, get rid of bullet
-        return false;
+        // Returning undefined is falsy
+        return;
       }
     }
 
     if (y + bullet.height / 2 < 0) {
-      return false;
+      // Returning undefined is falsy
+      return;
     }
     lastTime = time;
     gameCtx.drawImage(bullet, x - bullet.width / 2, y - bullet.height / 2);
@@ -641,7 +645,8 @@ function Shard(sprite, shipX, shipY, explosionDuration, creation) {
     const progress = (time - creation) / explosionDuration;
     if (progress > 1) {
       // Explosion is over
-      return false;
+      // Returning undefined is falsy
+      return;
     }
     gameCtxWrap(() => {
       gameCtx.globalAlpha = 1 - progress ** 2;
@@ -671,7 +676,8 @@ function EnemyBullet(x, y, destinationX, destinationY, s, lastTime) {
   return function (time) {
     // Destroy bullets if bomb time
     if (bombEffect > time) {
-      return false;
+      // Returning undefined is falsy
+      return;
     }
     const ellapsed = time - lastTime;
     y += ellapsed * s * yFactor;
@@ -681,7 +687,8 @@ function EnemyBullet(x, y, destinationX, destinationY, s, lastTime) {
     if (collide(shipHitBox, [x, y, w, h, enemyBulletMask])) {
       hitShip();
       if (!shipDestroyed) {
-        return false;
+        // Returning undefined is falsy
+        return;
       }
     }
 
@@ -692,7 +699,8 @@ function EnemyBullet(x, y, destinationX, destinationY, s, lastTime) {
       x - w / 2 > CANVAS_WIDTH ||
       x + w / 2 < 0
     ) {
-      return false;
+      // Returning undefined is falsy
+      return;
     }
 
     lastTime = time;
@@ -800,12 +808,14 @@ function Enemy(
           )
         )
       );
-      return false;
+      // Returning undefined is falsy
+      return;
     }
 
     // Make it disappear after it leaves the screen
     if (y - h / 2 > CANVAS_HEIGHT) {
-      return false;
+      // Returning undefined is falsy
+      return;
     }
 
     lastTime = time;
@@ -936,7 +946,8 @@ function Boss(difficulty, time) {
           )
         )
       );
-      return false;
+      // Returning undefined is falsy
+      return;
     }
 
     // Update hit box
