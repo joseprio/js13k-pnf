@@ -13,17 +13,34 @@ import {
 } from "./voronoi";
 import {
   trimCanvas,
-  createFavicon,
   createCanvas,
   obtainImageData,
   fillCircle,
-} from "./utils";
+} from "canvas-utils";
 import * as sounds from "./sounds";
 
 function gameCtxWrap(wrappedFunc) {
   gameCtx.save();
   wrappedFunc();
   gameCtx.restore();
+}
+
+function createFavicon(img) {
+  const favicon = createCanvas(32, 32);
+  const favCtx = favicon.getContext("2d");
+  let destWidth = 32,
+    destHeight = 32;
+  if (img.width > img.height) {
+    destHeight *= img.height / img.width;
+  } else {
+    destWidth *= img.width / img.height;
+  }
+  favCtx.drawImage(img, 0, 0, destWidth, destHeight);
+
+  const link = document.createElement("link");
+  link.setAttribute("rel", "icon");
+  link.setAttribute("href", favicon.toDataURL());
+  document.head.appendChild(link);
 }
 
 function hitEffect(canvas) {

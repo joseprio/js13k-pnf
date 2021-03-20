@@ -1,4 +1,4 @@
-import { createCanvas, obtainImageData } from "./utils";
+import { createCanvas, obtainImageData } from "canvas-utils";
 
 const MAX_ANGLE = 360;
 
