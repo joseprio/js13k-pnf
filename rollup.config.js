@@ -9,6 +9,13 @@ import compiler from "@ampproject/rollup-plugin-closure-compiler";
 const production = !process.env.ROLLUP_WATCH;
 const useClosureCompiler = process.env.CLOSURE_COMPILER;
 
+// Should be safe enough; saves ~60 bytes
+const transformConstToLet = {
+  renderChunk(chunk) {
+    return chunk.replace(/\bconst\b/g, "let");
+  },
+};
+
 export default {
   input: "src/index.js",
   output: {
@@ -22,6 +29,7 @@ export default {
       template: "src/index.html",
     }),
     resolve(),
+    transformConstToLet,
     production &&
       !useClosureCompiler &&
       terser({
