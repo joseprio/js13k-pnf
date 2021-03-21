@@ -2,7 +2,7 @@ import { createCanvas, obtainImageData } from "canvas-utils";
 
 const MAX_ANGLE = 360;
 
-function createSplitPoints(width, height, targetSize) {
+function createCollectors(width, height, targetSize) {
   const xPoints = Math.floor(width / targetSize);
   const yPoints = Math.floor(height / targetSize);
   const result = [];
@@ -13,8 +13,13 @@ function createSplitPoints(width, height, targetSize) {
     for (let currentX = 0; currentX < xPoints - (currentY % 2); currentX++) {
       // We add some noise so all pieces look different
       result.push([
+        1e9,
+        1e9,
+        0,
+        0,
         xOffset + ((currentX + (Math.random() - 0.5)) * width) / xPoints,
         yOffset + ((currentY + (Math.random() - 0.5)) * height) / yPoints,
+        [],
       ]);
     }
   }
@@ -40,7 +45,7 @@ export const SPRITE_TRANSLATE_Y = 6;
 export const SPRITE_ANGLE = 7;
 
 export function createSprites(targetCanvas) {
-  const splitPoints = createSplitPoints(
+  const collectors = createCollectors(
     targetCanvas.width,
     targetCanvas.height,
     Math.max(
@@ -51,8 +56,6 @@ export function createSprites(targetCanvas) {
   const width = targetCanvas.width,
     height = targetCanvas.height;
   const imageData = obtainImageData(targetCanvas);
-  // Assigning extreme values so we know they'll be overriden
-  const collectors = splitPoints.map((p) => [1e9, 1e9, 0, 0, ...p, []]);
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const pos = (y * width + x) * 4;
@@ -61,10 +64,10 @@ export function createSprites(targetCanvas) {
         // With the size of the images we are working, 1,000,000,000 behaves the same as infinity
         let minDistance = 1e9;
         let minCollector;
-        for (let i = 0; i < splitPoints.length; i++) {
+        for (let i = 0; i < collectors.length; i++) {
           const distance = Math.hypot(
-            splitPoints[i][0] - x,
-            splitPoints[i][1] - y
+            collectors[i][COLLECTOR_CENTER_X] - x,
+            collectors[i][COLLECTOR_CENTER_Y] - y
           );
           if (distance < minDistance) {
             minDistance = distance;
