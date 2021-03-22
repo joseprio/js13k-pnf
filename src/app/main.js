@@ -16,6 +16,7 @@ import {
   createCanvas,
   obtainImageData,
   fillCircle,
+  getContext,
 } from "canvas-utils";
 import * as sounds from "./sounds";
 
@@ -26,8 +27,7 @@ function gameCtxWrap(wrappedFunc) {
 }
 
 function createFavicon(img) {
-  const favicon = createCanvas(32, 32);
-  const favCtx = favicon.getContext("2d");
+  const [favicon, favCtx] = createCanvas(32, 32);
   let destWidth = 32,
     destHeight = 32;
   if (img.width > img.height) {
@@ -44,26 +44,28 @@ function createFavicon(img) {
 }
 
 function hitEffect(canvas) {
-  const destCanvas = createCanvas(canvas.width, canvas.height);
+  const [destCanvas, destCtx] = createCanvas(canvas.width, canvas.height);
   const imageData = obtainImageData(canvas);
   const data = imageData.data;
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i + 0];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    data[i + 0] = 255 - (0.393 * r + 0.769 * g + 0.189 * b);
-    data[i + 1] = 255 - (0.349 * r + 0.686 * g + 0.168 * b);
-    data[i + 2] = 255 - (0.272 * r + 0.534 * g + 0.131 * b);
+  for (let c = 0; c < data.length; c += 4) {
+    const r = data[c + 0];
+    const g = data[c + 1];
+    const b = data[c + 2];
+    data[c + 0] = 255 - (0.393 * r + 0.769 * g + 0.189 * b);
+    data[c + 1] = 255 - (0.349 * r + 0.686 * g + 0.168 * b);
+    data[c + 2] = 255 - (0.272 * r + 0.534 * g + 0.131 * b);
   }
-  destCanvas.getContext("2d").putImageData(imageData, 0, 0);
+  destCtx.putImageData(imageData, 0, 0);
   return destCanvas;
 }
 
 function generateShields() {
   const phases = [ship];
   for (let c = 0; c < 10; c++) {
-    const shieldPhase = createCanvas(shipWidth * 2, shipHeight * 2);
-    const shieldPhaseCtx = shieldPhase.getContext("2d");
+    const [shieldPhase, shieldPhaseCtx] = createCanvas(
+      shipWidth * 2,
+      shipHeight * 2
+    );
 
     for (let offsetY = 0; offsetY < 3; offsetY++) {
       for (let offsetX = 0; offsetX < 3; offsetX++) {
@@ -89,7 +91,7 @@ function generateShields() {
   // Remove original ship from processing
   phases.pop();
   phases.map((phase) => {
-    const phaseCtx = phase.getContext("2d");
+    const phaseCtx = getContext(phase);
     phaseCtx.globalCompositeOperation = "destination-out";
     phaseCtx.globalAlpha = 0.2;
     for (let c = 5; c < 10; c++) {
@@ -105,8 +107,7 @@ function generateShields() {
 }
 
 function generateBullet() {
-  const canvas = createCanvas(20, 60);
-  const ctx = canvas.getContext("2d");
+  const [canvas, ctx] = createCanvas(20, 60);
   // gold filled rect
   ctx.fillStyle = "#ff0";
   ctx.beginPath();
@@ -136,8 +137,7 @@ function generateBullet() {
 }
 
 function generateEnemyBulletFrame(colorStop) {
-  const canvas = createCanvas(20, 20);
-  const ctx = canvas.getContext("2d");
+  const [canvas, ctx] = createCanvas(20, 20);
   const grd = ctx.createRadialGradient(10, 10, 0, 10, 10, 10);
   grd.addColorStop(colorStop, "#ff0");
   grd.addColorStop(1, "#f00");
@@ -157,8 +157,7 @@ function generateEnemyBullet() {
 }
 
 function generatePowerupCanvas() {
-  const canvas = createCanvas(60, 60);
-  const ctx = canvas.getContext("2d");
+  const [canvas, ctx] = createCanvas(60, 60);
   const grd = ctx.createRadialGradient(30, 30, 0, 30, 30, 30);
   grd.addColorStop(0.6, "#008");
   grd.addColorStop(1, "#00f");
@@ -168,16 +167,14 @@ function generatePowerupCanvas() {
 }
 
 function flipCanvas(canvas) {
-  const flippedCanvas = createCanvas(canvas.width, canvas.height);
-  const ctx = flippedCanvas.getContext("2d");
+  const [flippedCanvas, ctx] = createCanvas(canvas.width, canvas.height);
   ctx.scale(1, -1);
   ctx.drawImage(canvas, 0, 0, canvas.width, -canvas.height);
   return flippedCanvas;
 }
 
 function generateNewTag() {
-  const canvas = createCanvas(100, 100);
-  const ctx = canvas.getContext("2d");
+  const [canvas, ctx] = createCanvas(100, 100);
   ctx.font = "bold 20px Helvetica";
   ctx.translate(50, 50);
   ctx.rotate(-Math.PI / 2);
@@ -185,8 +182,10 @@ function generateNewTag() {
   ctx.textAlign = "center";
   ctx.fillText("NEW!", 0, 0);
   trimCanvas(canvas);
-  const tagCanvas = createCanvas(canvas.width + 10, canvas.height + 10);
-  const tagCtx = tagCanvas.getContext("2d");
+  const [tagCanvas, tagCtx] = createCanvas(
+    canvas.width + 10,
+    canvas.height + 10
+  );
   tagCtx.fillStyle = "#f00";
   tagCtx.fillRect(0, 0, tagCanvas.width, tagCanvas.height);
   tagCtx.drawImage(canvas, 5, 5);
@@ -207,7 +206,7 @@ const BULLET_SPEED = 20;
 const BULLET_POWER = 10;
 
 const gameCanvas = g;
-const gameCtx = gameCanvas.getContext("2d");
+const gameCtx = getContext(gameCanvas);
 const faction = new Randomizer("piBbgDn4CZqlkqiF");
 const ship = trimCanvas(generateShip(faction, "ie7jMyCFouoUjkVs", 60));
 const destroyedShipSprites = createSprites(ship);
