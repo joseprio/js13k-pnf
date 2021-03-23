@@ -1202,8 +1202,8 @@ function gameRender(now) {
       // Paint shield
       gameCtx.drawImage(
         shieldCanvas,
-        shipX - shieldCanvas.width / 2,
-        shipY - shieldCanvas.height / 2
+        shipX - Math.floor(shieldCanvas.width / 2),
+        shipY - Math.floor(shieldCanvas.height / 2)
       );
     }
     // Paint ship
