@@ -17,7 +17,7 @@ import {
   obtainImageData,
   fillCircle,
   getContext,
-} from "canvas-utils";
+} from "game-utils";
 import * as sounds from "./sounds";
 
 function gameCtxWrap(wrappedFunc) {
