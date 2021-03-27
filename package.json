@@ -22,7 +22,7 @@
     "zzfx-minifier": "joseprio/zzfx-minifier"
   },
   "dependencies": {
-    "canvas-utils": "joseprio/canvas-utils",
+    "game-utils": "joseprio/game-utils",
     "starshipwright": "1.0.1"
   }
 }
