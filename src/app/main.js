@@ -175,7 +175,7 @@ function flipCanvas(canvas) {
 
 function generateNewTag() {
   const [canvas, ctx] = createCanvas(100, 100);
-  ctx.font = "bold 20px Helvetica";
+  ctx.font = "bold 20px Arial";
   ctx.translate(50, 50);
   ctx.rotate(-Math.PI / 2);
   ctx.fillStyle = "#fff";
@@ -451,13 +451,13 @@ function introRender(now) {
           }
           const score = Intl.NumberFormat().format(highscores[c][0]);
           const time = new Date(highscores[c][1]).toLocaleString();
-          gameCtx.font = "50px Helvetica";
+          gameCtx.font = "50px Arial";
           gameCtx.fillText(c + 1, 115, 160 + 80 * c);
-          gameCtx.font = "60px Helvetica";
+          gameCtx.font = "60px Arial";
           gameCtx.fillText("{", 145, 150 + 80 * c);
-          gameCtx.font = "25px Helvetica";
+          gameCtx.font = "25px Arial";
           gameCtx.fillText(score + " points", 170, 160 + 80 * c);
-          gameCtx.font = "15px Helvetica";
+          gameCtx.font = "15px Arial";
           gameCtx.fillText(time, 170, 190 + 80 * c);
         }
       });
@@ -468,7 +468,7 @@ function introRender(now) {
         HALF_CANVAS_HEIGHT
       );
     }
-    gameCtx.font = "20px Helvetica";
+    gameCtx.font = "20px Arial";
     gameCtx.fillText(
       "<Press anywhere or any key to play>",
       HALF_CANVAS_WIDTH,
@@ -484,7 +484,7 @@ function introRender(now) {
       introInhibitPress = false;
     }
   } else {
-    gameCtx.font = "italic 30px Helvetica";
+    gameCtx.font = "italic 30px Arial";
     gameCtx.fillText("Loading\u2026", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     // Generate assets
     if (!bossShip) {
@@ -556,14 +556,14 @@ function hitShip() {
 
 const powerupDefinitions = [
   [
-    "F",
+    "f",
     "#fa0",
     (time) => {
       fastFire = time + 6500;
     },
   ],
   [
-    "S",
+    "s",
     "#0ff",
     () => {
       sounds.shieldPowerup();
@@ -571,7 +571,7 @@ const powerupDefinitions = [
     },
   ],
   [
-    "B",
+    "b",
     "#f00",
     (time) => {
       sounds.explosion(1.5);
@@ -593,7 +593,7 @@ function Powerup(x, y, powerupType, lastTime) {
       powerupCanvas.height,
       powerupMask,
     ];
-    const textScale = 1.5 + Math.sin(time / 200) / 2;
+    const textScale = 25 * (1.5 + Math.sin(time / 200) / 2);
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
@@ -615,17 +615,10 @@ function Powerup(x, y, powerupType, lastTime) {
         -powerupCanvas.height / 2
       );
       gameCtx.textAlign = "center";
-      gameCtx.textBaseline = "top";
-      gameCtx.font = "700 " + Math.floor(textScale * 25) + "px Helvetica";
-      const measure = gameCtx.measureText(powerupDefinitions[powerupType][0]);
-      const textHeight =
-        measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
+      gameCtx.textBaseline = "middle";
+      gameCtx.font = "bold small-caps " + textScale + "px Arial";
       gameCtx.fillStyle = powerupDefinitions[powerupType][1];
-      gameCtx.fillText(
-        powerupDefinitions[powerupType][0],
-        0,
-        -Math.floor(textHeight / 2)
-      );
+      gameCtx.fillText(powerupDefinitions[powerupType][0], 0, 0);
     });
     // Return 2 for always on top
     return 2;
@@ -947,9 +940,8 @@ function Boss(difficulty, time) {
       // Restore game!
       bossTime = false;
       nextDifficulty = time + 10000;
-      nextEnemy = BOSS_EXPLOSION_DURATION + time;
+      nextPowerup = nextEnemy = BOSS_EXPLOSION_DURATION + time;
       updateNextEnemy();
-      nextPowerup = BOSS_EXPLOSION_DURATION + time;
 
       destroyedBossSprites.map((sprite) =>
         newEntities.push(
@@ -1213,7 +1205,7 @@ function gameRender(now) {
     gameCtxWrap(() => {
       gameCtx.globalAlpha = Math.min(1, (gameEllapsed - gameOverTime) / 2000);
       gameCtx.textBaseline = "middle";
-      gameCtx.font = "40px Helvetica";
+      gameCtx.font = "40px Arial";
       gameCtx.fillText("Game Over", HALF_CANVAS_WIDTH, HALF_CANVAS_HEIGHT);
     });
   }
@@ -1229,7 +1221,7 @@ function gameRender(now) {
 
   // Paint HUD
   gameCtx.textBaseline = "top";
-  gameCtx.font = "16px Helvetica";
+  gameCtx.font = "16px Arial";
   gameCtx.fillText(scoreText, HALF_CANVAS_WIDTH, 5);
 
   const isFastFire = fastFire > gameEllapsed;
