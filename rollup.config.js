@@ -16,6 +16,20 @@ const transformConstToLet = {
   },
 };
 
+// This could be used to shave 4 more bytes
+/*
+const patchMinified = {
+  renderChunk(chunk) {
+    let processedChunk = chunk.trim();
+    processedChunk = processedChunk.replace(/window\./g, "self.");
+    if (processedChunk.endsWith(";")) {
+      processedChunk = processedChunk.slice(0, -1);
+    }
+    return processedChunk;
+  },
+};
+*/
+
 export default {
   input: "src/index.js",
   output: {
@@ -66,6 +80,7 @@ export default {
       compiler({
         compilation_level: "ADVANCED",
       }),
+    //patchMinified,
     !production &&
       serve({
         open: true,
