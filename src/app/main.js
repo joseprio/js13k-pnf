@@ -593,7 +593,7 @@ function Powerup(x, y, powerupType, lastTime) {
       powerupCanvas.height,
       powerupMask,
     ];
-    const textScale = 25 * (1.5 + Math.sin(time / 200) / 2);
+    const textScale = 35 * (1.5 + Math.sin(time / 200) / 2);
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
@@ -616,7 +616,7 @@ function Powerup(x, y, powerupType, lastTime) {
       );
       gameCtx.textAlign = "center";
       gameCtx.textBaseline = "middle";
-      gameCtx.font = "bold small-caps " + textScale + "px Arial";
+      gameCtx.font = "bold " + textScale + "px Copperplate";
       gameCtx.fillStyle = powerupDefinitions[powerupType][1];
       gameCtx.fillText(powerupDefinitions[powerupType][0], 0, 0);
     });
