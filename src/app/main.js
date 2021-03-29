@@ -27,7 +27,7 @@ function gameCtxWrap(wrappedFunc) {
 }
 
 function createFavicon(img) {
-  const [favicon, favCtx] = createCanvas(32, 32);
+  const [canvas, ctx] = createCanvas(32, 32);
   let destWidth = 32,
     destHeight = 32;
   if (img.width > img.height) {
@@ -35,17 +35,17 @@ function createFavicon(img) {
   } else {
     destWidth *= img.width / img.height;
   }
-  favCtx.drawImage(img, 0, 0, destWidth, destHeight);
+  ctx.drawImage(img, 0, 0, destWidth, destHeight);
 
   const link = document.createElement("link");
   link.setAttribute("rel", "icon");
-  link.setAttribute("href", favicon.toDataURL());
+  link.setAttribute("href", canvas.toDataURL());
   document.head.appendChild(link);
 }
 
-function hitEffect(canvas) {
-  const [destCanvas, destCtx] = createCanvas(canvas.width, canvas.height);
-  const imageData = obtainImageData(canvas);
+function hitEffect(targetCanvas) {
+  const [canvas, ctx] = createCanvas(targetCanvas.width, targetCanvas.height);
+  const imageData = obtainImageData(targetCanvas);
   const data = imageData.data;
   for (let c = 0; c < data.length; c += 4) {
     const r = data[c + 0];
@@ -55,8 +55,8 @@ function hitEffect(canvas) {
     data[c + 1] = 255 - (0.349 * r + 0.686 * g + 0.168 * b);
     data[c + 2] = 255 - (0.272 * r + 0.534 * g + 0.131 * b);
   }
-  destCtx.putImageData(imageData, 0, 0);
-  return destCanvas;
+  ctx.putImageData(imageData, 0, 0);
+  return canvas;
 }
 
 function generateShields() {
@@ -166,15 +166,15 @@ function generatePowerupCanvas() {
   return [canvas, obtainImageData(canvas).data];
 }
 
-function flipCanvas(canvas) {
-  const [flippedCanvas, ctx] = createCanvas(canvas.width, canvas.height);
+function flipCanvas(targetCanvas) {
+  const [canvas, ctx] = createCanvas(targetCanvas.width, targetCanvas.height);
   ctx.scale(1, -1);
-  ctx.drawImage(canvas, 0, 0, canvas.width, -canvas.height);
-  return flippedCanvas;
+  ctx.drawImage(targetCanvas, 0, 0, targetCanvas.width, -targetCanvas.height);
+  return canvas;
 }
 
 function generateNewTag() {
-  const [canvas, ctx] = createCanvas(100, 100);
+  const [canvas, ctx] = createCanvas(99, 99);
   ctx.font = "bold 20px Arial";
   ctx.translate(50, 50);
   ctx.rotate(-Math.PI / 2);
@@ -554,25 +554,30 @@ function hitShip() {
   }
 }
 
+function createPowerupLetter(char, color) {
+  const [canvas, ctx] = createCanvas(99, 99);
+  ctx.font = "bold 40px Arial";
+  ctx.fillStyle = color;
+  ctx.fillText(char, 0, 50);
+  return trimCanvas(canvas);
+}
+
 const powerupDefinitions = [
   [
-    "F",
-    "#fa0",
+    createPowerupLetter("F", "#fa0"),
     (time) => {
       fastFire = time + 6500;
     },
   ],
   [
-    "S",
-    "#0ff",
+    createPowerupLetter("S", "#0ff"),
     () => {
       sounds.shieldPowerup();
       shieldLevel++;
     },
   ],
   [
-    "B",
-    "#f00",
+    createPowerupLetter("B", "#f00"),
     (time) => {
       sounds.explosion(1.5);
       // Bomb
@@ -593,11 +598,12 @@ function Powerup(x, y, powerupType, lastTime) {
       powerupCanvas.height,
       powerupMask,
     ];
-    const textScale = 25 * (1.5 + Math.sin(time / 200) / 2);
+    const scale = 0.75 + Math.sin(time / 200) / 4;
+    const letterCanvas = powerupDefinitions[powerupType][0];
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
-      powerupDefinitions[powerupType][2](time);
+      powerupDefinitions[powerupType][1](time);
       // Returning undefined is falsy
       return;
     }
@@ -614,11 +620,12 @@ function Powerup(x, y, powerupType, lastTime) {
         -powerupCanvas.width / 2,
         -powerupCanvas.height / 2
       );
-      gameCtx.textAlign = "center";
-      gameCtx.textBaseline = "middle";
-      gameCtx.font = "bold " + textScale + "px Copperplate";
-      gameCtx.fillStyle = powerupDefinitions[powerupType][1];
-      gameCtx.fillText(powerupDefinitions[powerupType][0], 0, 0);
+      gameCtx.scale(scale, scale);
+      gameCtx.drawImage(
+        letterCanvas,
+        -letterCanvas.width / 2,
+        -letterCanvas.height / 2
+      );
     });
     // Return 2 for always on top
     return 2;
