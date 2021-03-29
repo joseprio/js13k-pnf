@@ -556,14 +556,14 @@ function hitShip() {
 
 const powerupDefinitions = [
   [
-    "f",
+    "F",
     "#fa0",
     (time) => {
       fastFire = time + 6500;
     },
   ],
   [
-    "s",
+    "S",
     "#0ff",
     () => {
       sounds.shieldPowerup();
@@ -571,7 +571,7 @@ const powerupDefinitions = [
     },
   ],
   [
-    "b",
+    "B",
     "#f00",
     (time) => {
       sounds.explosion(1.5);
@@ -593,7 +593,7 @@ function Powerup(x, y, powerupType, lastTime) {
       powerupCanvas.height,
       powerupMask,
     ];
-    const textScale = 35 * (1.5 + Math.sin(time / 200) / 2);
+    const textScale = 25 * (1.5 + Math.sin(time / 200) / 2);
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
