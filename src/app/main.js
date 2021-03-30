@@ -475,7 +475,7 @@ function introRender(now) {
       CANVAS_HEIGHT - 30
     );
 
-    if (pointer_down || anyKeyPressed) {
+    if (pointer_down || anyKeyPressed || isGamepadButtonPressed(9)) {
       if (!introInhibitPress) {
         // Start game
         newGame();
@@ -1044,6 +1044,35 @@ function Boss(difficulty, time) {
   };
 }
 
+function getGamepads() {
+  return (navigator.getGamepads
+    ? Array.from(navigator.getGamepads())
+    : []
+  ).filter((x) => !!x);
+}
+
+function isGamepadButtonPressed(buttonIndex) {
+  const pads = getGamepads();
+  for (let i = 0; i < pads.length; i++) {
+    try {
+      if (pads[i].buttons[buttonIndex].pressed) {
+        return true;
+      }
+    } catch (e) {}
+  }
+}
+
+function gamepadAxisValue(axisIndex) {
+  const pads = getGamepads();
+  const sum = 0;
+  for (let i = 0; i < pads.length; i++) {
+    try {
+      sum += pads[i].axes[axisIndex];
+    } catch (e) {}
+  }
+  return Math.round(sum * 100) / 100;
+}
+
 let entities;
 let hitables;
 let lastBullet;
@@ -1073,28 +1102,30 @@ function gameRender(now) {
 
   if (!shipDestroyed) {
     // Check pressed keys
-    const toTravel = SHIP_SPEED * tickEllapsed,
-      keyUp = keysPressed[38] || keysPressed[90],
-      keyDown = keysPressed[40] || keysPressed[83],
-      keyLeft = keysPressed[37] || keysPressed[65],
-      keyRight = keysPressed[39] || keysPressed[68];
+    let toTravel = SHIP_SPEED * tickEllapsed,
+      axisX = gamepadAxisValue(0),
+      axisY = gamepadAxisValue(1);
+    if (keysPressed[38] || keysPressed[90] || isGamepadButtonPressed(12)) {
+      // Up
+      axisY--;
+    }
+    if (keysPressed[40] || keysPressed[83] || isGamepadButtonPressed(13)) {
+      // Down
+      axisY++;
+    }
+    if (keysPressed[37] || keysPressed[65] || isGamepadButtonPressed(14)) {
+      // Left
+      axisX--;
+    }
+    if (keysPressed[39] || keysPressed[68] || isGamepadButtonPressed(15)) {
+      // Right
+      axisX++;
+    }
 
-    // Digital input
-    if (keyUp || keyDown || keyLeft || keyRight) {
-      const distance =
-        toTravel / ((keyUp || keyDown) && (keyLeft || keyRight) ? 2 ** 0.5 : 1);
-      if (keyUp) {
-        shipY -= distance;
-      }
-      if (keyDown) {
-        shipY += distance;
-      }
-      if (keyLeft) {
-        shipX -= distance;
-      }
-      if (keyRight) {
-        shipX += distance;
-      }
+    if (axisX || axisY) {
+      const divider = Math.max(Math.hypot(axisX, axisY), 1);
+      shipX += (toTravel * axisX) / divider;
+      shipY += (toTravel * axisY) / divider;
       // We don't want to move to the pointer position unless it's updated
       move_x = shipX;
       move_y = shipY;
