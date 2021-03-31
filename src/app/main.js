@@ -202,7 +202,7 @@ const STAR_COLORS = ["#9af", "#abf", "#ccf", "#fef", "#fee", "#fc9", "#fc6"];
 const ENEMY_EXPLOSION_DURATION = 500;
 const BOSS_EXPLOSION_DURATION = 500;
 const PLAYER_EXPLOSION_DURATION = 1500;
-const BULLET_SPEED = 20;
+const BULLET_SPEED = 5 / 8;
 const BULLET_POWER = 10;
 
 const gameCanvas = g;
@@ -630,7 +630,7 @@ function Powerup(x, y, powerupType, lastTime) {
 
 function Bullet(x, y, lastTime) {
   return function (time) {
-    y -= (BULLET_SPEED * (time - lastTime)) / 32;
+    y -= BULLET_SPEED * (time - lastTime);
 
     const hitBox = [x, y, bullet.width, bullet.height, bulletMask];
     // Check collision with hitables
