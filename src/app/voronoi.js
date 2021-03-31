@@ -1,7 +1,5 @@
 import { createCanvas, obtainImageData } from "game-utils";
 
-const MAX_ANGLE = 360;
-
 // TODO: TS const enum
 const COLLECTOR_MIN_X = 0;
 const COLLECTOR_MIN_Y = 1;
@@ -137,7 +135,6 @@ export function generateSpriteFinalState(sprite, width, height) {
     (finalDistance - distance) *
       (1 - cx ** 2 / distanceSquare) ** 0.5 *
       (cy > 0 ? 1 : -1),
-    (Math.random() * MAX_ANGLE * 2 - MAX_ANGLE * Math.PI) /
-      ((Math.random() + 2) * sprite[SPRITE_CANVAS].width * 18),
+    (Math.random() - 0.5) * 3,
   ];
 }
