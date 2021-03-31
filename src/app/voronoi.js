@@ -64,16 +64,16 @@ export function createSprites(targetCanvas) {
         // With the size of the images we are working, 1,000,000,000 behaves the same as infinity
         let minDistance = 1e9;
         let minCollector;
-        for (let c = 0; c < collectors.length; c++) {
+        collectors.map((c) => {
           const distance = Math.hypot(
-            collectors[c][COLLECTOR_CENTER_X] - x,
-            collectors[c][COLLECTOR_CENTER_Y] - y
+            c[COLLECTOR_CENTER_X] - x,
+            c[COLLECTOR_CENTER_Y] - y
           );
           if (distance < minDistance) {
             minDistance = distance;
-            minCollector = collectors[c];
+            minCollector = c;
           }
-        }
+        });
 
         minCollector[COLLECTOR_MIN_X] = Math.min(
           x,
@@ -95,10 +95,7 @@ export function createSprites(targetCanvas) {
         minCollector[COLLECTOR_NEAREST].push([
           x,
           y,
-          imageData.data[pos + 0],
-          imageData.data[pos + 1],
-          imageData.data[pos + 2],
-          imageData.data[pos + 3],
+          imageData.data.slice(pos, pos + 4),
         ]);
       }
     }
@@ -117,10 +114,7 @@ export function createSprites(targetCanvas) {
           4 *
           ((point[1] - collector[COLLECTOR_MIN_Y]) * shardWidth +
             (point[0] - collector[COLLECTOR_MIN_X]));
-        imgData.data[pos + 0] = point[2];
-        imgData.data[pos + 1] = point[3];
-        imgData.data[pos + 2] = point[4];
-        imgData.data[pos + 3] = point[5];
+        imgData.data.set(point[2], pos);
       });
       shardCtx.putImageData(imgData, 0, 0);
       sprites.push([

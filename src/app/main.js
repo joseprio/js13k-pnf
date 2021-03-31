@@ -646,39 +646,40 @@ function Bullet(x, y, lastTime) {
       }
     }
 
-    if (y + bullet.height / 2 < 0) {
-      // Returning undefined is falsy
-      return;
+    if (y + bullet.height / 2 > 0) {
+      lastTime = time;
+      gameCtx.drawImage(bullet, x - bullet.width / 2, y - bullet.height / 2);
+      return true;
     }
-    lastTime = time;
-    gameCtx.drawImage(bullet, x - bullet.width / 2, y - bullet.height / 2);
-    return true;
+    // Returning undefined is falsy
   };
 }
 
 function Shard(sprite, shipX, shipY, explosionDuration, creation) {
   return function (time) {
     const progress = (time - creation) / explosionDuration;
-    if (progress > 1) {
-      // Explosion is over
-      // Returning undefined is falsy
-      return;
-    }
-    gameCtxWrap(() => {
-      gameCtx.globalAlpha = 1 - progress ** 2;
-      gameCtx.translate(
-        shipX + sprite[SPRITE_CENTER_X] + sprite[SPRITE_TRANSLATE_X] * progress,
-        shipY + sprite[SPRITE_CENTER_Y] + sprite[SPRITE_TRANSLATE_Y] * progress
-      );
-      gameCtx.rotate(sprite[SPRITE_ANGLE] * progress);
-      gameCtx.drawImage(
-        sprite[SPRITE_CANVAS],
-        sprite[SPRITE_OFFSET_X],
-        sprite[SPRITE_OFFSET_Y]
-      );
-    });
+    if (progress < 1) {
+      gameCtxWrap(() => {
+        gameCtx.globalAlpha = 1 - progress ** 2;
+        gameCtx.translate(
+          shipX +
+            sprite[SPRITE_CENTER_X] +
+            sprite[SPRITE_TRANSLATE_X] * progress,
+          shipY +
+            sprite[SPRITE_CENTER_Y] +
+            sprite[SPRITE_TRANSLATE_Y] * progress
+        );
+        gameCtx.rotate(sprite[SPRITE_ANGLE] * progress);
+        gameCtx.drawImage(
+          sprite[SPRITE_CANVAS],
+          sprite[SPRITE_OFFSET_X],
+          sprite[SPRITE_OFFSET_Y]
+        );
+      });
 
-    return true;
+      return true;
+    }
+    // Returning undefined is falsy
   };
 }
 
@@ -1070,6 +1071,7 @@ function gamepadAxisValue(axisIndex) {
       sum += pads[i].axes[axisIndex];
     } catch (e) {}
   }
+  // Round to two decimals to prevent drifting
   return Math.round(sum * 100) / 100;
 }
 
@@ -1387,6 +1389,7 @@ self.ontouchend = self.onmouseup = (e) => {
 };
 
 self.onkeydown = self.onkeyup = (e) => {
+  // keydown will be truish, keyup undefined (falsish)
   anyKeyPressed = keysPressed[e.keyCode] = e.type[5];
 };
 
