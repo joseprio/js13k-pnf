@@ -767,7 +767,7 @@ function Enemy(
   const fireAngle = enemyRandomizer.sd(0, Math.PI * 2);
   const w = canvas.width;
   const h = canvas.height;
-  let y = -canvas.height / 2;
+  let y = -h / 2;
   let hitTime = 0;
   let hitBox;
 
@@ -785,6 +785,7 @@ function Enemy(
   return function (time, newEntities) {
     const originalY = y;
     const ellapsed = time - lastTime;
+    const hitTint = 400 - time + hitTime;
     let isDead = false;
     // Destroy enemies if no health or bomb time
     if (health <= 0 || bombEffect > time) {
@@ -838,7 +839,6 @@ function Enemy(
     lastTime = time;
 
     gameCtx.drawImage(canvas, x - w / 2, y - h / 2);
-    const hitTint = 400 - time + hitTime;
     if (hitTint > 0) {
       gameCtxWrap(() => {
         gameCtx.globalAlpha = hitTint / 400;
