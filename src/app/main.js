@@ -562,29 +562,25 @@ function createPowerupLetter(char, color) {
   return trimCanvas(canvas);
 }
 
-const powerupDefinitions = [
-  [
-    createPowerupLetter("F", "#fa0"),
-    (time) => {
-      fastFire = time + 6500;
-    },
-  ],
-  [
-    createPowerupLetter("S", "#0ff"),
-    () => {
-      sounds.shieldPowerup();
-      shieldLevel++;
-    },
-  ],
-  [
-    createPowerupLetter("B", "#f00"),
-    (time) => {
-      sounds.explosion(1.5);
-      // Bomb
-      bombEffect = time + BOMB_DURATION;
-      nextEnemy += 1500;
-    },
-  ],
+const powerupLetters = [
+  createPowerupLetter("F", "#fa0"),
+  createPowerupLetter("S", "#0ff"),
+  createPowerupLetter("B", "#f00"),
+];
+const powerupEffects = [
+  (time) => {
+    fastFire = time + 6500;
+  },
+  () => {
+    sounds.shieldPowerup();
+    shieldLevel++;
+  },
+  (time) => {
+    sounds.explosion(1.5);
+    // Bomb
+    bombEffect = time + BOMB_DURATION;
+    nextEnemy += 1500;
+  },
 ];
 
 function Powerup(x, y, powerupType, lastTime) {
@@ -599,11 +595,11 @@ function Powerup(x, y, powerupType, lastTime) {
       powerupMask,
     ];
     const scale = 0.75 + Math.sin(time / 200) / 4;
-    const letterCanvas = powerupDefinitions[powerupType][0];
+    const letterCanvas = powerupLetters[powerupType];
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
-      powerupDefinitions[powerupType][1](time);
+      powerupEffects[powerupType](time);
       // Returning undefined is falsy
       return;
     }
@@ -1299,7 +1295,7 @@ function gameRender(now) {
         gameEllapsed
       )
     );
-    powerupIndex %= powerupDefinitions.length;
+    powerupIndex %= powerupLetters.length;
     nextPowerup = gameEllapsed + POWERUP_INTERVAL;
   }
 
