@@ -2,30 +2,6 @@ import { createCanvas, obtainImageData } from "game-utils";
 
 const MAX_ANGLE = 360;
 
-function createCollectors(width, height, targetSize) {
-  const xPoints = Math.floor(width / targetSize);
-  const yPoints = Math.floor(height / targetSize);
-  const result = [];
-  const yOffset = Math.floor(height / (2 * yPoints));
-  for (let currentY = 0; currentY < yPoints; currentY++) {
-    // We calculate the initial offset so the center points are in a displaced pattern
-    const xOffset = Math.floor(width / ((2 - (currentY % 2)) * xPoints));
-    for (let currentX = 0; currentX < xPoints - (currentY % 2); currentX++) {
-      // We add some noise so all pieces look different
-      result.push([
-        1e9,
-        1e9,
-        0,
-        0,
-        xOffset + ((currentX + (Math.random() - 0.5)) * width) / xPoints,
-        yOffset + ((currentY + (Math.random() - 0.5)) * height) / yPoints,
-        [],
-      ]);
-    }
-  }
-  return result;
-}
-
 // TODO: TS const enum
 const COLLECTOR_MIN_X = 0;
 const COLLECTOR_MIN_Y = 1;
@@ -45,17 +21,33 @@ export const SPRITE_TRANSLATE_Y = 6;
 export const SPRITE_ANGLE = 7;
 
 export function createSprites(targetCanvas) {
-  const collectors = createCollectors(
-    targetCanvas.width,
-    targetCanvas.height,
-    Math.max(
-      12,
-      Math.floor(Math.min(targetCanvas.width, targetCanvas.height) / 12)
-    )
-  );
-  const width = targetCanvas.width,
-    height = targetCanvas.height;
+  const width = targetCanvas.width;
+  const height = targetCanvas.height;
+  const targetSize = Math.max(12, Math.floor(Math.min(width, height) / 12));
   const imageData = obtainImageData(targetCanvas);
+  const xPoints = Math.floor(width / targetSize);
+  const yPoints = Math.floor(height / targetSize);
+  const collectors = [];
+  const yOffset = Math.floor(height / (2 * yPoints));
+
+  // Gather collectors
+  for (let currentY = 0; currentY < yPoints; currentY++) {
+    // We calculate the initial offset so the center points are in a displaced pattern
+    const xOffset = Math.floor(width / ((2 - (currentY % 2)) * xPoints));
+    for (let currentX = 0; currentX < xPoints - (currentY % 2); currentX++) {
+      // We add some noise so all pieces look different
+      collectors.push([
+        1e9,
+        1e9,
+        0,
+        0,
+        xOffset + ((currentX + (Math.random() - 0.5)) * width) / xPoints,
+        yOffset + ((currentY + (Math.random() - 0.5)) * height) / yPoints,
+        [],
+      ]);
+    }
+  }
+
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const pos = (y * width + x) * 4;
