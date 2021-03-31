@@ -51,9 +51,14 @@ function hitEffect(targetCanvas) {
     const r = data[c + 0];
     const g = data[c + 1];
     const b = data[c + 2];
-    data[c + 0] = 255 - (0.393 * r + 0.769 * g + 0.189 * b);
-    data[c + 1] = 255 - (0.349 * r + 0.686 * g + 0.168 * b);
-    data[c + 2] = 255 - (0.272 * r + 0.534 * g + 0.131 * b);
+    data.set(
+      [
+        255 - (0.393 * r + 0.769 * g + 0.189 * b),
+        255 - (0.349 * r + 0.686 * g + 0.168 * b),
+        255 - (0.272 * r + 0.534 * g + 0.131 * b),
+      ],
+      c
+    );
   }
   ctx.putImageData(imageData, 0, 0);
   return canvas;
