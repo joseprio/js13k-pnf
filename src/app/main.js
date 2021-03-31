@@ -866,22 +866,20 @@ function Enemy(
   };
 }
 
-const BOSS_WAITING = 0;
-const BOSS_COMING = 1;
-const BOSS_FIGHT = 2;
+const BOSS_COMING = 0;
+const BOSS_FIGHT = 1;
 const DIRECTION_RIGHT = 0;
 const DIRECTION_LEFT = 1;
 
 function Boss(difficulty, time) {
   const w = bossShip.width;
   const h = bossShip.height;
-  let phase = BOSS_WAITING;
-  let nextPhase = time + 2000;
+  let phase = BOSS_COMING;
   // We want to be basically immortal until we start the fight
   let health = 1e9;
   let lastTime = time;
   let x = HALF_CANVAS_WIDTH;
-  let y = -h / 2;
+  let y = -300;
   let moveDirection = DIRECTION_RIGHT;
   let hitTime = 0;
   let hitBox;
@@ -906,20 +904,7 @@ function Boss(difficulty, time) {
       isDead = true;
     } else {
       const ellapsed = time - lastTime;
-      if (phase === BOSS_WAITING) {
-        if (time > nextPhase) {
-          phase = BOSS_COMING;
-        }
-      } else if (phase === BOSS_COMING) {
-        y += ellapsed * 0.15;
-        if (y > 150) {
-          y = 150;
-          // Give it normal health
-          health = 100 + 250 * difficulty;
-          phase = BOSS_FIGHT;
-          nextBullet = time;
-        }
-      } else {
+      if (phase) {
         // Update X
         if (moveDirection === DIRECTION_RIGHT) {
           x += ellapsed * 0.1;
@@ -933,6 +918,16 @@ function Boss(difficulty, time) {
             x = w / 2;
             moveDirection = DIRECTION_RIGHT;
           }
+        }
+      } else {
+        // Boss coming
+        y += ellapsed * 0.2;
+        if (y > 150) {
+          y = 150;
+          // Give it normal health
+          health = 100 + 250 * difficulty;
+          phase = BOSS_FIGHT;
+          nextBullet = time;
         }
       }
     }
