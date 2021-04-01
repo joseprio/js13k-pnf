@@ -381,7 +381,7 @@ const enemyDefinitions = [
 //    generateEnemy("KVoA08jfxzGQlU26", "bxfJMJri6hSgr3zD", 220, 80, 0.2),
 
 function render(now) {
-  if (state === STATE_GAME) {
+  if (state == STATE_GAME) {
     gameRender(now);
   } else {
     // STATE_LOADING or STATE_INTRO
@@ -435,7 +435,7 @@ function introRender(now) {
   gameCtx.fillStyle = "#fff";
   gameCtx.textBaseline = "middle";
   gameCtx.textAlign = "center";
-  if (state === STATE_INTRO) {
+  if (state == STATE_INTRO) {
     gameCtx.font =
       "italic small-caps 40px Futura-CondensedMedium,sans-serif-condensed,sans-serif";
     if (highscores.length) {
@@ -446,7 +446,7 @@ function introRender(now) {
         gameCtx.textBaseline = "top";
         for (let c = 0; c < highscores.length; c++) {
           gameCtx.fillStyle = "#fff";
-          if (c === highlightHighscore) {
+          if (c == highlightHighscore) {
             gameCtx.drawImage(
               newTag,
               90 - Math.floor(newTag.width / 2),
@@ -921,7 +921,7 @@ function Boss(difficulty, time) {
       const ellapsed = time - lastTime;
       if (phase) {
         // Update X
-        if (moveDirection === DIRECTION_RIGHT) {
+        if (moveDirection == DIRECTION_RIGHT) {
           x += ellapsed * 0.1;
           if (x + w / 2 > CANVAS_WIDTH) {
             x = CANVAS_WIDTH - w / 2;
@@ -991,7 +991,7 @@ function Boss(difficulty, time) {
       });
     }
 
-    if (!shipDestroyed && phase === BOSS_FIGHT) {
+    if (!shipDestroyed && phase == BOSS_FIGHT) {
       // Fire bullets if needed
       if (nextBullet < time) {
         sounds.enemyFire();
@@ -1034,7 +1034,7 @@ function Boss(difficulty, time) {
           nextBullet = time + 800;
         } else if (bulletCount > 5 * difficulty) {
           nextBullet = time + 200;
-        } else if (bulletCount === 5 * difficulty) {
+        } else if (bulletCount == 5 * difficulty) {
           nextBullet = time + 800;
         } else {
           // this.bulletCount < 5 * this.level
