@@ -403,13 +403,11 @@ function newGame() {
   hitables = [];
   lastTime = initialTime = performance.now();
   addScore(
-    (difficulty = powerupIndex = lastBullet = bombEffect = fastFire = score = 0)
+    (bossTime = shipDestroyed = difficulty = powerupIndex = lastBullet = bombEffect = fastFire = score = 0)
   );
-  shipDestroyed = false;
   move_x = shipX = HALF_CANVAS_WIDTH;
   move_y = shipY = Math.floor(CANVAS_HEIGHT * 0.9);
   shieldLevel = 1;
-  bossTime = false;
 }
 
 function introRender(now) {
