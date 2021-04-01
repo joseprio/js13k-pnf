@@ -732,11 +732,10 @@ function EnemyBullet(x, y, destinationX, destinationY, s, lastTime) {
   };
 }
 
-function fireBullets(amount, x, y, initialAngle, speed, time) {
-  const bullets = [];
+function fireBullets(newEntities, amount, x, y, initialAngle, speed, time) {
   for (let c = 0; c < amount; c++) {
     const angle = initialAngle + (2 * c * Math.PI) / amount;
-    bullets.push(
+    newEntities.push(
       EnemyBullet(
         x,
         y,
@@ -747,7 +746,6 @@ function fireBullets(amount, x, y, initialAngle, speed, time) {
       )
     );
   }
-  return bullets;
 }
 
 function Enemy(
@@ -811,8 +809,14 @@ function Enemy(
       addScore(killPoints);
       // Return array with pieces
       if (deathBullets > 0) {
-        newEntities.push(
-          ...fireBullets(deathBullets, x, y + 17 * speed, fireAngle, 0.45, time)
+        fireBullets(
+          newEntities,
+          deathBullets,
+          x,
+          y + 17 * speed,
+          fireAngle,
+          0.45,
+          time
         );
       }
 
@@ -856,8 +860,14 @@ function Enemy(
           const fromY = y + 17 * speed;
           if (bulletAmount) {
             // Fire bullet spread, a bit forward as it looks better
-            newEntities.push(
-              ...fireBullets(bulletAmount, x, fromY, fireAngle, 0.3, time)
+            fireBullets(
+              newEntities,
+              bulletAmount,
+              x,
+              fromY,
+              fireAngle,
+              0.3,
+              time
             );
           } else {
             // Fire single bullet targeted to the user
