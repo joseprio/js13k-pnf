@@ -274,8 +274,8 @@ function addScore(points) {
 }
 
 function updateNextEnemy() {
-  const minNextEnemy = Math.max(400, 1000 - difficulty * 25);
-  nextEnemy += enemyRandomizer.si(minNextEnemy, minNextEnemy + 400);
+  nextEnemy +=
+    Math.max(400, 1000 - difficulty * 25) + enemyRandomizer.si(0, 400);
 }
 
 function updateHighscores() {
