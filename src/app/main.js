@@ -1000,7 +1000,6 @@ function Boss(difficulty, time) {
             [108, 94],
             [121, 80],
             [143, 50],
-            [28, 119],
           ][Math.floor(bulletCount / difficulty)];
 
           // Side bullets
