@@ -48,9 +48,7 @@ function hitEffect(targetCanvas) {
   const imageData = obtainImageData(targetCanvas);
   const data = imageData.data;
   for (let c = 0; c < data.length; c += 4) {
-    const r = data[c + 0];
-    const g = data[c + 1];
-    const b = data[c + 2];
+    const [r, g, b] = data.slice(c, c + 4);
     data.set(
       [
         255 - (0.393 * r + 0.769 * g + 0.189 * b),
