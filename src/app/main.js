@@ -1079,7 +1079,7 @@ const POWERUP_INTERVAL = 9000;
 
 let lastTime;
 function gameRender(now) {
-  const tickEllapsed = now - lastTime;
+  let tickEllapsed = now - lastTime;
   lastTime = now;
   if (tickEllapsed > 160) {
     // First frame or detecting a pause
