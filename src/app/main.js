@@ -232,9 +232,8 @@ const enemyBulletMask = obtainImageData(enemyBulletFrames[0]).data;
 
 const [powerupCanvas, powerupMask] = generatePowerupCanvas();
 
-const STATE_LOADING = 0,
-  STATE_INTRO = 1,
-  STATE_GAME = 2;
+const STATE_INTRO = 1;
+const STATE_GAME = 2;
 const highscores = JSON.parse(localStorage["pnf_highscores"] || 0) || [];
 const newTag = generateNewTag();
 
@@ -261,7 +260,8 @@ let initialTime = performance.now();
 let difficulty;
 let score;
 let scoreText;
-let state = STATE_LOADING;
+// Undefined is falsish, like 0
+let state;
 
 let highlightHighscore;
 
@@ -384,7 +384,7 @@ function render(now) {
   if (state == STATE_GAME) {
     gameRender(now);
   } else {
-    // STATE_LOADING or STATE_INTRO
+    // undefined is loading, or STATE_INTRO
     introRender(now);
   }
   // Any key press detection should have been consumed now
@@ -433,7 +433,7 @@ function introRender(now) {
   gameCtx.fillStyle = "#fff";
   gameCtx.textBaseline = "middle";
   gameCtx.textAlign = "center";
-  if (state == STATE_INTRO) {
+  if (state) {
     gameCtx.font =
       "italic small-caps 40px Futura-CondensedMedium,sans-serif-condensed,sans-serif";
     if (highscores.length) {
