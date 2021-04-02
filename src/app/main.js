@@ -225,7 +225,6 @@ const highscores = JSON.parse(localStorage["pnf_highscores"] || 0) || [];
 const newTag = generateNewTag();
 
 let pointer_down = false;
-let introInhibitPress = false;
 
 let touch_previous_x,
   touch_previous_y,
@@ -233,8 +232,7 @@ let touch_previous_x,
   move_y,
   shipX,
   shipY,
-  keysPressed = [],
-  anyKeyPressed = false;
+  keysPressed = [];
 
 let shipHitBox;
 let shipDestroyed;
@@ -378,7 +376,6 @@ function render(now) {
     introRender(now);
   }
   // Any key press detection should have been consumed now
-  anyKeyPressed = false;
   requestAnimationFrame(render);
 }
 
@@ -463,18 +460,14 @@ function introRender(now) {
     }
     gameCtx.font = "20px Arial";
     gameCtx.fillText(
-      "<Press anywhere or any key to play>",
+      "<Press anywhere or Enter to play>",
       HALF_CANVAS_WIDTH,
       CANVAS_HEIGHT - 30
     );
 
-    if (pointer_down || anyKeyPressed || isGamepadButtonPressed(9)) {
-      if (!introInhibitPress) {
-        // Start game
-        newGame();
-      }
-    } else {
-      introInhibitPress = false;
+    if (pointer_down || keysPressed[13] || isGamepadButtonPressed(9)) {
+      // Start game
+      newGame();
     }
   } else {
     gameCtx.font = "italic 30px Arial";
@@ -1322,7 +1315,9 @@ function gameRender(now) {
     updateHighscores();
 
     state = STATE_INTRO;
-    introInhibitPress = pointer_down;
+    // If the user is pressing the screen, we don't want to start the new game right away
+    // The user will just need to press again
+    pointer_down = false;
   }
 }
 
@@ -1386,7 +1381,7 @@ self.ontouchend = self.onmouseup = (e) => {
 
 self.onkeydown = self.onkeyup = (e) => {
   // keydown will be truish, keyup undefined (falsish)
-  anyKeyPressed = keysPressed[e.keyCode] = e.type[5];
+  keysPressed[e.keyCode] = e.type[5];
 };
 
 // Let's run the game
