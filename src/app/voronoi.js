@@ -102,13 +102,14 @@ export function createSprites(targetCanvas) {
         collector[COLLECTOR_MAX_Y] - collector[COLLECTOR_MIN_Y] + 1;
       const [shardCanvas, shardCtx] = createCanvas(shardWidth, shardHeight);
       const imgData = obtainImageData(shardCanvas);
-      collector[COLLECTOR_NEAREST].map((point) => {
-        const pos =
+      collector[COLLECTOR_NEAREST].map((point) =>
+        imgData.data.set(
+          point[2],
           4 *
-          ((point[1] - collector[COLLECTOR_MIN_Y]) * shardWidth +
-            (point[0] - collector[COLLECTOR_MIN_X]));
-        imgData.data.set(point[2], pos);
-      });
+            ((point[1] - collector[COLLECTOR_MIN_Y]) * shardWidth +
+              (point[0] - collector[COLLECTOR_MIN_X]))
+        )
+      );
       shardCtx.putImageData(imgData, 0, 0);
       sprites.push([
         collector[COLLECTOR_CENTER_X],

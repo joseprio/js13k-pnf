@@ -255,6 +255,7 @@ let highlightHighscore;
 // Create favicon
 createFavicon(ship);
 
+// It's important for this function not to return any truish value
 function addScore(points) {
   score += points;
   scoreText = new Intl.NumberFormat().format(score);
@@ -488,9 +489,8 @@ function introRender(now) {
     } else {
       for (let c = 0; c < enemyBlueprints.length; c++) {
         if (!enemyBlueprints[c][5]) {
-          generateEnemyAssets(enemyBlueprints[c]);
           // This is quite hacky and fragile, but efficient for size
-          return;
+          return generateEnemyAssets(enemyBlueprints[c]);
         }
       }
       state = STATE_INTRO;
@@ -799,8 +799,7 @@ function Enemy(
 
     if (isDead) {
       sounds.explosion(w / 275);
-      // Add score
-      addScore(killPoints);
+
       // Return array with pieces
       if (deathBullets > 0) {
         fireBullets(
@@ -826,7 +825,7 @@ function Enemy(
         )
       );
       // Returning undefined is falsy
-      return;
+      return addScore(killPoints);
     }
 
     // Make it disappear after it leaves the screen
@@ -945,8 +944,6 @@ function Boss(difficulty, time) {
       sounds.bossExplosion();
       addScore(difficulty * 500);
 
-      // Restore game!
-      bossTime = false;
       nextDifficulty = time + 10000;
       nextPowerup = nextEnemy = BOSS_EXPLOSION_DURATION + time;
       updateNextEnemy();
@@ -962,8 +959,7 @@ function Boss(difficulty, time) {
           )
         )
       );
-      // Returning undefined is falsy
-      return;
+      return (bossTime = false);
     }
 
     // Update hit box
