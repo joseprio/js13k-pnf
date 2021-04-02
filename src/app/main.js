@@ -1126,12 +1126,12 @@ function gameRender(now) {
         vy = move_y - shipY;
       const distance = Math.hypot(vx, vy);
 
-      if (distance < toTravel) {
-        shipX = move_x;
-        shipY = move_y;
-      } else {
+      if (distance > toTravel) {
         shipX += (vx / distance) * toTravel;
         shipY += (vy / distance) * toTravel;
+      } else {
+        shipX = move_x;
+        shipY = move_y;
       }
     }
     if (shipX < halfShipWidth) {
