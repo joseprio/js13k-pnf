@@ -1099,6 +1099,8 @@ function gameRender(now) {
   if (tickEllapsed > 160) {
     // First frame or detecting a pause
     initialTime += tickEllapsed;
+    // Treat it as no tick has happened
+    tickEllapsed = 0;
     // We don't want the controls to get stuck
     keysPressed = [];
   }
