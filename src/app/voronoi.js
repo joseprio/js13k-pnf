@@ -123,18 +123,13 @@ export function generateSpriteFinalState(sprite, width, height) {
   const cx = sprite[SPRITE_CENTER_X] - width / 2;
   const cy = sprite[SPRITE_CENTER_Y] - height / 2;
   const distance = Math.hypot(cx, cy);
-  const distanceSquare = distance * distance;
-  const radiusFactor = 1.5 + 1.5 * Math.random();
-  const finalDistance = distance * radiusFactor;
+  const distanceSquare = distance ** 2;
+  const finalDistance = distance * (0.5 + 1.5 * Math.random());
 
   return [
     ...sprite,
-    (finalDistance - distance) *
-      (1 - cy ** 2 / distanceSquare) ** 0.5 *
-      (cx > 0 ? 1 : -1),
-    (finalDistance - distance) *
-      (1 - cx ** 2 / distanceSquare) ** 0.5 *
-      (cy > 0 ? 1 : -1),
+    finalDistance * (1 - cy ** 2 / distanceSquare) ** 0.5 * (cx > 0 ? 1 : -1),
+    finalDistance * (1 - cx ** 2 / distanceSquare) ** 0.5 * (cy > 0 ? 1 : -1),
     (Math.random() - 0.5) * 3,
   ];
 }
