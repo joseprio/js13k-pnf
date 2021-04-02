@@ -29,7 +29,7 @@ export function createSprites(targetCanvas) {
   const xPoints = Math.floor(width / targetSize);
   const yPoints = Math.floor(height / targetSize);
   const collectors = [];
-  const yOffset = Math.floor(height / (2 * yPoints));
+  const yOffset = Math.floor(height / yPoints / 2);
 
   // Gather collectors
   for (let currentY = 0; currentY < yPoints; currentY++) {
