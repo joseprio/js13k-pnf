@@ -1049,10 +1049,9 @@ function Boss(difficulty, time) {
 }
 
 function getGamepads() {
-  return (navigator.getGamepads
-    ? Array.from(navigator.getGamepads())
-    : []
-  ).filter((x) => !!x);
+  return (navigator.getGamepads ? [...navigator.getGamepads()] : []).filter(
+    (x) => !!x
+  );
 }
 
 function isGamepadButtonPressed(buttonIndex) {
