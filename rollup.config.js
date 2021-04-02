@@ -73,6 +73,7 @@ export default {
           wrap_func_args: false,
           semicolons: true,
           ecma: 2019,
+          ascii_only: true,
         },
       }),
     production &&
