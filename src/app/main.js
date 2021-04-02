@@ -309,14 +309,16 @@ function generateEnemy([faction, seed, size, ...more]) {
   const enemyShip = flipCanvas(
     generateShip(new Randomizer(faction), seed, size)
   );
-  return [enemyShip, 0, 0, 0, ...more];
+  return [enemyShip, ...more];
 }
 
 function generateEnemyAssets(enemyBlueprint) {
   const enemyShip = trimCanvas(enemyBlueprint[0]);
-  enemyBlueprint[1] = obtainImageData(enemyShip).data;
-  enemyBlueprint[2] = hitEffect(enemyShip);
-  enemyBlueprint[3] = createSprites(enemyShip);
+  enemyBlueprint.push(
+    obtainImageData(enemyShip).data,
+    hitEffect(enemyShip),
+    createSprites(enemyShip)
+  );
 }
 
 const enemyDefinitions = [
@@ -496,7 +498,7 @@ function introRender(now) {
       );
     } else {
       for (let c = 0; c < enemyBlueprints.length; c++) {
-        if (!enemyBlueprints[c][1]) {
+        if (!enemyBlueprints[c][5]) {
           generateEnemyAssets(enemyBlueprints[c]);
           // This is quite hacky and fragile, but efficient for size
           return;
@@ -747,13 +749,13 @@ function fireBullets(newEntities, amount, x, y, initialAngle, speed, time) {
 function Enemy(
   [
     canvas,
-    mask,
-    hitCanvas,
-    destroyedSprites,
     health,
     speed,
     deathBullets,
     fireSequences,
+    mask,
+    hitCanvas,
+    destroyedSprites,
   ],
   x,
   killPoints,
