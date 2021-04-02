@@ -880,7 +880,7 @@ function Boss(difficulty, time) {
   let health = 1e9;
   let lastTime = time;
   let x = HALF_CANVAS_WIDTH;
-  let y = -300;
+  let y = -500;
   let moveDirection = DIRECTION_RIGHT;
   let hitTime = 0;
   let hitBox;
