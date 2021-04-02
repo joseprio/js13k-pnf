@@ -1,16 +1,5 @@
 import { generateShip, Randomizer } from "starshipwright";
-import {
-  createSprites,
-  generateSpriteFinalState,
-  SPRITE_CENTER_X,
-  SPRITE_CENTER_Y,
-  SPRITE_OFFSET_X,
-  SPRITE_OFFSET_Y,
-  SPRITE_CANVAS,
-  SPRITE_TRANSLATE_X,
-  SPRITE_TRANSLATE_Y,
-  SPRITE_ANGLE,
-} from "./voronoi";
+import { createSprites, generateSpriteFinalState } from "./voronoi";
 import {
   trimCanvas,
   createCanvas,
@@ -654,26 +643,33 @@ function Bullet(x, y, lastTime) {
   };
 }
 
-function Shard(sprite, shipX, shipY, explosionDuration, creation) {
+function Shard(
+  [
+    spriteCenterX,
+    spriteCenterY,
+    spriteOffsetX,
+    spriteOffsetY,
+    spriteCanvas,
+    spriteTranslateX,
+    spriteTranslateY,
+    spriteAngle,
+  ],
+  shipX,
+  shipY,
+  explosionDuration,
+  creation
+) {
   return function (time) {
     const progress = (time - creation) / explosionDuration;
     if (progress < 1) {
       gameCtxWrap(() => {
         gameCtx.globalAlpha = 1 - progress ** 2;
         gameCtx.translate(
-          shipX +
-            sprite[SPRITE_CENTER_X] +
-            sprite[SPRITE_TRANSLATE_X] * progress,
-          shipY +
-            sprite[SPRITE_CENTER_Y] +
-            sprite[SPRITE_TRANSLATE_Y] * progress
+          shipX + spriteCenterX + spriteTranslateX * progress,
+          shipY + spriteCenterY + spriteTranslateY * progress
         );
-        gameCtx.rotate(sprite[SPRITE_ANGLE] * progress);
-        gameCtx.drawImage(
-          sprite[SPRITE_CANVAS],
-          sprite[SPRITE_OFFSET_X],
-          sprite[SPRITE_OFFSET_Y]
-        );
+        gameCtx.rotate(spriteAngle * progress);
+        gameCtx.drawImage(spriteCanvas, spriteOffsetX, spriteOffsetY);
       });
 
       return true;

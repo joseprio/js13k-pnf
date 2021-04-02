@@ -9,14 +9,17 @@ const COLLECTOR_CENTER_X = 4;
 const COLLECTOR_CENTER_Y = 5;
 const COLLECTOR_NEAREST = 6;
 
-export const SPRITE_CENTER_X = 0;
-export const SPRITE_CENTER_Y = 1;
-export const SPRITE_OFFSET_X = 2;
-export const SPRITE_OFFSET_Y = 3;
-export const SPRITE_CANVAS = 4;
-export const SPRITE_TRANSLATE_X = 5;
-export const SPRITE_TRANSLATE_Y = 6;
-export const SPRITE_ANGLE = 7;
+const SPRITE_CENTER_X = 0;
+const SPRITE_CENTER_Y = 1;
+/*
+Technically unused, but indicates the position of the different fields
+const SPRITE_OFFSET_X = 2;
+const SPRITE_OFFSET_Y = 3;
+const SPRITE_CANVAS = 4;
+const SPRITE_TRANSLATE_X = 5;
+const SPRITE_TRANSLATE_Y = 6;
+const SPRITE_ANGLE = 7;
+*/
 
 export function createSprites(targetCanvas) {
   const width = targetCanvas.width;
