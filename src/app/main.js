@@ -552,6 +552,8 @@ const powerupLetters = [
   createPowerupLetter("S", "#0ff"),
   createPowerupLetter("B", "#f00"),
 ];
+
+// Effect functions must return undefined
 const powerupEffects = [
   (time) => {
     fastFire = time + 6500;
@@ -584,9 +586,8 @@ function Powerup(x, y, powerupType, lastTime) {
 
     // Check powerup against ship
     if (!shipDestroyed && collide(shipHitBox, hitBox)) {
-      powerupEffects[powerupType](time);
       // Returning undefined is falsy
-      return;
+      return powerupEffects[powerupType](time);
     }
 
     if (y - Math.floor(powerupCanvas.height / 2) > CANVAS_HEIGHT) {
