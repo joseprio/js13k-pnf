@@ -51,53 +51,6 @@ function hitEffect(targetCanvas) {
   return canvas;
 }
 
-function generateShields() {
-  const phases = [ship];
-  for (let c = 0; c < 10; c++) {
-    const [shieldPhase, shieldPhaseCtx] = createCanvas(
-      shipWidth * 2,
-      shipHeight * 2
-    );
-
-    for (let offsetY = 0; offsetY < 3; offsetY++) {
-      for (let offsetX = 0; offsetX < 3; offsetX++) {
-        shieldPhaseCtx.drawImage(
-          phases[0],
-          halfShipWidth - phases.length - 1 + offsetX,
-          halfShipHeight - phases.length - 1 + offsetY
-        );
-      }
-    }
-    shieldPhaseCtx.globalCompositeOperation = "source-in";
-    // Solid cyan
-    shieldPhaseCtx.fillStyle = c > 5 ? "#0ff" : "#00f";
-    shieldPhaseCtx.fillRect(0, 0, shieldPhase.width, shieldPhase.height);
-    shieldPhaseCtx.globalCompositeOperation = "source-over";
-    shieldPhaseCtx.drawImage(
-      phases[0],
-      halfShipWidth - phases.length,
-      halfShipHeight - phases.length
-    );
-    phases.unshift(trimCanvas(shieldPhase));
-  }
-  // Remove original ship from processing
-  phases.pop();
-  phases.map((phase) => {
-    const phaseCtx = getContext(phase);
-    phaseCtx.globalCompositeOperation = "destination-out";
-    phaseCtx.globalAlpha = 0.2;
-    for (let c = 5; c < 10; c++) {
-      phaseCtx.drawImage(
-        phases[c],
-        Math.floor((phase.width - phases[c].width) / 2),
-        Math.floor((phase.height - phases[c].height) / 2)
-      );
-    }
-  });
-  phases.length = 5;
-  return phases;
-}
-
 function generateBullet() {
   const [canvas, ctx] = createCanvas(20, 60);
   // gold filled rect
@@ -140,8 +93,8 @@ function generateEnemyBulletFrame(colorStop) {
 }
 
 function generateEnemyBullet() {
-  const frames = [];
-  for (let c = 0; c < 9; c++) {
+  let frames = [];
+  for (let c = 9; c--; ) {
     frames.unshift(generateEnemyBulletFrame(c / 10));
     frames.push(generateEnemyBulletFrame(c / 10));
   }
@@ -209,7 +162,7 @@ const halfShipHeight = Math.floor(shipHeight / 2);
 const shipMask = obtainImageData(ship).data;
 
 const BOMB_DURATION = 1000;
-const shields = generateShields();
+const shields = [];
 
 const enemyBlueprints = [];
 
@@ -252,6 +205,44 @@ let highlightHighscore;
 
 // Create favicon
 createFavicon(ship);
+
+const TOTAL_SHIELDS = 5;
+// Generate shields
+for (let c = 0; c < TOTAL_SHIELDS + 5; c++) {
+  const [shieldPhase, shieldPhaseCtx] = createCanvas(
+    shipWidth + (TOTAL_SHIELDS + 5) * 2,
+    shipHeight + (TOTAL_SHIELDS + 5) * 2
+  );
+  const displacement = c ? 0 : TOTAL_SHIELDS + 5;
+
+  for (let offsetY = -1; offsetY < 2; offsetY++) {
+    for (let offsetX = -1; offsetX < 2; offsetX++) {
+      shieldPhaseCtx.drawImage(
+        shields[0] || ship,
+        offsetX + displacement,
+        displacement + offsetY
+      );
+    }
+  }
+  shieldPhaseCtx.globalCompositeOperation = "source-in";
+  // Solid cyan
+  shieldPhaseCtx.fillStyle = c > 5 ? "#0ff" : "#00f";
+  shieldPhaseCtx.fillRect(0, 0, 1e9, 1e9);
+  shieldPhaseCtx.globalCompositeOperation = "source-over";
+  shieldPhaseCtx.drawImage(shields[0] || ship, displacement, displacement);
+  shields.unshift(shieldPhase);
+}
+// Remove original ship from processing
+shields.map((phase) => {
+  const phaseCtx = getContext(phase);
+  phaseCtx.globalCompositeOperation = "destination-out";
+  phaseCtx.globalAlpha = 0.2;
+  for (let c = TOTAL_SHIELDS; c < TOTAL_SHIELDS + 4; c++) {
+    phaseCtx.drawImage(shields[c], 0, 0);
+  }
+});
+shields.length = TOTAL_SHIELDS;
+// End of generate shields
 
 // It's important for this function not to return any truish value
 function addScore(points) {
