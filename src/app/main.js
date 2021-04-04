@@ -132,7 +132,7 @@ function generateNewTag() {
     canvas.height + 10
   );
   tagCtx.fillStyle = "#f00";
-  tagCtx.fillRect(0, 0, tagCanvas.width, tagCanvas.height);
+  tagCtx.fillRect(0, 0, 1e9, 1e9);
   tagCtx.drawImage(canvas, 5, 5);
   return tagCanvas;
 }
@@ -229,7 +229,9 @@ for (let c = 0; c < TOTAL_SHIELDS + 5; c++) {
   shieldPhaseCtx.fillStyle = c > 5 ? "#0ff" : "#00f";
   shieldPhaseCtx.fillRect(0, 0, 1e9, 1e9);
   shieldPhaseCtx.globalCompositeOperation = "source-over";
-  shieldPhaseCtx.drawImage(shields[0] || ship, displacement, displacement);
+  if (c) {
+    shieldPhaseCtx.drawImage(shields[0], 0, 0);
+  }
   shields.unshift(shieldPhase);
 }
 // Remove original ship from processing
@@ -391,7 +393,7 @@ function newGame() {
 function introRender(now) {
   // reset
   gameCtx.fillStyle = "#002";
-  gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  gameCtx.fillRect(0, 0, 1e9, 1e9);
 
   // Intro starfield
   gameCtxWrap(() => {
@@ -1141,7 +1143,7 @@ function gameRender(now) {
 
   // Reset canvas
   gameCtx.fillStyle = "#002";
-  gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  gameCtx.fillRect(0, 0, 1e9, 1e9);
 
   // Paint background stars
   for (
@@ -1236,7 +1238,7 @@ function gameRender(now) {
     gameCtxWrap(() => {
       // Fill style is already white
       gameCtx.globalAlpha = (bombEffect - gameEllapsed) / BOMB_DURATION;
-      gameCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      gameCtx.fillRect(0, 0, 1e9, 1e9);
     });
   }
 
