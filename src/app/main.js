@@ -396,19 +396,16 @@ function introRender(now) {
   gameCtx.fillRect(0, 0, 1e9, 1e9);
 
   // Intro starfield
-  gameCtxWrap(() => {
-    for (let c = 200; c--; ) {
-      gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
-      const r = 50 / (6 - ((now / 3000 + c / 13) % 6));
-      gameCtx.globalAlpha = Math.min(r / 100, 1);
-      fillCircle(
-        gameCtx,
-        Math.cos(c) * r + HALF_CANVAS_WIDTH,
-        Math.sin(c * c) * r + HALF_CANVAS_HEIGHT,
-        r / 200
-      );
-    }
-  });
+  for (let c = 100; c--; ) {
+    gameCtx.fillStyle = STAR_COLORS[c % STAR_COLORS.length];
+    const r = 100 / (4 - ((now / 1000 + c / 13) % 4));
+    fillCircle(
+      gameCtx,
+      Math.cos(c) * r + HALF_CANVAS_WIDTH,
+      Math.sin(c * c) * r + HALF_CANVAS_HEIGHT,
+      r / 99
+    );
+  }
 
   gameCtx.fillStyle = "#fff";
   gameCtx.textBaseline = "middle";
