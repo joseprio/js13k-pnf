@@ -1152,9 +1152,7 @@ function gameRender(now) {
     gameCtx.fillStyle = STAR_COLORS[i % STAR_COLORS.length],
       fillCircle(
         gameCtx,
-        ((1 - i / 100) *
-          (CANVAS_WIDTH - STARS_WIDTH) *
-          (shipX - halfShipWidth)) /
+        ((1 - i / 100) * (CANVAS_WIDTH - STARS_WIDTH) * shipX) /
           (CANVAS_WIDTH - shipWidth) +
           ((102797 * (1 + Math.sin(s)) * i) % STARS_WIDTH),
         (CANVAS_HEIGHT * (Math.tan(i / 9) + (s * gameEllapsed) / 3000)) %
