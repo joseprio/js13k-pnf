@@ -403,7 +403,7 @@ function introRender(now) {
       gameCtx,
       Math.cos(c) * r + HALF_CANVAS_WIDTH,
       Math.sin(c * c) * r + HALF_CANVAS_HEIGHT,
-      r / 99
+      r / 100
     );
   }
 
